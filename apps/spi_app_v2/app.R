@@ -124,7 +124,7 @@ shinyApp(
       c$month = month(c$time)
       
       #load spi function from alternative file
-      source("C:\\Users\\zachary.hoylman.UM\\Google Drive\\Drought_Markdown\\R_Markdown_UMRB\\functions\\SPI_Function.R")
+      source("D:\\Git_Repo\\drought_indicators\\functions\\SPI_Function.R")
       
       spi_30 = spi_calc(c,30)
       spi_300 = spi_calc(c,300)
