@@ -26,11 +26,9 @@ time_scale = 30
 
 montana = rgdal::readOGR("D:\\Git_Repo\\drought_indicators\\montana_outline.kml")
 
-# tic()
-# raster_precip_clipped_1 = crop(raster_precip, extent(montana))
-# toc()
+raster_precip_spatial_clip = crop(raster_precip, extent(montana))
 
-time = data.frame(datetime = as.POSIXct(as.Date(as.numeric(substring(names(raster_precip),2)), origin="1900-01-01")))
+time = data.frame(datetime = as.POSIXct(as.Date(as.numeric(substring(names(raster_precip_spatial_clip),2)), origin="1900-01-01")))
 time$day = yday(time$datetime)
 
 first_date_breaks = which(time$day == time$day[length(time$datetime)])
@@ -70,14 +68,12 @@ library(foreach)
 cl = makeCluster(detectCores()-1)
 registerDoParallel(cl)
 
-tic()
 raster_precip_clipped = foreach(i=unique(group_by_vec)) %dopar% {
   library(raster)
-  temp = sum(raster_precip[[slice_vec[group_by_vec == i]]])
-  temp = crop(temp, extent(montana))
+  temp = sum(raster_precip_spatial_clip[[slice_vec[group_by_vec == i]]])
+  #temp = crop(temp, extent(montana))
   mask(temp, montana)
 }
-toc()
 
 stopCluster(cl)
 
@@ -137,8 +133,6 @@ gamma_fit <- function(p) {
   return(gamma_)
 }
 
-
-
 spi_fun <- function(x) { 
   fit.gamma = gamma_fit(x)
   fit.cdf = pgamma(x, shape = fit.gamma$shape, rate = fit.gamma$rate)
@@ -148,12 +142,8 @@ spi_fun <- function(x) {
 
 
 
-
-
-
-tic()
 test_spi = apply(test, 1, spi_fun)
-toc()
+
 
 test_spi_map = raster_precip_clipped[[1]]
 
