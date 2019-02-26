@@ -55,7 +55,7 @@ The SPI is a commonly used metric which quantifies precipitation anomalies at va
 ```{r echo=FALSE, message=FALSE}
 
 library(shiny)
-shinyAppDir(appDir = "D:\\R_Markdown_UMRB\\apps\\spi_app",
+shinyAppDir(appDir = "D:\\Git_Repo\\drought_indicators\\apps\\spi_app_v2",
             options = list(height = 1300))
 
 ```

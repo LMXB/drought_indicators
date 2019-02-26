@@ -32,7 +32,7 @@ raster_precip_spatial_clip = crop(raster_precip, extent(montana))
 time = data.frame(datetime = as.POSIXct(as.Date(as.numeric(substring(names(raster_precip_spatial_clip),2)), origin="1900-01-01")))
 time$day = yday(time$datetime)
 
-first_date_breaks = which(time$day == time$day[length(time$datetime)])
+first_date_breaks = which(time$day == time$day[length(time$datetime)-1])
 second_date_breaks = first_date_breaks-(time_scale-1)
 
 #if there are negative indexes remove last year (incomplete data range)
@@ -153,7 +153,9 @@ values(test_spi_map) = test_spi
 
 color_ramp = colorRampPalette(c("red", "white", "blue"))
 
-plot(test_spi_map, col = color_ramp(100), zlim = c(-3,3))
+plot(test_spi_map, col = color_ramp(100), zlim = c(-3.5,3.5))
+
+#writeRaster(test_spi_map, "D:\\temp\\current_spi.tif", format = "GTiff")
 
 toc()
 

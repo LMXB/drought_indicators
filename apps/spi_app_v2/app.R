@@ -3,7 +3,8 @@ library(leaflet)
 library(leaflet.extras)
 library(scales)
 
-
+current_spi = raster::raster("D:\\temp\\current_spi.tif")
+pal <- colorNumeric(c("#ff0000", "#ffffff", "#0000ff"), -3.5:3.5, na.color = "transparent")
 options(height = 1000)
 
 shinyApp(
@@ -35,12 +36,15 @@ shinyApp(
     output$mymap <- renderLeaflet(
       leaflet() %>%
         addTiles() %>%
-        addProviderTiles(providers$Esri.WorldStreetMap) %>% #Add normal map
-        addWMSTiles(
-          "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi",
-          layers = "nexrad-n0r-900913",
-          options = WMSTileOptions(format = "image/png", transparent = TRUE)
-        ) %>%
+        addRasterImage(current_spi, colors = pal, opacity = 0.8) %>%
+        addLegend(pal = pal, values = -3.5:3.5,
+                  title = "Current SPI<br>(30 Day)")%>%
+        # addProviderTiles(providers$Esri.WorldStreetMap) %>% #Add normal map
+        # addWMSTiles(
+        #   "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi",
+        #   layers = "nexrad-n0r-900913",
+        #   options = WMSTileOptions(format = "image/png", transparent = TRUE)
+        # ) %>%
         setView(lng = -110.5, lat = 46.5, zoom = 6) %>%
         addDrawToolbar(markerOptions = drawMarkerOptions(),
                        polylineOptions = FALSE,
