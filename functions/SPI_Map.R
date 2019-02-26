@@ -13,6 +13,7 @@ library(gridExtra)
 library(raster)
 library(MASS)
 library(stars)
+library(tictoc)
 
 tic()
 
@@ -89,7 +90,7 @@ for(i in 1:length(unique(group_by_vec))){
   test[,i] = values(raster_precip_clipped[[i]])
 }
 
-
+test[test == 0] = NA
 
 # x = as.numeric(test[1,])
 # 
@@ -97,28 +98,71 @@ for(i in 1:length(unique(group_by_vec))){
 # test = MASS::fitdistr(x, "gamma")
 
 
-spi_fun <- function(x) { 
+# spi_fun <- function(x) { 
+# 
+#   fit.gamma = tryCatch(MASS::fitdistr(x, "gamma"), error=function(e) NA)
+#   if(is.na(fit.gamma)){
+#     return(NA)
+#   }
+#   else{
+#     fit.cdf = pgamma(x, fit.gamma$estimate[1], fit.gamma$estimate[2])
+#     standard_norm = qnorm(fit.cdf, mean = 0, sd = 1)
+#     return(standard_norm[length(standard_norm)]) 
+#   }
+# }
 
-  fit.gamma = tryCatch(MASS::fitdistr(x, "gamma"), error=function(e) NA)
-  if(is.na(fit.gamma)){
-    return(NA)
-  }
-  else{
-    fit.cdf = pgamma(x, fit.gamma$estimate[1], fit.gamma$estimate[2])
-    standard_norm = qnorm(fit.cdf, mean = 0, sd = 1)
-    return(standard_norm[length(standard_norm)]) 
-  }
+
+gamma_fit <- function(p) {
+  gamma_ <- data.frame()
+    q <- p
+    q <- q[!is.na(q)]
+    
+    pzero <- sum(q==0) / length(q)
+    
+    avg <- mean(q[q > 0.0])
+    
+    alpha <- 0.0
+    beta  <- avg
+    gamm  <- 1.0
+    
+    pgz <- length(q[q > 0.0])
+
+    if ( pgz >= 1) {
+      alpha <- log(avg) - sum(log(q[q > 0.0])) / pgz 
+      gamm <- (1.0 + sqrt(1.0 + 4.0 * alpha / 3.0)) / (4.0 * alpha)
+      beta  <- avg / gamm
+    } 
+    gamma_ <- list(shape=gamm, rate= (1/beta))
+    
+  return(gamma_)
 }
 
 
-test_spi = apply(test, 1, spi_fun)
 
+spi_fun <- function(x) { 
+  fit.gamma = gamma_fit(x)
+  fit.cdf = pgamma(x, shape = fit.gamma$shape, rate = fit.gamma$rate)
+  standard_norm = qnorm(fit.cdf, mean = 0, sd = 1)
+  return(standard_norm[length(standard_norm)]) 
+}
+
+
+
+
+
+
+tic()
+test_spi = apply(test, 1, spi_fun)
+toc()
 
 test_spi_map = raster_precip_clipped[[1]]
 
 values(test_spi_map) = test_spi
 
-plot(test_spi_map)
+
+color_ramp = colorRampPalette(c("red", "white", "blue"))
+
+plot(test_spi_map, col = color_ramp(100), zlim = c(-3,3))
 
 toc()
 
