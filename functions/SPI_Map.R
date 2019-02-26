@@ -12,7 +12,6 @@ library(precintcon)
 library(gridExtra)
 library(raster)
 library(MASS)
-library(stars)
 library(tictoc)
 
 tic()
@@ -25,6 +24,8 @@ raster_precip = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/
 time_scale = 30
 
 montana = rgdal::readOGR("D:\\Git_Repo\\drought_indicators\\montana_outline.kml")
+montana = rgdal::readOGR("C:\\Users\\zhoyl\\Documents\\Git_Repo\\drought_indicators\\montana_outline.kml")
+
 
 raster_precip_spatial_clip = crop(raster_precip, extent(montana))
 
