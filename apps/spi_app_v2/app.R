@@ -2,9 +2,11 @@ library(shiny)
 library(leaflet)
 library(leaflet.extras)
 library(scales)
+library(shinycssloaders)
+
 
 current_spi = raster::raster("D:\\temp\\current_spi.tif")
-pal <- colorNumeric(c("#ff0000", "#ffffff", "#0000ff"), -3.5:3.5, na.color = "transparent")
+pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#003366"), -3.5:3.5, na.color = "transparent")
 options(height = 1000)
 
 shinyApp(
@@ -28,7 +30,7 @@ shinyApp(
                              ")),
         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                          tags$div("Calculating Climatology...",id="loadmessage")),
-      plotOutput("testPlot",height=900, width = 700)
+      plotOutput("testPlot",height=900, width = 700) %>% withSpinner(color="#0dc5c1", type = 8, proxy.height = "200px") 
     )
   ),
   server <- function(input, output) {
@@ -156,7 +158,7 @@ shinyApp(
           xlab("Time")+
           ylab("SPI")+
           theme(legend.position="none")+
-          ylim(c(-3.2,3.2))+
+          ylim(c(-3.5,3.5))+
           ggtitle(title_str)+
           scale_x_datetime(limits = as.POSIXct(c(data$time[length(data$time)-365*10],data$time[length(data$time)]), format = "%Y-%m-%d"))
         return(plot1)

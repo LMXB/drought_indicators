@@ -1,6 +1,5 @@
 rm(list = ls())
 
-
 ## LOAD THE REQUIRED LIBRARYS
 library(ncdf4) # Downlaoded from https://github.com/pmjherman/r-ncdf4-build-opendap-windows
 library(lubridate)
@@ -13,6 +12,11 @@ library(gridExtra)
 library(raster)
 library(MASS)
 library(tictoc)
+library(doParallel)
+library(foreach)
+
+#load in gamma fitting function
+source("D:\\Git_Repo\\drought_indicators\\functions\\gamma_fit.R")
 
 tic()
 
@@ -21,27 +25,25 @@ var="precipitation_amount"
 
 raster_precip = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pr_1979_CurrentYear_CONUS.nc", var= var)
 
+#designate time scale
 time_scale = 30
 
+#import montana outline for clipping  
 montana = rgdal::readOGR("D:\\Git_Repo\\drought_indicators\\montana_outline.kml")
 montana = rgdal::readOGR("C:\\Users\\zhoyl\\Documents\\Git_Repo\\drought_indicators\\montana_outline.kml")
 
-
+#clip precip grids to the extent of montana, to reduce dataset and bring grids into memory
 raster_precip_spatial_clip = crop(raster_precip, extent(montana))
 
+#calcualte time
 time = data.frame(datetime = as.POSIXct(as.Date(as.numeric(substring(names(raster_precip_spatial_clip),2)), origin="1900-01-01")))
 time$day = yday(time$datetime)
 
-first_date_breaks = which(time$day == time$day[length(time$datetime)-1])
+first_date_breaks = which(time$day == time$day[length(time$datetime)])
 second_date_breaks = first_date_breaks-(time_scale-1)
 
 #if there are negative indexes remove last year (incomplete data range)
 #change this to remove all indexes from both vectors that are negative
-
-# if(!all(second_date_breaks < 0)){
-#   first_date_breaks = first_date_breaks[-1]
-#   second_date_breaks = second_date_breaks[-1]
-# }
 if(!all(second_date_breaks < 0)){
   pos_index = which(second_date_breaks > 0)
   first_date_breaks = first_date_breaks[c(pos_index)]
@@ -60,15 +62,11 @@ for(j in 1:length(first_date_breaks)){
   }
 }
 
-
-#raster_precip_time_clip = raster_precip[[slice_vec]]
-
-library(doParallel)
-library(foreach)
-
+#start cluster for parellel computing
 cl = makeCluster(detectCores()-1)
 registerDoParallel(cl)
 
+#sum and mask precip in parellel
 raster_precip_clipped = foreach(i=unique(group_by_vec)) %dopar% {
   library(raster)
   temp = sum(raster_precip_spatial_clip[[slice_vec[group_by_vec == i]]])
@@ -76,64 +74,18 @@ raster_precip_clipped = foreach(i=unique(group_by_vec)) %dopar% {
   mask(temp, montana)
 }
 
+#stop parellel cluster
 stopCluster(cl)
 
-#243 on 7 cores seconds
-
-
-
-test = data.frame(matrix(nrow = length(values(raster_precip_clipped[[1]])), ncol = length(unique(group_by_vec))))
+#calucalte time integrated precip sum
+integrated_precip = data.frame(matrix(nrow = length(values(raster_precip_clipped[[1]])), ncol = length(unique(group_by_vec))))
 for(i in 1:length(unique(group_by_vec))){
-  test[,i] = values(raster_precip_clipped[[i]])
+  integrated_precip[,i] = values(raster_precip_clipped[[i]])
 }
 
-test[test == 0] = NA
+integrated_precip[integrated_precip == 0] = NA
 
-# x = as.numeric(test[1,])
-# 
-# test1 = fitdist(x, distr = "gamma", method = "mle")
-# test = MASS::fitdistr(x, "gamma")
-
-
-# spi_fun <- function(x) { 
-# 
-#   fit.gamma = tryCatch(MASS::fitdistr(x, "gamma"), error=function(e) NA)
-#   if(is.na(fit.gamma)){
-#     return(NA)
-#   }
-#   else{
-#     fit.cdf = pgamma(x, fit.gamma$estimate[1], fit.gamma$estimate[2])
-#     standard_norm = qnorm(fit.cdf, mean = 0, sd = 1)
-#     return(standard_norm[length(standard_norm)]) 
-#   }
-# }
-
-
-gamma_fit <- function(p) {
-  gamma_ <- data.frame()
-    q <- p
-    q <- q[!is.na(q)]
-    
-    pzero <- sum(q==0) / length(q)
-    
-    avg <- mean(q[q > 0.0])
-    
-    alpha <- 0.0
-    beta  <- avg
-    gamm  <- 1.0
-    
-    pgz <- length(q[q > 0.0])
-
-    if ( pgz >= 1) {
-      alpha <- log(avg) - sum(log(q[q > 0.0])) / pgz 
-      gamm <- (1.0 + sqrt(1.0 + 4.0 * alpha / 3.0)) / (4.0 * alpha)
-      beta  <- avg / gamm
-    } 
-    gamma_ <- list(shape=gamm, rate= (1/beta))
-    
-  return(gamma_)
-}
-
+#spi function
 spi_fun <- function(x) { 
   fit.gamma = gamma_fit(x)
   fit.cdf = pgamma(x, shape = fit.gamma$shape, rate = fit.gamma$rate)
@@ -141,21 +93,22 @@ spi_fun <- function(x) {
   return(standard_norm[length(standard_norm)]) 
 }
 
+#calcualte current spi
+current_spi = apply(integrated_precip, 1, spi_fun)
 
+#create spatial template for current spi values
+spi_map = raster_precip_clipped[[1]]
 
-test_spi = apply(test, 1, spi_fun)
+#allocate curent spi values to spatial template
+values(spi_map) = current_spi
 
-
-test_spi_map = raster_precip_clipped[[1]]
-
-values(test_spi_map) = test_spi
-
-
+#compute color ramp for visualization
 color_ramp = colorRampPalette(c("red", "white", "blue"))
 
-plot(test_spi_map, col = color_ramp(100), zlim = c(-3.5,3.5))
+#plot map
+plot(spi_map, col = color_ramp(100), zlim = c(-3.5,3.5))
 
-#writeRaster(test_spi_map, "D:\\temp\\current_spi.tif", format = "GTiff")
+writeRaster(spi_map, "D:\\temp\\current_spi.tif", format = "GTiff", overwrite = T)
 
 toc()
 

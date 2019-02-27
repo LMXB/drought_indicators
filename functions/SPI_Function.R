@@ -9,21 +9,22 @@ library(gridExtra)
 library(fitdistrplus)
 library(tictoc)
 
-# #troubleshooting data
+source("D:\\Git_Repo\\drought_indicators\\functions\\gamma_fit.R")
+
+# # #troubleshooting data
 # c = read.csv("C:\\Users\\zhoyl\\Google Drive\\Drought_Markdown\\R_Markdown_UMRB\\precip_data.csv")
 # c = read.csv("C:\\Users\\zachary.hoylman.UM\\Google Drive\\Drought_Markdown\\R_Markdown_UMRB\\precip_data.csv")
 # 
-# # #calculate time ids for filtering and grouping
+# # # #calculate time ids for filtering and grouping
 # c$day = yday(c$time)
 # c$year = year(c$time)
 # c$month = month(c$time)
-# 
-# #troubleshooting parameters
+# # 
+# # #troubleshooting parameters
 # data = c
-# time_scale = 1000
+# time_scale = 30
 # i = length(data$time)
-
-
+# 
 
 spi_calc = function(data, time_scale){
   #Start SPI calculation
@@ -66,20 +67,12 @@ spi_calc = function(data, time_scale){
     
     #compute date time for day/year of interest
     date_time = as.POSIXct(paste(data$day[first_date_breaks], data$year[first_date_breaks], sep = "-"), format = "%j-%Y")
-
-    #if you cant fit the gamma distrobution move on to next i
-    possibleError <- tryCatch(
-      fitdist(data_time_filter$sum, distr = "gamma", method = "mle"),
-      error=function(e) e
-    )
-    
-    if(inherits(possibleError, "error")) next
     
     #fit gamma distrobution to data
-    fit.gamma = fitdist(data_time_filter$sum, distr = "gamma", method = "mle") 
+    fit.gamma = gamma_fit(data_time_filter$sum)
     
     #calcualte CDF values for the theoretical distrobution
-    fit.cdf = pgamma(data_time_filter$sum, fit.gamma$estimate[1], fit.gamma$estimate[2])
+    fit.cdf = pgamma(data_time_filter$sum, shape = fit.gamma$shape, rate = fit.gamma$rate)
     
     #equaprobaility transformation for cdf quantiles
     if(i == length(data$time)){
@@ -100,51 +93,3 @@ spi_calc = function(data, time_scale){
   
   return(output.df)
 }
-# 
-# tic()
-# spi_30 = spi_calc(c,30)
-# toc()
-# tic()
-# spi_100 = spi_calc(c,100)
-# toc()
-# tic()
-# spi_200 = spi_calc(c,200)
-# toc()
-# tic()
-# spi_330 = spi_calc(c,330)
-# toc()
-# tic()
-# spi_400 = spi_calc(c,400)
-# toc()
-# tic()
-# spi_1000 = spi_calc(c,1000)
-# toc()
-# 
-# 
-# plot(spi_30$time, spi_30$spi, type = "l",xlim=c(as.POSIXct('2012-01-01', format="%Y-%m-%d"),
-#                                                 as.POSIXct('2019-02-18', format="%Y-%m-%d")))
-# lines(spi_100$time, spi_100$spi, col = "red")
-# lines(spi_200$time, spi_200$spi, col = "blue")
-# lines(spi_330$time, spi_330$spi, col = "green")
-# lines(spi_1000$time, spi_1000$spi, col = "forestgreen")
-# 
-# spi_plot = function(data,title_str){
-#   plot1 = ggplot(data = data, aes(x = time, y = spi))+
-#     geom_bar(stat = "identity", aes(fill=col), size = 1.5)+
-#     scale_fill_manual(values = c("#ff0000", "#0000FF"))+
-#     theme_bw(base_size = base_font_size)+
-#     xlab("Time")+
-#     ylab("SPI")+
-#     theme(legend.position="none")+
-#     ylim(c(-3.2,3.2))+
-#     ggtitle(title_str)
-#   return(plot1)
-# }
-# 
-# base_font_size = 16
-# 
-# spi_plot_30 = spi_plot(spi_30, "1 Month SPI")
-# spi_plot_30
-# 
-# spi_plot_1000 = spi_plot(spi_1000, "1000 Day SPI")
-# spi_plot_1000
