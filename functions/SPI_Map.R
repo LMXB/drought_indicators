@@ -18,7 +18,6 @@ library(foreach)
 #load in gamma fitting function
 source("D:\\Git_Repo\\drought_indicators\\functions\\gamma_fit.R")
 
-tic()
 
 ## DEFINE OUR VARIABLE NAME 
 var="precipitation_amount"
@@ -29,8 +28,11 @@ raster_precip = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/
 time_scale = 30
 
 #import montana outline for clipping  
-montana = rgdal::readOGR("D:\\Git_Repo\\drought_indicators\\montana_outline.kml")
-montana = rgdal::readOGR("C:\\Users\\zhoyl\\Documents\\Git_Repo\\drought_indicators\\montana_outline.kml")
+montana = rgdal::readOGR("D:\\Git_Repo\\drought_indicators\\shp_kml\\UMRB_Outline_Conus.shp")
+montana = rgdal::readOGR("C:\\Users\\zhoyl\\Documents\\Git_Repo\\drought_indicators\\shp_kml\\montana_outline.kml")
+
+watersheds = rgdal::readOGR("D:\\Git_Repo\\drought_indicators\\shp_kml\\UMRB_Clipped_HUC8.shp")
+tic()
 
 #clip precip grids to the extent of montana, to reduce dataset and bring grids into memory
 raster_precip_spatial_clip = crop(raster_precip, extent(montana))
@@ -112,3 +114,44 @@ writeRaster(spi_map, "D:\\temp\\current_spi.tif", format = "GTiff", overwrite = 
 
 toc()
 
+#calulcate watershed averages
+
+#start cluster for parellel computing
+cl = makeCluster(detectCores()-1)
+registerDoParallel(cl)
+
+#sum and mask precip in parellel
+watershed_values = foreach(i=1:length(watersheds$HUC8)) %dopar% {
+  library(raster)
+  median(values(mask(spi_map, (watersheds[watersheds$HUC8[i], ]))), na.rm = T)
+}
+
+watersheds$average = as.vector(unlist(watershed_values))
+setwd("D:\\temp")
+maptools::writeSpatialShape(watersheds, "D:\\temp\\current_spi_watershed")
+
+
+#stop parellel cluster
+stopCluster(cl)
+
+# watershed_values[watershed_values == "NaN"] = NA
+# watershed_values = as.vector(unlist(watershed_values))
+# 
+# watershed_ones = spi_map/spi_map
+# 
+# raster.list = list()
+# 
+# for(i in 1:length(watershed_values)){
+#   raster.list[[i]] = mask(watershed_ones, (watersheds[watersheds$HUC8[i], ])) * watershed_values[i]
+# }
+# 
+# raster.list$fun <- max
+# 
+# mos <- do.call(mosaic, raster.list)
+# 
+# plot(mos, col = color_ramp(100), zlim = c(-3.5,3.5))
+# plot(watersheds, bg="transparent", add=TRUE)
+# 
+# writeRaster(mos, "D:\\temp\\current_spi_watersheds.tif", format = "GTiff", overwrite = T)
+# 
+# plot(watersheds,col=(c("red", "white", "blue"))[watersheds$mean])

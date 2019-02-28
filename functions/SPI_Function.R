@@ -65,6 +65,9 @@ spi_calc = function(data, time_scale){
       group_by(group_by_vec)%>%
       dplyr::summarise(sum = sum(data))
     
+    #remove zeros because they cause the gamma dist to blow up to Inf
+    data_time_filter$sum[data_time_filter$sum == 0] = NA
+    
     #compute date time for day/year of interest
     date_time = as.POSIXct(paste(data$day[first_date_breaks], data$year[first_date_breaks], sep = "-"), format = "%j-%Y")
     

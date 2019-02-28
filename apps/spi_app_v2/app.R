@@ -6,6 +6,16 @@ library(shinycssloaders)
 
 
 current_spi = raster::raster("D:\\temp\\current_spi.tif")
+watersheds = rgdal::readOGR("D:\\temp\\current_spi_watershed.shp")
+
+#labels for watershed highligh
+labels <- sprintf(
+  "<strong>%s</strong><br/>SPI = %g<sup></sup>",
+  watersheds$NAME, watersheds$average
+) %>% lapply(htmltools::HTML)
+
+pal_watershed <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#003366"), interpolate = "spline"), domain = watersheds$average, bins = seq(-3.5,3.5,0.5))
+
 pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#003366"), -3.5:3.5, na.color = "transparent")
 options(height = 1000)
 
@@ -36,18 +46,40 @@ shinyApp(
   server <- function(input, output) {
     #
     output$mymap <- renderLeaflet(
-      leaflet() %>%
+      leaflet(watersheds) %>%
         addTiles() %>%
-        addRasterImage(current_spi, colors = pal, opacity = 0.8) %>%
-        addLegend(pal = pal, values = -3.5:3.5,
-                  title = "Current SPI<br>(30 Day)")%>%
-        # addProviderTiles(providers$Esri.WorldStreetMap) %>% #Add normal map
-        # addWMSTiles(
-        #   "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi",
-        #   layers = "nexrad-n0r-900913",
-        #   options = WMSTileOptions(format = "image/png", transparent = TRUE)
-        # ) %>%
-        setView(lng = -110.5, lat = 46.5, zoom = 6) %>%
+        addPolygons(
+          fillColor = ~pal_watershed(average),
+          weight = 2,
+          opacity = 1,
+          color = "white",
+          dashArray = "3",
+          fillOpacity = 0.7,
+          highlight = highlightOptions(
+            weight = 5,
+            color = "#666",
+            dashArray = "",
+            fillOpacity = 0.7,
+            bringToFront = TRUE),
+          label = labels,
+          labelOptions = labelOptions(
+            style = list("font-weight" = "normal", padding = "3px 8px"),
+            textsize = "15px",
+            direction = "auto")) %>%
+        addLegend(pal = pal, values = ~average, opacity = 0.7, title = NULL,
+                  position = "bottomright")%>%
+      # leaflet() %>%
+      #   addTiles() %>%
+      #   addRasterImage(current_spi, colors = pal, opacity = 0.8) %>%
+      #   addLegend(pal = pal, values = -3.5:3.5,
+      #             title = "Current SPI<br>(30 Day)")%>%
+      # addProviderTiles(providers$Esri.WorldStreetMap) %>% #Add normal map
+      # addWMSTiles(
+      #   "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi",
+      #   layers = "nexrad-n0r-900913",
+      #   options = WMSTileOptions(format = "image/png", transparent = TRUE)
+      # ) %>%
+        setView(lng = -108, lat = 46.5, zoom = 5) %>%
         addDrawToolbar(markerOptions = drawMarkerOptions(),
                        polylineOptions = FALSE,
                        polygonOptions = FALSE,
