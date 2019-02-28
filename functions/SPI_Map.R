@@ -14,6 +14,7 @@ library(MASS)
 library(tictoc)
 library(doParallel)
 library(foreach)
+library(rgdal)
 
 #load in gamma fitting function
 source("D:\\Git_Repo\\drought_indicators\\functions\\gamma_fit.R")
@@ -27,17 +28,17 @@ raster_precip = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/
 #designate time scale
 time_scale = c(30,60,90,180,300)
 
-#import montana outline for clipping  
-montana = rgdal::readOGR("D:\\Git_Repo\\drought_indicators\\shp_kml\\UMRB_Outline_Conus.shp")
-montana = rgdal::readOGR("C:\\Users\\zhoyl\\Documents\\Git_Repo\\drought_indicators\\shp_kml\\montana_outline.kml")
+#import UMRB outline for clipping and watershed for aggregating
+UMRB = rgdal::readOGR("D:\\Git_Repo\\drought_indicators\\shp_kml\\UMRB_Outline_Conus.shp")
+watersheds = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\raw\\UMRB_Clipped_HUC8_Simple.shp")
 
-watersheds = rgdal::readOGR("D:\\Git_Repo\\drought_indicators\\shp_kml\\UMRB_Clipped_HUC8.shp")
-
-#clip precip grids to the extent of montana, to reduce dataset and bring grids into memory
-raster_precip_spatial_clip = crop(raster_precip, extent(montana))
+#clip precip grids to the extent of UMRB, to reduce dataset and bring grids into memory
+raster_precip_spatial_clip = crop(raster_precip, extent(UMRB))
 
 
 for(t in 1:length(time_scale)){
+  
+  
     #calcualte time
   tic()
   time = data.frame(datetime = as.POSIXct(as.Date(as.numeric(substring(names(raster_precip_spatial_clip),2)), origin="1900-01-01")))
@@ -74,8 +75,7 @@ for(t in 1:length(time_scale)){
   raster_precip_clipped = foreach(i=unique(group_by_vec)) %dopar% {
     library(raster)
     temp = sum(raster_precip_spatial_clip[[slice_vec[group_by_vec == i]]])
-    #temp = crop(temp, extent(montana))
-    mask(temp, montana)
+    mask(temp, UMRB)
   }
   
   #stop parellel cluster
@@ -106,13 +106,16 @@ for(t in 1:length(time_scale)){
   #allocate curent spi values to spatial template
   values(spi_map) = current_spi
   
+  metadata(spi_map) = list(substr(time$datetime[length(time$datetime)],1,10))
+  
   #compute color ramp for visualization
   color_ramp = colorRampPalette(c("red", "white", "blue"))
   
   #plot map
   plot(spi_map, col = color_ramp(100), zlim = c(-3.5,3.5))
   
-  path_file = paste("D:\\temp\\current_spi_",as.character(time_scale[t]),".tif", sep = "")
+  path_file = paste("Y:\\Projects\\MCO_Drought_Indicators\\maps\\current_spi\\current_spi_",
+                    as.character(time_scale[t]),".tif", sep = "")
   
   writeRaster(spi_map, path_file, format = "GTiff", overwrite = T)
   
@@ -129,9 +132,14 @@ for(t in 1:length(time_scale)){
   }
     #stop parellel cluster
   stopCluster(cl)
-  watersheds$average = as.vector(unlist(watershed_values))
-  path_file_watershed = paste("D:\\temp\\current_spi_watershed_",as.character(time_scale[t]),".tif", sep = "")
-  maptools::writeSpatialShape(watersheds, path_file_watershed)
+  
+  watersheds_export = watersheds
+  
+  watersheds_export$average = as.vector(unlist(watershed_values))
+  path_file_watershed = paste("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi", sep = "")
+  layer_name = paste("current_spi_watershed_",as.character(time_scale[t]), sep = "")
+  
+  rgdal::writeOGR(obj=watersheds_export, dsn=path_file_watershed, layer = layer_name, driver="ESRI Shapefile", overwrite_layer = T)
   
   toc()
 }

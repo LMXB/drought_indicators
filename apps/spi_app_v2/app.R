@@ -5,26 +5,32 @@ library(scales)
 library(shinycssloaders)
 
 
-current_spi_30 = raster::raster("D:\\temp\\current_spi_30.tif")
-current_spi_60 = raster::raster("D:\\temp\\current_spi_60.tif")
-current_spi_90 = raster::raster("D:\\temp\\current_spi_90.tif")
-current_spi_180 = raster::raster("D:\\temp\\current_spi_180.tif")
-current_spi_300 = raster::raster("D:\\temp\\current_spi_300.tif")
+current_spi_30 = raster::raster("Y:\\Projects\\MCO_Drought_Indicators\\maps\\current_spi\\current_spi_30.tif")
+current_spi_60 = raster::raster("Y:\\Projects\\MCO_Drought_Indicators\\maps\\current_spi\\current_spi_60.tif")
+current_spi_90 = raster::raster("Y:\\Projects\\MCO_Drought_Indicators\\maps\\current_spi\\current_spi_90.tif")
+current_spi_180 = raster::raster("Y:\\Projects\\MCO_Drought_Indicators\\maps\\current_spi\\current_spi_180.tif")
+current_spi_300 = raster::raster("Y:\\Projects\\MCO_Drought_Indicators\\maps\\current_spi\\current_spi_300.tif")
 
-watersheds = rgdal::readOGR("D:\\temp\\current_spi_watershed.shp")
+watersheds_30 = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi\\current_spi_watershed_30.shp")
+# watersheds_60 = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi\\current_spi_watershed_60.shp")
+# watersheds_90 = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi\\current_spi_watershed_90.shp")
+# watersheds_180 = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi\\current_spi_watershed_180.shp")
+# watersheds_300 = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi\\current_spi_watershed_300.shp")
 
 #labels for watershed highligh
 labels <- sprintf(
   "<strong>%s</strong><br/>SPI = %g<sup></sup>",
-  watersheds$NAME, watersheds$average
+  watersheds_30$NAME, watersheds_30$average
 ) %>% lapply(htmltools::HTML)
 
+#color pallets
 pal_watershed <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#003366"), interpolate = "spline"), 
                           domain = -3.5:3.5, bins = seq(-3.5,3.5,0.5))
 
 pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#003366"), -3.5:3.5, na.color = "transparent")
 options(height = 1000)
 
+#actual app
 shinyApp(
   ui <- fluidPage(
     leafletOutput("mymap",height=400, width = 700),
@@ -52,7 +58,7 @@ shinyApp(
   server <- function(input, output) {
     #
     output$mymap <- renderLeaflet(
-      # leaflet(watersheds) %>%
+      # leaflet(watersheds_30) %>%
       #   addTiles() %>%
       #   addPolygons(
       #     fillColor = ~pal_watershed(average),
@@ -80,6 +86,9 @@ shinyApp(
     #     #   "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi",
     #     #   layers = "nexrad-n0r-900913",
     #     #   options = WMSTileOptions(format = "image/png", transparent = TRUE, group = "Weather"))%>%
+      
+      
+      
       leaflet() %>%
         addTiles() %>%
         addRasterImage(current_spi_30, colors = pal, opacity = 0.8, group = "30 Day") %>%
@@ -92,6 +101,9 @@ shinyApp(
         addLayersControl(
           baseGroups = c("30 Day", "60 Day","90 Day", "180 Day","300 Day"),
           options = layersControlOptions(collapsed = TRUE)) %>%
+
+        
+        
         setView(lng = -108, lat = 46.5, zoom = 5) %>%
         addDrawToolbar(markerOptions = drawMarkerOptions(),
                        polylineOptions = FALSE,
