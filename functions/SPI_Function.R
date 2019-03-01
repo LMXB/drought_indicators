@@ -9,7 +9,9 @@ library(gridExtra)
 library(fitdistrplus)
 library(tictoc)
 
-source("D:\\Git_Repo\\drought_indicators\\functions\\gamma_fit.R")
+git_repo_path = "C:\\Users\\zhoyl\\Documents\\Git_Repo\\drought_indicators\\"
+
+source(paste(git_repo_path,"functions\\gamma_fit.R",sep = ""))
 
 # # #troubleshooting data
 # c = read.csv("C:\\Users\\zhoyl\\Google Drive\\Drought_Markdown\\R_Markdown_UMRB\\precip_data.csv")

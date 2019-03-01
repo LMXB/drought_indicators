@@ -4,14 +4,15 @@ library(leaflet.extras)
 library(scales)
 library(shinycssloaders)
 
+map_path = "C:\\Users\\zhoyl\\Google Drive\\Drought_Markdown\\MCO_Drought_Indicators\\"
 
-current_spi_30 = raster::raster("Y:\\Projects\\MCO_Drought_Indicators\\maps\\current_spi\\current_spi_30.tif")
-current_spi_60 = raster::raster("Y:\\Projects\\MCO_Drought_Indicators\\maps\\current_spi\\current_spi_60.tif")
-current_spi_90 = raster::raster("Y:\\Projects\\MCO_Drought_Indicators\\maps\\current_spi\\current_spi_90.tif")
-current_spi_180 = raster::raster("Y:\\Projects\\MCO_Drought_Indicators\\maps\\current_spi\\current_spi_180.tif")
-current_spi_300 = raster::raster("Y:\\Projects\\MCO_Drought_Indicators\\maps\\current_spi\\current_spi_300.tif")
+current_spi_30 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_30.tif", sep = ""))
+current_spi_60 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_60.tif", sep = ""))
+current_spi_90 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_90.tif", sep = ""))
+current_spi_180 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_180.tif", sep = ""))
+current_spi_300 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_300.tif", sep = ""))
 
-watersheds_30 = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi\\current_spi_watershed_30.shp")
+watersheds_30 = rgdal::readOGR(paste(map_path, "shp\\current_spi\\current_spi_watershed_30.shp", sep = ""))
 # watersheds_60 = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi\\current_spi_watershed_60.shp")
 # watersheds_90 = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi\\current_spi_watershed_90.shp")
 # watersheds_180 = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi\\current_spi_watershed_180.shp")
@@ -187,7 +188,8 @@ shinyApp(
       c$month = month(c$time)
       
       #load spi function from alternative file
-      source("D:\\Git_Repo\\drought_indicators\\functions\\SPI_Function.R")
+      git_repo_path = "C:\\Users\\zhoyl\\Documents\\Git_Repo\\drought_indicators\\"
+      source(paste(git_repo_path,"functions\\SPI_Function.R",sep = ""))
       
       spi_30 = spi_calc(c,30)
       spi_300 = spi_calc(c,300)

@@ -11,12 +11,16 @@ runtime: shiny
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(rmarkdown)
-setwd("D:\\R_Markdown_UMRB")
+git_repo_path = "C:\\Users\\zhoyl\\Documents\\Git_Repo\\drought_indicators"
+
+setwd(git_repo_path)
 ```
 
 ```{r, echo=FALSE}
-htmltools::img(src = c(knitr::image_uri("D:\\R_Markdown_UMRB\\MCO_logo.svg")), 
-               alt = 'logo', 
+git_repo_path = "C:\\Users\\zhoyl\\Documents\\Git_Repo\\drought_indicators\\"
+
+htmltools::img(src = c(knitr::image_uri(paste(git_repo_path,"MCO_logo.svg",sep = ""))),
+               alt = 'logo',
                style = 'position:absolute; top:0; right:0; padding:10px; width:400px;')
 ```
 
@@ -55,9 +59,10 @@ The SPI is a commonly used metric which quantifies precipitation anomalies at va
 
 ```{r echo=FALSE, message=FALSE}
 
+git_repo_path = "C:\\Users\\zhoyl\\Documents\\Git_Repo\\drought_indicators\\"
 
 library(shiny)
-shinyAppDir(appDir = "D:\\Git_Repo\\drought_indicators\\apps\\spi_app_v2",
+shinyAppDir(appDir = paste(git_repo_path,"apps\\spi_app_v2",sep = ""),
             options = list(height = 1300))
 
 ```
