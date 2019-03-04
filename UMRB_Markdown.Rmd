@@ -11,13 +11,11 @@ runtime: shiny
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(rmarkdown)
-git_repo_path = "C:\\Users\\zhoyl\\Documents\\Git_Repo\\drought_indicators"
+git_repo_path = "D:\\Git_Repo\\drought_indicators\\"
 
-setwd(git_repo_path)
 ```
 
 ```{r, echo=FALSE}
-git_repo_path = "C:\\Users\\zhoyl\\Documents\\Git_Repo\\drought_indicators\\"
 
 htmltools::img(src = c(knitr::image_uri(paste(git_repo_path,"MCO_logo.svg",sep = ""))),
                alt = 'logo',
@@ -58,8 +56,6 @@ The SPI is a commonly used metric which quantifies precipitation anomalies at va
 ###Current Conditions:
 
 ```{r echo=FALSE, message=FALSE}
-
-git_repo_path = "C:\\Users\\zhoyl\\Documents\\Git_Repo\\drought_indicators\\"
 
 library(shiny)
 shinyAppDir(appDir = paste(git_repo_path,"apps\\spi_app_v2",sep = ""),
