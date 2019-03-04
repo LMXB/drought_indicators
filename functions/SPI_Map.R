@@ -31,6 +31,8 @@ time_scale = c(30,60,90,180,300)
 #import UMRB outline for clipping and watershed for aggregating
 UMRB = rgdal::readOGR("D:\\Git_Repo\\drought_indicators\\shp_kml\\UMRB_Outline_Conus.shp")
 watersheds = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\raw\\UMRB_Clipped_HUC8_Simple.shp")
+county = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\raw\\UMRB_Clipped_County_Simple.shp")
+
 
 #clip precip grids to the extent of UMRB, to reduce dataset and bring grids into memory
 raster_precip_spatial_clip = crop(raster_precip, extent(UMRB))
@@ -122,24 +124,52 @@ for(t in 1:length(time_scale)){
   #calulcate watershed averages
   
   #start cluster for parellel computing
-  cl = makeCluster(detectCores()-1)
-  registerDoParallel(cl)
+  # cl = makeCluster(detectCores()-1)
+  # registerDoParallel(cl)
+  # 
+  # #sum and mask precip in parellel
+  # watershed_values = foreach(i=1:length(watersheds$HUC8)) %dopar% {
+  #   library(raster)
+  #   median(values(mask(spi_map, (watersheds[watersheds$HUC8[i], ]))), na.rm = T)
+  # }
+  #   #stop parellel cluster
+  # stopCluster(cl)
+  # 
+  # 
+  # 
+  # Extract raster values for each HUC 
+  r.vals <- extract(spi_map, watersheds)
   
-  #sum and mask precip in parellel
-  watershed_values = foreach(i=1:length(watersheds$HUC8)) %dopar% {
-    library(raster)
-    median(values(mask(spi_map, (watersheds[watersheds$HUC8[i], ]))), na.rm = T)
-  }
-    #stop parellel cluster
-  stopCluster(cl)
+  # Use list apply to calculate median for each polygon
+  r.median <- lapply(r.vals, FUN=median,na.rm=TRUE)
+  
   
   watersheds_export = watersheds
   
-  watersheds_export$average = as.vector(unlist(watershed_values))
+  watersheds_export$average = as.vector(unlist(r.median))
   path_file_watershed = paste("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi", sep = "")
   layer_name = paste("current_spi_watershed_",as.character(time_scale[t]), sep = "")
   
   rgdal::writeOGR(obj=watersheds_export, dsn=path_file_watershed, layer = layer_name, driver="ESRI Shapefile", overwrite_layer = T)
+  
+  
+  
+  
+  r.vals <- extract(spi_map, county)
+  
+  # Use list apply to calculate median for each polygon
+  r.median <- lapply(r.vals, FUN=median,na.rm=TRUE)
+  
+  
+  county_export = county
+  
+  county_export$average = as.vector(unlist(r.median))
+  path_file_watershed = paste("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi", sep = "")
+  layer_name = paste("current_spi_county_",as.character(time_scale[t]), sep = "")
+  
+  rgdal::writeOGR(obj=county_export, dsn=path_file_watershed, layer = layer_name, driver="ESRI Shapefile", overwrite_layer = T)
+  
+  
   
   toc()
 }

@@ -3,8 +3,9 @@ library(leaflet)
 library(leaflet.extras)
 library(scales)
 library(shinycssloaders)
+library(sf)
 
-map_path = "C:\\Users\\zhoyl\\Google Drive\\Drought_Markdown\\MCO_Drought_Indicators\\"
+map_path = "Y:\\Projects\\\\MCO_Drought_Indicators\\"
 
 current_spi_30 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_30.tif", sep = ""))
 current_spi_60 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_60.tif", sep = ""))
@@ -12,17 +13,41 @@ current_spi_90 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_
 current_spi_180 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_180.tif", sep = ""))
 current_spi_300 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_300.tif", sep = ""))
 
-watersheds_30 = rgdal::readOGR(paste(map_path, "shp\\current_spi\\current_spi_watershed_30.shp", sep = ""))
-# watersheds_60 = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi\\current_spi_watershed_60.shp")
-# watersheds_90 = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi\\current_spi_watershed_90.shp")
-# watersheds_180 = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi\\current_spi_watershed_180.shp")
-# watersheds_300 = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi\\current_spi_watershed_300.shp")
+watersheds_30 = st_read(paste(map_path, "shp\\current_spi\\current_spi_watershed_30.shp", sep = ""))
+watersheds_60 = st_read(paste(map_path, "shp\\current_spi\\current_spi_watershed_60.shp", sep = ""))
+watersheds_90 = st_read(paste(map_path, "shp\\current_spi\\current_spi_watershed_90.shp", sep = ""))
+watersheds_180 = st_read(paste(map_path, "shp\\current_spi\\current_spi_watershed_180.shp", sep = ""))
+watersheds_300 = st_read(paste(map_path, "shp\\current_spi\\current_spi_watershed_300.shp", sep = ""))
+
+county_30 = st_read(paste(map_path, "shp\\current_spi\\current_spi_county_30.shp", sep = ""))
+county_60 = st_read(paste(map_path, "shp\\current_spi\\current_spi_county_60.shp", sep = ""))
+county_90 = st_read(paste(map_path, "shp\\current_spi\\current_spi_county_90.shp", sep = ""))
+county_180 = st_read(paste(map_path, "shp\\current_spi\\current_spi_county_180.shp", sep = ""))
+county_300 = st_read(paste(map_path, "shp\\current_spi\\current_spi_county_300.shp", sep = ""))
+
+watershed_list = list(watersheds_30, watersheds_60, watersheds_90, watersheds_180, watersheds_300)
+county_list = list(county_30, county_60, county_90, county_180, county_300)
+
+watershed_list_names = c("30 Day HUC8", "60 Day HUC8", "90 Day HUC8", "180 Day HUC8", "300 Day HUC8")
+watershed_raster_names = c("30 Day", "60 Day", "90 Day", "180 Day", "300 Day")
+
 
 #labels for watershed highligh
-labels <- sprintf(
-  "<strong>%s</strong><br/>SPI = %g<sup></sup>",
-  watersheds_30$NAME, watersheds_30$average
-) %>% lapply(htmltools::HTML)
+labels = list()
+for(i in 1:length(watershed_list_names)){
+  labels[[i]] <- sprintf(
+    "<strong>%s</strong><br/>SPI = %g<sup></sup>",
+    watershed_list[[i]]$NAME, watershed_list[[i]]$average
+  ) %>% lapply(htmltools::HTML)
+}
+
+labels_county = list()
+for(i in 1:length(watershed_list_names)){
+  labels_county[[i]] <- sprintf(
+    "<strong>%s</strong><br/>SPI = %g<sup></sup>",
+    county_list[[i]]$NAME, county_list[[i]]$average
+  ) %>% lapply(htmltools::HTML)
+}
 
 #color pallets
 pal_watershed <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#003366"), interpolate = "spline"), 
@@ -34,6 +59,10 @@ options(height = 1000)
 #actual app
 shinyApp(
   ui <- fluidPage(
+    sidebarPanel(br(),
+      actionButton("evRaster", "Raw Map"),
+      actionButton("evHUC", "Watersheds"),
+      actionButton("evCounty", "County"), width = 5),
     leafletOutput("mymap",height=400, width = 700),
     mainPanel(
         tags$head(tags$style(type="text/css", "
@@ -57,53 +86,78 @@ shinyApp(
     )
   ),
   server <- function(input, output) {
-    #
-    output$mymap <- renderLeaflet(
-      # leaflet(watersheds_30) %>%
-      #   addTiles() %>%
-      #   addPolygons(
-      #     fillColor = ~pal_watershed(average),
-      #     weight = 2,
-      #     opacity = 1,
-      #     color = "white",
-      #     dashArray = "3",
-      #     fillOpacity = 0.7,
-      #     highlight = highlightOptions(
-      #       weight = 5,
-      #       color = "#666",
-      #       dashArray = "",
-      #       fillOpacity = 0.7,
-      #       bringToFront = TRUE),
-      #     label = labels,
-      #     labelOptions = labelOptions(
-      #       style = list("font-weight" = "normal", padding = "3px 8px"),
-      #       textsize = "15px",
-      #       direction = "auto")) %>%
-      #   addLegend(pal = pal, values = ~average, opacity = 0.7, title = NULL,
-      #             position = "bottomright")%>%
+    # Create leaflet widget --------------------------------------------------------
+      m_raster = leaflet(watersheds_30) %>%
+        addTiles() 
+      
+    # Add multiple layers with a loop ----------------------------------------------
+      m_raster = m_raster %>% 
+          addRasterImage(current_spi_30, colors = pal, opacity = 0.8, group = "30 Day") %>%
+          addRasterImage(current_spi_60, colors = pal, opacity = 0.8, group = "60 Day") %>%
+          addRasterImage(current_spi_90, colors = pal, opacity = 0.8, group = "90 Day") %>%
+          addRasterImage(current_spi_180, colors = pal, opacity = 0.8, group = "180 Day") %>%
+          addRasterImage(current_spi_300, colors = pal, opacity = 0.8, group = "300 Day")
+      
+    # Add Layer Controls  ----------------------------------------------    
+      m_raster = m_raster %>%
+        addLayersControl(
+            baseGroups = watershed_raster_names,
+            options = layersControlOptions(collapsed = TRUE)) %>%
+          addLegend(pal = pal, values = -3.5:3.5,
+                    title = "Current SPI",
+                    position = "bottomleft")%>%
 
     #     #add
     #     # addWMSTiles(
     #     #   "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi",
     #     #   layers = "nexrad-n0r-900913",
     #     #   options = WMSTileOptions(format = "image/png", transparent = TRUE, group = "Weather"))%>%
-      
-      
-      
-      leaflet() %>%
-        addTiles() %>%
-        addRasterImage(current_spi_30, colors = pal, opacity = 0.8, group = "30 Day") %>%
-        addRasterImage(current_spi_60, colors = pal, opacity = 0.8, group = "60 Day") %>%
-        addRasterImage(current_spi_90, colors = pal, opacity = 0.8, group = "90 Day") %>%
-        addRasterImage(current_spi_180, colors = pal, opacity = 0.8, group = "180 Day") %>%
-        addRasterImage(current_spi_300, colors = pal, opacity = 0.8, group = "300 Day") %>%
-        addLegend(pal = pal, values = -3.5:3.5,
-                  title = "Current SPI")%>%
-        addLayersControl(
-          baseGroups = c("30 Day", "60 Day","90 Day", "180 Day","300 Day"),
-          options = layersControlOptions(collapsed = TRUE)) %>%
 
+        setView(lng = -108, lat = 46.5, zoom = 5) %>%
+        addDrawToolbar(markerOptions = drawMarkerOptions(),
+                       polylineOptions = FALSE,
+                       polygonOptions = FALSE,
+                       circleOptions = FALSE,
+                       rectangleOptions = FALSE,
+                       circleMarkerOptions = FALSE,
+                       editOptions = FALSE,
+                       singleFeature = TRUE,
+                       targetGroup='draw')
+    
+      
+      
+      
+      
+      
+      
+      
+      
+      m_huc = leaflet(watersheds_30) %>%
+        addTiles() 
+      
+      # Add multiple layers with a loop ----------------------------------------------
+      for(i in 1:length(watershed_list_names)){
+        m_huc = m_huc %>% addPolygons(data = watershed_list[[i]], group = watershed_raster_names[i], fillColor = ~pal_watershed(average), weight = 2, opacity = 1, color = "white", 
+                              dashArray = "3", fillOpacity = 0.7, highlight = 
+                                highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels[[i]], 
+                              labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto")) 
+      }
+    
+      
+      # Add Layer Controls  ----------------------------------------------    
+      m_huc = m_huc %>%
+        addLayersControl(
+          baseGroups = watershed_raster_names,
+          options = layersControlOptions(collapsed = TRUE)) %>%
+        addLegend(pal = pal, values = -3.5:3.5,
+                  title = "Current SPI",
+                  position = "bottomleft")%>%
         
+        #     #add
+        #     # addWMSTiles(
+        #     #   "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi",
+        #     #   layers = "nexrad-n0r-900913",
+        #     #   options = WMSTileOptions(format = "image/png", transparent = TRUE, group = "Weather"))%>%
         
         setView(lng = -108, lat = 46.5, zoom = 5) %>%
         addDrawToolbar(markerOptions = drawMarkerOptions(),
@@ -115,7 +169,63 @@ shinyApp(
                        editOptions = FALSE,
                        singleFeature = TRUE,
                        targetGroup='draw')
-    )
+      
+      
+      
+      m_county = leaflet(watersheds_30) %>%
+        addTiles() 
+      
+      # Add multiple layers with a loop ----------------------------------------------
+      for(i in 1:length(watershed_list_names)){
+        m_county = m_county %>% addPolygons(data = county_list[[i]], group = watershed_raster_names[i], fillColor = ~pal_watershed(average), weight = 2, opacity = 1, color = "white", 
+                                      dashArray = "3", fillOpacity = 0.7, highlight = 
+                                        highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels_county[[i]], 
+                                      labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto")) 
+      }
+      
+      
+      # Add Layer Controls  ----------------------------------------------    
+      m_county = m_county %>%
+        addLayersControl(
+          baseGroups = watershed_raster_names,
+          options = layersControlOptions(collapsed = TRUE)) %>%
+        addLegend(pal = pal, values = -3.5:3.5,
+                  title = "Current SPI",
+                  position = "bottomleft")%>%
+        
+        #     #add
+        #     # addWMSTiles(
+        #     #   "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi",
+        #     #   layers = "nexrad-n0r-900913",
+        #     #   options = WMSTileOptions(format = "image/png", transparent = TRUE, group = "Weather"))%>%
+        
+        setView(lng = -108, lat = 46.5, zoom = 5) %>%
+        addDrawToolbar(markerOptions = drawMarkerOptions(),
+                       polylineOptions = FALSE,
+                       polygonOptions = FALSE,
+                       circleOptions = FALSE,
+                       rectangleOptions = FALSE,
+                       circleMarkerOptions = FALSE,
+                       editOptions = FALSE,
+                       singleFeature = TRUE,
+                       targetGroup='draw')
+      
+      
+      
+      
+      observeEvent(input$evHUC,{
+        output$mymap <- renderLeaflet(m_huc)
+      })
+      
+      observeEvent(input$evCounty,{
+        output$mymap <- renderLeaflet(m_county)
+      })
+      
+      observeEvent(input$evRaster,{
+        output$mymap <- renderLeaflet(m_raster)
+      })
+
+      #output$mymap <- renderLeaflet(m %>% hideGroup(watershed_list_names))
     
     
     spi_calc_plot = function(lat_in, lon_in){
@@ -188,7 +298,7 @@ shinyApp(
       c$month = month(c$time)
       
       #load spi function from alternative file
-      git_repo_path = "C:\\Users\\zhoyl\\Documents\\Git_Repo\\drought_indicators\\"
+      git_repo_path = "D:\\Git_Repo\\drought_indicators\\"
       source(paste(git_repo_path,"functions\\SPI_Function.R",sep = ""))
       
       spi_30 = spi_calc(c,30)

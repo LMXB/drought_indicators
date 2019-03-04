@@ -9,7 +9,7 @@ library(gridExtra)
 library(fitdistrplus)
 library(tictoc)
 
-git_repo_path = "C:\\Users\\zhoyl\\Documents\\Git_Repo\\drought_indicators\\"
+git_repo_path = "D:\\Git_Repo\\drought_indicators\\"
 
 source(paste(git_repo_path,"functions\\gamma_fit.R",sep = ""))
 
