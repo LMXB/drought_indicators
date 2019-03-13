@@ -1,0 +1,12 @@
+name: UMRB_Drought_Guide
+title: UMRB_Drought_Guide
+username:
+account: montana-climate-office-hoylman
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 788072
+bundleId: 1938013
+url: https://montana-climate-office-hoylman.shinyapps.io/UMRB_Drought_Guide/
+when: 1552517290.64177
+asMultiple: FALSE
+asStatic: FALSE

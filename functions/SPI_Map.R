@@ -19,7 +19,6 @@ library(rgdal)
 #load in gamma fitting function
 source("D:\\Git_Repo\\drought_indicators\\functions\\gamma_fit.R")
 
-``
 ## DEFINE OUR VARIABLE NAME 
 var="precipitation_amount"
 
@@ -84,7 +83,24 @@ for(t in 1:length(time_scale)){
   
   #stop parellel cluster
   stopCluster(cl)
-  
+  # 
+  # data_2017 = sum(raster_precip_spatial_clip[[slice_vec[group_by_vec == 39]]]) %>%
+  #   mask(montana) %>%
+  #   crop(extent(montana))
+  # 
+  # data_2018 = sum(raster_precip_spatial_clip[[slice_vec[group_by_vec == 40]]]) %>%
+  #   mask(montana) %>%
+  #   crop(extent(montana))
+  # 
+  # data_2019 = sum(raster_precip_spatial_clip[[slice_vec[group_by_vec == 41]]]) %>%
+  #   mask(montana) %>%
+  #   crop(extent(montana))
+  # 
+  # writeRaster(data_2017, "D:\\gridMET_Comparison\\gridMET_2017-02-01_2017-03-01_pr_sum_OPeNDAP.tif", format = "GTiff", overwrite = T)
+  # writeRaster(data_2018, "D:\\gridMET_Comparison\\gridMET_2018-02-01_2018-03-01_pr_sum_OPeNDAP.tif", format = "GTiff", overwrite = T)
+  # writeRaster(data_2019, "D:\\gridMET_Comparison\\gridMET_2019-02-01_2019-03-01_pr_sum_OPeNDAP.tif", format = "GTiff", overwrite = T)
+
+  # 
   #calucalte time integrated precip sum
   integrated_precip = data.frame(matrix(nrow = length(values(raster_precip_clipped[[1]])), ncol = length(unique(group_by_vec))))
   for(i in 1:length(unique(group_by_vec))){
@@ -106,7 +122,8 @@ for(t in 1:length(time_scale)){
   
   #create spatial template for current spi values
   spi_map = raster_precip_clipped[[1]]
-  
+
+
   #allocate curent spi values to spatial template
   values(spi_map) = current_spi
   
@@ -116,6 +133,7 @@ for(t in 1:length(time_scale)){
   color_ramp = colorRampPalette(c("red", "white", "blue"))
   
   #plot map
+
   plot(spi_map, col = color_ramp(11), zlim = c(-3.5,3.5))
   
   path_file = paste("Y:\\Projects\\MCO_Drought_Indicators\\maps\\current_spi\\current_spi_",

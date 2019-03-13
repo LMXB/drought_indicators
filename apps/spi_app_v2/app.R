@@ -4,56 +4,20 @@ library(leaflet.extras)
 library(scales)
 library(shinycssloaders)
 library(sf)
-
-map_path = "Y:\\Projects\\\\MCO_Drought_Indicators\\"
-
-current_spi_30 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_30.tif", sep = ""))
-current_spi_60 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_60.tif", sep = ""))
-current_spi_90 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_90.tif", sep = ""))
-current_spi_180 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_180.tif", sep = ""))
-current_spi_300 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_300.tif", sep = ""))
-
-watersheds_30 = st_read(paste(map_path, "shp\\current_spi\\current_spi_watershed_30.shp", sep = ""))
-watersheds_60 = st_read(paste(map_path, "shp\\current_spi\\current_spi_watershed_60.shp", sep = ""))
-watersheds_90 = st_read(paste(map_path, "shp\\current_spi\\current_spi_watershed_90.shp", sep = ""))
-watersheds_180 = st_read(paste(map_path, "shp\\current_spi\\current_spi_watershed_180.shp", sep = ""))
-watersheds_300 = st_read(paste(map_path, "shp\\current_spi\\current_spi_watershed_300.shp", sep = ""))
-
-county_30 = st_read(paste(map_path, "shp\\current_spi\\current_spi_county_30.shp", sep = ""))
-county_60 = st_read(paste(map_path, "shp\\current_spi\\current_spi_county_60.shp", sep = ""))
-county_90 = st_read(paste(map_path, "shp\\current_spi\\current_spi_county_90.shp", sep = ""))
-county_180 = st_read(paste(map_path, "shp\\current_spi\\current_spi_county_180.shp", sep = ""))
-county_300 = st_read(paste(map_path, "shp\\current_spi\\current_spi_county_300.shp", sep = ""))
-
-watershed_list = list(watersheds_30, watersheds_60, watersheds_90, watersheds_180, watersheds_300)
-county_list = list(county_30, county_60, county_90, county_180, county_300)
-
-watershed_list_names = c("30 Day HUC8", "60 Day HUC8", "90 Day HUC8", "180 Day HUC8", "300 Day HUC8")
-watershed_raster_names = c("30 Day", "60 Day", "90 Day", "180 Day", "300 Day")
+library(raster)
+library(htmltools)
+library(rgdal)
+library(dplyr)
+library(zoo)
+library(rowr)
+library(precintcon)
+library(gridExtra)
+library(fitdistrplus)
+library(tictoc)
+library(ncdf4) # Downlaoded from https://github.com/pmjherman/r-ncdf4-build-opendap-windows
+library(lubridate)
 
 
-#labels for watershed highligh
-labels = list()
-for(i in 1:length(watershed_list_names)){
-  labels[[i]] <- sprintf(
-    "<strong>%s</strong><br/>SPI = %g<sup></sup>",
-    watershed_list[[i]]$NAME, watershed_list[[i]]$average
-  ) %>% lapply(htmltools::HTML)
-}
-
-labels_county = list()
-for(i in 1:length(watershed_list_names)){
-  labels_county[[i]] <- sprintf(
-    "<strong>%s</strong><br/>SPI = %g<sup></sup>",
-    county_list[[i]]$NAME, county_list[[i]]$average
-  ) %>% lapply(htmltools::HTML)
-}
-
-#color pallets
-pal_watershed <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#003366"), interpolate = "spline"), 
-                          domain = -3.5:3.5, bins = seq(-3.5,3.5,0.5))
-
-pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#003366"), -3.5:3.5, na.color = "transparent")
 options(height = 1000)
 
 #actual app
@@ -86,6 +50,62 @@ shinyApp(
     )
   ),
   server <- function(input, output) {
+    map_path = "Y:\\Projects\\\\MCO_Drought_Indicators\\"
+    
+    current_spi_30 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_30.tif", sep = ""))
+    current_spi_60 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_60.tif", sep = ""))
+    current_spi_90 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_90.tif", sep = ""))
+    current_spi_180 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_180.tif", sep = ""))
+    current_spi_300 = raster::raster(paste(map_path, "maps\\current_spi\\current_spi_300.tif", sep = ""))
+    
+    watersheds_30 = st_read(paste(map_path, "shp\\current_spi\\current_spi_watershed_30.shp", sep = ""))
+    watersheds_60 = st_read(paste(map_path, "shp\\current_spi\\current_spi_watershed_60.shp", sep = ""))
+    watersheds_90 = st_read(paste(map_path, "shp\\current_spi\\current_spi_watershed_90.shp", sep = ""))
+    watersheds_180 = st_read(paste(map_path, "shp\\current_spi\\current_spi_watershed_180.shp", sep = ""))
+    watersheds_300 = st_read(paste(map_path, "shp\\current_spi\\current_spi_watershed_300.shp", sep = ""))
+    
+    county_30 = st_read(paste(map_path, "shp\\current_spi\\current_spi_county_30.shp", sep = ""))
+    county_60 = st_read(paste(map_path, "shp\\current_spi\\current_spi_county_60.shp", sep = ""))
+    county_90 = st_read(paste(map_path, "shp\\current_spi\\current_spi_county_90.shp", sep = ""))
+    county_180 = st_read(paste(map_path, "shp\\current_spi\\current_spi_county_180.shp", sep = ""))
+    county_300 = st_read(paste(map_path, "shp\\current_spi\\current_spi_county_300.shp", sep = ""))
+    
+    watershed_list = list(watersheds_30, watersheds_60, watersheds_90, watersheds_180, watersheds_300)
+    county_list = list(county_30, county_60, county_90, county_180, county_300)
+    
+    watershed_list_names = c("30 Day HUC8", "60 Day HUC8", "90 Day HUC8", "180 Day HUC8", "300 Day HUC8")
+    watershed_raster_names = c("30 Day", "60 Day", "90 Day", "180 Day", "300 Day")
+    
+    #labels for watershed highligh
+    labels = list()
+    for(i in 1:length(watershed_list_names)){
+      labels[[i]] <- sprintf(
+        "<strong>%s</strong><br/>SPI = %g<sup></sup>",
+        watershed_list[[i]]$NAME, watershed_list[[i]]$average
+      ) %>% lapply(htmltools::HTML)
+    }
+    
+    labels_county = list()
+    for(i in 1:length(watershed_list_names)){
+      labels_county[[i]] <- sprintf(
+        "<strong>%s</strong><br/>SPI = %g<sup></sup>",
+        county_list[[i]]$NAME, county_list[[i]]$average
+      ) %>% lapply(htmltools::HTML)
+    }
+    
+    #color pallets
+    pal_watershed <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#003366"), interpolate = "spline"), 
+                              domain = -3.5:3.5, bins = seq(-3.5,3.5,0.5))
+    
+    pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#003366"), -3.5:3.5, na.color = "transparent")
+    
+    #-----------------------------------------------------------------------------------#
+    #-----------------------------------------------------------------------------------#
+    #-----------------------------------------------------------------------------------#
+    #-----------------------------------------------------------------------------------#
+    
+    
+    
     # Create leaflet widget --------------------------------------------------------
       m_raster = leaflet(watersheds_30) %>%
         addTiles() 
@@ -231,14 +251,6 @@ shinyApp(
     spi_calc_plot = function(lat_in, lon_in){
       # generate an rnorm distribution and plot it
       ## LOAD THE REQUIRED LIBRARYS
-      library(ncdf4) # Downlaoded from https://github.com/pmjherman/r-ncdf4-build-opendap-windows
-      library(lubridate)
-      library(dplyr)
-      library(zoo)
-      library(plyr)
-      library(rowr)
-      library(precintcon)
-      library(gridExtra)
       
       lat_of_interest = lat_in
       lon_of_interest = lon_in
