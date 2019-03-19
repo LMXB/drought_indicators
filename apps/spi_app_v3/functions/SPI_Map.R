@@ -136,7 +136,7 @@ for(t in 1:length(time_scale)){
 
   plot(spi_map, col = color_ramp(11), zlim = c(-3.5,3.5))
   
-  path_file = paste("Y:\\Projects\\MCO_Drought_Indicators\\maps\\current_spi\\current_spi_",
+  path_file = paste("D:\\Git_Repo\\drought_indicators\\apps\\spi_app_v3\\current_spi_",
                     as.character(time_scale[t]),".tif", sep = "")
   
   writeRaster(spi_map, path_file, format = "GTiff", overwrite = T)
@@ -167,7 +167,7 @@ for(t in 1:length(time_scale)){
   watersheds_export = watersheds
   
   watersheds_export$average = as.vector(unlist(r.median))
-  path_file_watershed = paste("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi", sep = "")
+  path_file_watershed = paste("D:\\Git_Repo\\drought_indicators\\apps\\spi_app_v3", sep = "")
   layer_name = paste("current_spi_watershed_",as.character(time_scale[t]), sep = "")
   
   rgdal::writeOGR(obj=watersheds_export, dsn=path_file_watershed, layer = layer_name, driver="ESRI Shapefile", overwrite_layer = T)
@@ -184,7 +184,7 @@ for(t in 1:length(time_scale)){
   county_export = county
   
   county_export$average = as.vector(unlist(r.median))
-  path_file_watershed = paste("Y:\\Projects\\MCO_Drought_Indicators\\shp\\current_spi", sep = "")
+  path_file_watershed = paste("D:\\Git_Repo\\drought_indicators\\apps\\spi_app_v3", sep = "")
   layer_name = paste("current_spi_county_",as.character(time_scale[t]), sep = "")
   
   rgdal::writeOGR(obj=county_export, dsn=path_file_watershed, layer = layer_name, driver="ESRI Shapefile", overwrite_layer = T)

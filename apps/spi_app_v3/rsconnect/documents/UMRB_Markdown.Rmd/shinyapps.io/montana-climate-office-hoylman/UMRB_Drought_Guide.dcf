@@ -5,8 +5,8 @@ account: montana-climate-office-hoylman
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 788072
-bundleId: 1938013
+bundleId: 1951484
 url: https://montana-climate-office-hoylman.shinyapps.io/UMRB_Drought_Guide/
-when: 1552517290.64177
+when: 1553034296.74032
 asMultiple: FALSE
 asStatic: FALSE
