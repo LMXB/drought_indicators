@@ -166,6 +166,7 @@ for(t in 1:length(time_scale)){
   
   
   watersheds_export = watersheds
+  watersheds_export$current_time = substr(time$datetime[length(time$datetime)],1,10)
   
   watersheds_export$average = as.vector(unlist(r.median))
   path_file_watershed = paste("D:\\Git_Repo\\drought_indicators\\apps\\spi_app_v3", sep = "")

@@ -179,6 +179,8 @@ shinyApp(options = list(height = 1500),
       ) %>% lapply(htmltools::HTML)
     }
     
+    
+    
     #color pallets
     pal_watershed <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#003366"), interpolate = "spline"), 
                               domain = -3.5:3.5, bins = seq(-3.5,3.5,0.5))
@@ -190,7 +192,7 @@ shinyApp(options = list(height = 1500),
     #-----------------------------------------------------------------------------------#
     #-----------------------------------------------------------------------------------#
     
-    
+
     
     # Create leaflet widget --------------------------------------------------------
       m_raster = leaflet(watersheds_30) %>%
@@ -210,7 +212,7 @@ shinyApp(options = list(height = 1500),
             baseGroups = watershed_raster_names,
             options = layersControlOptions(collapsed = TRUE)) %>%
           addLegend(pal = pal, values = -3.5:3.5,
-                    title = "Current SPI",
+                    title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
                     position = "bottomleft")%>%
 
     #     #add
@@ -256,8 +258,8 @@ shinyApp(options = list(height = 1500),
           baseGroups = watershed_raster_names,
           options = layersControlOptions(collapsed = TRUE)) %>%
         addLegend(pal = pal, values = -3.5:3.5,
-                  title = "Current SPI",
-                  position = "bottomleft")%>%
+                    title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
+                    position = "bottomleft")%>%
         
         #     #add
         #     # addWMSTiles(
@@ -296,8 +298,8 @@ shinyApp(options = list(height = 1500),
           baseGroups = watershed_raster_names,
           options = layersControlOptions(collapsed = TRUE)) %>%
         addLegend(pal = pal, values = -3.5:3.5,
-                  title = "Current SPI",
-                  position = "bottomleft")%>%
+                    title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
+                    position = "bottomleft")%>%
         
         #     #add
         #     # addWMSTiles(
@@ -633,7 +635,7 @@ shinyApp(options = list(height = 1500),
 
 
 ### Derivation:  
-The SPI quantifies observed precipitation as a standardized departure from a selected probability distribution function that models the raw precipitation data. The raw precipitation data are typically fitted to a gamma or a Pearson Type III distribution, and then transformed to a normal distribution (Keyantash and NCAR staff, 2018). Normalization of data is important because precipitation data is heavily right hand skewed. This is because smaller precipitation events are much more probable than large events. 
+The SPI quantifies precipitation as a standardized departure from a selected probability distribution function that models the raw precipitation data. The raw precipitation data are typically fitted to a gamma or a Pearson Type III distribution, and then transformed to a normal distribution (Keyantash and NCAR staff, 2018). Normalization of data is important because precipitation data is heavily right hand skewed. This is because smaller precipitation events are much more probable than large events. 
 
 ### Key Strengths:
   + Easily calculated, uses only precipitation data
