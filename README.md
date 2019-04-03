@@ -8,3 +8,4 @@ spi_app is the first itteration of calculating spi, it is limited to monthly cal
 spi_app_v2 is the second itteration of the spi_app, this app calculates SPI on a moving window method which will update every day there is new data included in the gridMET dataset. This app has custom SPI calcualtions authored by myself. 
 
 A line from my laptop. 
+a line from the Ubuntu Shiny Server
