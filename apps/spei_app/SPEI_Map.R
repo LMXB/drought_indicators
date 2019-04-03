@@ -21,13 +21,13 @@ library(glogis)
 
 ## DEFINE OUR VARIABLE NAME 
 raster_precip = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pr_1979_CurrentYear_CONUS.nc", var= "precipitation_amount")
-proj4string(raster_precip) = CRS("+init=EPSG:4326")
+#proj4string(raster_precip) = CRS("+init=EPSG:4326")
 
 raster_pet = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pet_1979_CurrentYear_CONUS.nc", var = "daily_mean_reference_evapotranspiration_grass")
-proj4string(raster_pet) = CRS("+init=EPSG:4326")
+#proj4string(raster_pet) = CRS("+init=EPSG:4326")
 
 #designate time scale
-time_scale = c(30)#,60,90,180,300)
+time_scale = c(30,60,90,180,300)
 
 #import UMRB outline for clipping and watershed for aggregating
 UMRB = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/UMRB_Outline_Conus.shp")
@@ -150,9 +150,7 @@ for(t in 1:length(time_scale)){
   cl = makeCluster(detectCores()-1)
   registerDoParallel(cl)
   clusterEvalQ(cl, library(glogis))
-  tic()
   current_spei = parApply(cl,integrated_diff, 1, FUN = spei_fun)
-  toc()
   stopCluster(cl)
   
   
@@ -172,30 +170,15 @@ for(t in 1:length(time_scale)){
   
   #plot map
   
-  plot(spei_map, col = color_ramp(11), zlim = c(-3.5,3.5))
-  addLines(montana)
+  plot(spei_map, col = color_ramp(11), zlim = c(-3.5,3.5), 
+       main = paste0("Current ", as.character(time_scale[t]), " Day SPEI"))
+  plot(montana, add = T)
   
-  path_file = paste("D:\\Git_Repo\\drought_indicators\\apps\\spei_app\\current_spei_",
+  path_file = paste("/home/zhoylman/drought_indicators/apps/spei_app/maps/current_spei_",
                     as.character(time_scale[t]),".tif", sep = "")
   
   writeRaster(spei_map, path_file, format = "GTiff", overwrite = T)
-  
-  #calulcate watershed averages
-  
-  #start cluster for parellel computing
-  # cl = makeCluster(detectCores()-1)
-  # registerDoParallel(cl)
-  # 
-  # #sum and mask precip in parellel
-  # watershed_values = foreach(i=1:length(watersheds$HUC8)) %dopar% {
-  #   library(raster)
-  #   median(values(mask(spi_map, (watersheds[watersheds$HUC8[i], ]))), na.rm = T)
-  # }
-  #   #stop parellel cluster
-  # stopCluster(cl)
-  # 
-  # 
-  # 
+
   # Extract raster values for each HUC 
   r.vals <- extract(spei_map, watersheds)
   
@@ -207,7 +190,7 @@ for(t in 1:length(time_scale)){
   watersheds_export$current_time = substr(time$datetime[length(time$datetime)],1,10)
   
   watersheds_export$average = as.vector(unlist(r.median))
-  path_file_watershed = paste("D:\\Git_Repo\\drought_indicators\\apps\\spei_app", sep = "")
+  path_file_watershed = paste("/home/zhoylman/drought_indicators/apps/spei_app/shp/", sep = "")
   layer_name = paste("current_spei_watershed_",as.character(time_scale[t]), sep = "")
   
   rgdal::writeOGR(obj=watersheds_export, dsn=path_file_watershed, layer = layer_name, driver="ESRI Shapefile", overwrite_layer = T)
@@ -222,7 +205,7 @@ for(t in 1:length(time_scale)){
   county_export = county
   
   county_export$average = as.vector(unlist(r.median))
-  path_file_watershed = paste("D:\\Git_Repo\\drought_indicators\\apps\\spei_app", sep = "")
+  path_file_watershed = paste("/home/zhoylman/drought_indicators/apps/spei_app/shp/", sep = "")
   layer_name = paste("current_spi_county_",as.character(time_scale[t]), sep = "")
   
   rgdal::writeOGR(obj=county_export, dsn=path_file_watershed, layer = layer_name, driver="ESRI Shapefile", overwrite_layer = T)
