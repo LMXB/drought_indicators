@@ -1,20 +1,19 @@
 rm(list = ls())
 
+### test from ubuntu server
+
 ## LOAD THE REQUIRED LIBRARYS
 library(ncdf4) # Downlaoded from https://github.com/pmjherman/r-ncdf4-build-opendap-windows
 library(lubridate)
 library(dplyr)
 library(zoo)
-library(plyr)
 library(rowr)
-library(precintcon)
-library(gridExtra)
 library(raster)
 library(MASS)
 library(tictoc)
 library(doParallel)
 library(foreach)
-library(rgdal)
+#library(rgdal)
 library(glogis)
 
 #load in gamma fitting function
@@ -31,7 +30,7 @@ proj4string(raster_pet) = CRS("+init=EPSG:4326")
 time_scale = c(30)#,60,90,180,300)
 
 #import UMRB outline for clipping and watershed for aggregating
-UMRB = rgdal::readOGR("D:\\Git_Repo\\drought_indicators\\shp_kml\\UMRB_Outline_Conus.shp")
+UMRB = rgdal::readOGR("/drought_indicators/shp_kml/UMRB_Outline_Conus.shp")
 watersheds = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\raw\\UMRB_Clipped_HUC8_Simple.shp")
 county = rgdal::readOGR("Y:\\Projects\\MCO_Drought_Indicators\\shp\\raw\\UMRB_Clipped_County_Simple.shp")
 montana = rgdal::readOGR("D:\\Git_Repo\\drought_indicators\\shp_kml\\montana_outline.kml")
