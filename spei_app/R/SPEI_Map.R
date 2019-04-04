@@ -1,7 +1,5 @@
 rm(list = ls())
 
-### test from ubuntu server
-
 ## LOAD THE REQUIRED LIBRARYS
 library(ncdf4) # Downlaoded from https://github.com/pmjherman/r-ncdf4-build-opendap-windows (only for windows)
 library(lubridate)
@@ -16,10 +14,6 @@ library(foreach)
 library(rgdal)
 library(glogis)
 
-#load in gamma fitting function
-#source("D:\\Git_Repo\\drought_indicators\\functions\\gamma_fit.R")
-
-## DEFINE OUR VARIABLE NAME 
 raster_precip = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pr_1979_CurrentYear_CONUS.nc", var= "precipitation_amount")
 #proj4string(raster_precip) = CRS("+init=EPSG:4326")
 
@@ -35,17 +29,11 @@ watersheds = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/UMRB_Clip
 county = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/UMRB_Clipped_County_Simple.shp")
 montana = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/montana_outline.kml")
 
-#clip precip grids to the extent of UMRB, to reduce dataset and bring grids into memory
-tic()
+#clip precip and PET grids to the extent of UMRB, to reduce dataset and bring grids into memory
 raster_precip_spatial_clip = crop(raster_precip, extent(UMRB))
-toc()
-
-tic()
 raster_pet_spatial_clip = crop(raster_pet, extent(UMRB))
-toc()
 
 for(t in 1:length(time_scale)){
-  
   
   #calcualte time
   tic()
@@ -86,43 +74,18 @@ for(t in 1:length(time_scale)){
     mask(temp, UMRB)
   }
   
-  #sum and mask precip in parellel
+  #sum and mask PET in parellel
   raster_pet_clipped = foreach(i=unique(group_by_vec)) %dopar% {
     library(raster)
     temp = sum(raster_pet_spatial_clip[[slice_vec[group_by_vec == i]]])
     mask(temp, UMRB)
   }
   
+  #Compute Difference Grids
   raster_p_pet_diff = foreach(i=unique(group_by_vec)) %dopar% {
     library(raster)
     temp = raster_precip_clipped[[i]] - raster_pet_clipped[[i]]
   }
-  
-  #stop parellel cluster
-  stopCluster(cl)
-  # 
-  # data_2017 = sum(raster_precip_spatial_clip[[slice_vec[group_by_vec == 39]]]) %>%
-  #   mask(montana) %>%
-  #   crop(extent(montana))
-  # 
-  # data_2018 = sum(raster_precip_spatial_clip[[slice_vec[group_by_vec == 40]]]) %>%
-  #   mask(montana) %>%
-  #   crop(extent(montana))
-  # 
-  # data_2019 = sum(raster_precip_spatial_clip[[slice_vec[group_by_vec == 41]]]) %>%
-  #   mask(montana) %>%
-  #   crop(extent(montana))
-  # 
-  # writeRaster(data_2017, "D:\\gridMET_Comparison\\gridMET_2017-02-01_2017-03-01_pr_sum_OPeNDAP.tif", format = "GTiff", overwrite = T)
-  # writeRaster(data_2018, "D:\\gridMET_Comparison\\gridMET_2018-02-01_2018-03-01_pr_sum_OPeNDAP.tif", format = "GTiff", overwrite = T)
-  # writeRaster(data_2019, "D:\\gridMET_Comparison\\gridMET_2019-02-01_2019-03-01_pr_sum_OPeNDAP.tif", format = "GTiff", overwrite = T)
-  
-  # 
-  #calucalte time integrated precip sum
-  
-  ######################################################
-  ## add in structure function here to eliminate loop ##
-  ######################################################
   
   integrated_diff = data.frame(matrix(nrow = length(values(raster_p_pet_diff[[1]])), ncol = length(unique(group_by_vec))))
   for(i in 1:length(unique(group_by_vec))){
@@ -147,52 +110,53 @@ for(t in 1:length(time_scale)){
       })
   }
   
-  cl = makeCluster(detectCores()-1)
-  registerDoParallel(cl)
+  #compute SPEI
   clusterEvalQ(cl, library(glogis))
   current_spei = parApply(cl,integrated_diff, 1, FUN = spei_fun)
   stopCluster(cl)
   
+  ############################################
+  ############## RASTER FILE #################
+  ############################################
   
-  #calcualte current spi
-  #current_spei = apply(integrated_diff, 1, spei_fun)
-  
-  #create spatial template for current spi values
+  #create spatial template for current spei values
   spei_map = raster_p_pet_diff[[1]]
   
-  #allocate curent spi values to spatial template
+  #allocate curent spi values to spatial template and add metadata of last time stamp used
   values(spei_map) = current_spei
-  
   metadata(spei_map) = list(substr(time$datetime[length(time$datetime)],1,10))
   
   #compute color ramp for visualization
   color_ramp = colorRampPalette(c("red", "white", "blue"))
   
   #plot map
-  
   plot(spei_map, col = color_ramp(11), zlim = c(-3.5,3.5), 
        main = paste0("Current ", as.character(time_scale[t]), " Day SPEI"))
   plot(montana, add = T)
   
-  path_file = paste("/home/zhoylman/drought_indicators/apps/spei_app/maps/current_spei_",
+  #define path to export and wrtie GEOtiff
+  path_file = paste("/home/zhoylman/drought_indicators/spei_app/maps/current_spei/current_spei_",
                     as.character(time_scale[t]),".tif", sep = "")
-  
   writeRaster(spei_map, path_file, format = "GTiff", overwrite = T)
 
+  ############################################
+  ################ SHP FILES #################
+  ############################################
+  
   # Extract raster values for each HUC 
   r.vals <- extract(spei_map, watersheds)
   
   # Use list apply to calculate median for each polygon
   r.median <- lapply(r.vals, FUN=median,na.rm=TRUE)
   
-  
+  #create shp file for export and add metadata about last timestamp used
   watersheds_export = watersheds
   watersheds_export$current_time = substr(time$datetime[length(time$datetime)],1,10)
   
+  #assign watershed aggregate values to shps, define path to export and export
   watersheds_export$average = as.vector(unlist(r.median))
-  path_file_watershed = paste("/home/zhoylman/drought_indicators/apps/spei_app/shp/", sep = "")
+  path_file_watershed = paste("/home/zhoylman/drought_indicators/spei_app/shp/", sep = "")
   layer_name = paste("current_spei_watershed_",as.character(time_scale[t]), sep = "")
-  
   rgdal::writeOGR(obj=watersheds_export, dsn=path_file_watershed, layer = layer_name, driver="ESRI Shapefile", overwrite_layer = T)
   
   #extract raster values for each county
@@ -201,13 +165,13 @@ for(t in 1:length(time_scale)){
   # Use list apply to calculate median for each polygon
   r.median <- lapply(r.vals, FUN=median,na.rm=TRUE)
   
-  
+  #create shp file for export
   county_export = county
   
+  #assign county aggregate values to shps, define path to export and export
   county_export$average = as.vector(unlist(r.median))
-  path_file_watershed = paste("/home/zhoylman/drought_indicators/apps/spei_app/shp/", sep = "")
+  path_file_watershed = paste("/home/zhoylman/drought_indicators/spei_app/shp/", sep = "")
   layer_name = paste("current_spi_county_",as.character(time_scale[t]), sep = "")
-  
   rgdal::writeOGR(obj=county_export, dsn=path_file_watershed, layer = layer_name, driver="ESRI Shapefile", overwrite_layer = T)
   
   toc()
