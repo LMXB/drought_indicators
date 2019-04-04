@@ -1,0 +1,1 @@
+Rscript D:\Git_Repo\drought_indicators\apps\spi_app_v3\deploy_app.R
