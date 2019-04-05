@@ -155,7 +155,7 @@ for(t in 1:length(time_scale)){
   
   #assign watershed aggregate values to shps, define path to export and export
   watersheds_export$average = as.vector(unlist(r.median))
-  path_file_watershed = paste("/home/zhoylman/drought_indicators/spei_app/shp/", sep = "")
+  path_file_watershed = paste("/home/zhoylman/drought_indicators/spei_app/shp/current_spei/", sep = "")
   layer_name = paste("current_spei_watershed_",as.character(time_scale[t]), sep = "")
   rgdal::writeOGR(obj=watersheds_export, dsn=path_file_watershed, layer = layer_name, driver="ESRI Shapefile", overwrite_layer = T)
   
@@ -170,8 +170,8 @@ for(t in 1:length(time_scale)){
   
   #assign county aggregate values to shps, define path to export and export
   county_export$average = as.vector(unlist(r.median))
-  path_file_watershed = paste("/home/zhoylman/drought_indicators/spei_app/shp/", sep = "")
-  layer_name = paste("current_spi_county_",as.character(time_scale[t]), sep = "")
+  path_file_watershed = paste("/home/zhoylman/drought_indicators/spei_app/shp/current_spei/", sep = "")
+  layer_name = paste("current_spei_county_",as.character(time_scale[t]), sep = "")
   rgdal::writeOGR(obj=county_export, dsn=path_file_watershed, layer = layer_name, driver="ESRI Shapefile", overwrite_layer = T)
   
   toc()

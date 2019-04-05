@@ -16,6 +16,7 @@ library(fitdistrplus)
 library(tictoc)
 library(ncdf4) 
 library(lubridate)
+library(plotly)
 
 #actual app
 shinyApp(options = list(height = 1500),
@@ -396,8 +397,8 @@ shinyApp(options = list(height = 1500),
                }
                output.df = output.df[order(output.df$time),]
                output.df$col = output.df$spi
-               output.df$col[output.df$col < 0] = "Dry"
-               output.df$col[as.numeric(output.df$col) > 0] = "Wet"
+               output.df$col[output.df$col < 0] = "red"
+               output.df$col[as.numeric(output.df$col) > 0] = "blue"
                
                return(output.df)
              }
@@ -424,7 +425,7 @@ shinyApp(options = list(height = 1500),
              spi_plot = function(data,title_str){
                plot1 = ggplot(data = data, aes(x = time, y = spi))+
                  geom_bar(stat = "identity", aes(fill=col), size = 1.5)+
-                 scale_fill_manual(values = c("#ff0000", "#0000FF"))+
+                 scale_fill_manual(values = c("#0000FF","#ff0000"))+
                  theme_bw(base_size = base_font_size)+
                  xlab("Time")+
                  ylab("SPI")+
@@ -435,10 +436,30 @@ shinyApp(options = list(height = 1500),
                return(plot1)
              }
              
+             #interactive plot
+             spi_plot_interactive = function(data, title_str){
+               p <- plot_ly() %>%
+                 add_bars(
+                   x = data$time,
+                   y = data$spi,
+                   color = data$col,
+                   name = title_str
+                 )
+               return(p)
+             }
+             
+             spi_plot_fast= function(data, title_str){
+               plot(data$time, data$spi, col = data$col, main = title_str, 
+                        xlim = c(as.POSIXct(c(data$time[length(data$time)-365*10],
+                                             data$time[length(data$time)]), format = "%Y-%m-%d")),
+                       type = "h", xlab = "Time", ylab = "SPI")
+             }
+             
+
              hist_plot = function(data, title_str){
                hist_plot = ggplot(data=data, aes(spi)) + 
                  geom_histogram(binwidth = 0.05, aes(fill = col))+
-                 scale_fill_manual(values = c("#ff0000", "#0000FF"))+
+                 scale_fill_manual(values = c("#0000FF","#ff0000"))+
                  geom_vline(xintercept = data$spi[length(data$spi)], size = 2)+
                  xlab(title_str)+
                  ylab("Frequency")+
