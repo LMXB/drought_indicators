@@ -1,12 +1,34 @@
 
+#SPEI Data
+current_spei_30 = raster::raster("../spei_app/maps/current_spei/current_spei_30.tif")
+current_spei_60 = raster::raster("../spei_app/maps/current_spei/current_spei_60.tif")
+current_spei_90 = raster::raster("../spei_app/maps/current_spei/current_spei_90.tif")
+current_spei_180 = raster::raster("../spei_app/maps/current_spei/current_spei_180.tif")
+current_spei_300 = raster::raster("../spei_app/maps/current_spei/current_spei_300.tif")
+
+watersheds_30 = st_read("../spei_app/shp/current_spei/current_spei_watershed_30.shp")
+watersheds_60 = st_read("../spei_app/shp/current_spei/current_spei_watershed_60.shp")
+watersheds_90 = st_read("../spei_app/shp/current_spei/current_spei_watershed_90.shp")
+watersheds_180 = st_read("../spei_app/shp/current_spei/current_spei_watershed_180.shp")
+watersheds_300 = st_read("../spei_app/shp/current_spei/current_spei_watershed_300.shp")
+
+county_30 = st_read("../spei_app/shp/current_spei/current_spei_county_30.shp")
+county_60 = st_read("../spei_app/shp/current_spei/current_spei_county_60.shp")
+county_90 = st_read("../spei_app/shp/current_spei/current_spei_county_90.shp")
+county_180 = st_read("../spei_app/shp/current_spei/current_spei_county_180.shp")
+county_300 = st_read("../spei_app/shp/current_spei/current_spei_county_300.shp")
+
 #actual app
-shinyApp(options = list(height = 1500),
-         ui <- fluidPage(
-           sidebarPanel(br(),
-                        actionButton("evRaster", "Raw Map"),
-                        actionButton("evHUC", "Watersheds"),
-                        actionButton("evCounty", "County"), width = 5),
-           leafletOutput("mymap",height=400, width = 700),
+shinyApp(
+  ui <- fluidPage(class = "text-center",
+                  verticalLayout(),
+                  
+                  leafletOutput("mymap",height=400, width = 700),
+                  
+                  sidebarPanel(width = 5,
+                               actionButton("evRaster", "Raw Map"),
+                               actionButton("evHUC", "Watersheds"),
+                               actionButton("evCounty", "County")),
            mainPanel(
              tags$head(tags$style(type="text/css", "
                                   #loadmessage {
