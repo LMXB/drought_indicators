@@ -1,0 +1,20 @@
+library(raster)
+library(rgdal)
+
+current_spi_30 = raster::raster("../spi_app/maps/current_spi/current_spi_30.tif")
+current_spi_60 = raster::raster("../spi_app/maps/current_spi/current_spi_60.tif")
+current_spi_90 = raster::raster("../spi_app/maps/current_spi/current_spi_90.tif")
+current_spi_180 = raster::raster("../spi_app/maps/current_spi/current_spi_180.tif")
+current_spi_300 = raster::raster("../spi_app/maps/current_spi/current_spi_300.tif")
+
+watersheds_30 = st_read("../spi_app/shp/current_spi/current_spi_watershed_30.shp")
+watersheds_60 = st_read("../spi_app/shp/current_spi/current_spi_watershed_60.shp")
+watersheds_90 = st_read("../spi_app/shp/current_spi/current_spi_watershed_90.shp")
+watersheds_180 = st_read("../spi_app/shp/current_spi/current_spi_watershed_180.shp")
+watersheds_300 = st_read("../spi_app/shp/current_spi/current_spi_watershed_300.shp")
+
+county_30 = st_read("../spi_app/shp/current_spi/current_spi_county_30.shp")
+county_60 = st_read("../spi_app/shp/current_spi/current_spi_county_60.shp")
+county_90 = st_read("../spi_app/shp/current_spi/current_spi_county_90.shp")
+county_180 = st_read("../spi_app/shp/current_spi/current_spi_county_180.shp")
+county_300 = st_read("../spi_app/shp/current_spi/current_spi_county_300.shp")
