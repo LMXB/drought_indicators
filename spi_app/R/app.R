@@ -18,14 +18,36 @@ library(ncdf4)
 library(lubridate)
 library(plotly)
 
-#actual app
-shinyApp(options = list(height = 1500),
-         ui <- fluidPage(
-           sidebarPanel(br(),
+#SPI data
+current_spi_30 = raster::raster("../spi_app/maps/current_spi/current_spi_30.tif")
+current_spi_60 = raster::raster("../spi_app/maps/current_spi/current_spi_60.tif")
+current_spi_90 = raster::raster("../spi_app/maps/current_spi/current_spi_90.tif")
+current_spi_180 = raster::raster("../spi_app/maps/current_spi/current_spi_180.tif")
+current_spi_300 = raster::raster("../spi_app/maps/current_spi/current_spi_300.tif")
+
+watersheds_30 = st_read("../spi_app/shp/current_spi/current_spi_watershed_30.shp")
+watersheds_60 = st_read("../spi_app/shp/current_spi/current_spi_watershed_60.shp")
+watersheds_90 = st_read("../spi_app/shp/current_spi/current_spi_watershed_90.shp")
+watersheds_180 = st_read("../spi_app/shp/current_spi/current_spi_watershed_180.shp")
+watersheds_300 = st_read("../spi_app/shp/current_spi/current_spi_watershed_300.shp")
+
+county_30 = st_read("../spi_app/shp/current_spi/current_spi_county_30.shp")
+county_60 = st_read("../spi_app/shp/current_spi/current_spi_county_60.shp")
+county_90 = st_read("../spi_app/shp/current_spi/current_spi_county_90.shp")
+county_180 = st_read("../spi_app/shp/current_spi/current_spi_county_180.shp")
+county_300 = st_read("../spi_app/shp/current_spi/current_spi_county_300.shp")
+
+
+shinyApp(
+         ui <- fluidPage(class = "text-center",
+                         verticalLayout(),
+                         
+           leafletOutput("mymap",height=400, width = 700),
+                         
+           sidebarPanel(width = 5,
                         actionButton("evRaster", "Raw Map"),
                         actionButton("evHUC", "Watersheds"),
-                        actionButton("evCounty", "County"), width = 5),
-           leafletOutput("mymap",height=400, width = 700),
+                        actionButton("evCounty", "County")),
            mainPanel(
              tags$head(tags$style(type="text/css", "
                                   #loadmessage {
@@ -49,23 +71,7 @@ shinyApp(options = list(height = 1500),
            ),
          server <- function(input, output) {
            
-           current_spi_30 = raster::raster("../spi_app/maps/current_spi/current_spi_30.tif")
-           current_spi_60 = raster::raster("../spi_app/maps/current_spi/current_spi_60.tif")
-           current_spi_90 = raster::raster("../spi_app/maps/current_spi/current_spi_90.tif")
-           current_spi_180 = raster::raster("../spi_app/maps/current_spi/current_spi_180.tif")
-           current_spi_300 = raster::raster("../spi_app/maps/current_spi/current_spi_300.tif")
-           
-           watersheds_30 = st_read("../spi_app/shp/current_spi/current_spi_watershed_30.shp")
-           watersheds_60 = st_read("../spi_app/shp/current_spi/current_spi_watershed_60.shp")
-           watersheds_90 = st_read("../spi_app/shp/current_spi/current_spi_watershed_90.shp")
-           watersheds_180 = st_read("../spi_app/shp/current_spi/current_spi_watershed_180.shp")
-           watersheds_300 = st_read("../spi_app/shp/current_spi/current_spi_watershed_300.shp")
-           
-           county_30 = st_read("../spi_app/shp/current_spi/current_spi_county_30.shp")
-           county_60 = st_read("../spi_app/shp/current_spi/current_spi_county_60.shp")
-           county_90 = st_read("../spi_app/shp/current_spi/current_spi_county_90.shp")
-           county_180 = st_read("../spi_app/shp/current_spi/current_spi_county_180.shp")
-           county_300 = st_read("../spi_app/shp/current_spi/current_spi_county_300.shp")
+          #spatial datasets and libraries are in global.R
            
            watershed_list = list(watersheds_30, watersheds_60, watersheds_90, watersheds_180, watersheds_300)
            county_list = list(county_30, county_60, county_90, county_180, county_300)
@@ -105,8 +111,13 @@ shinyApp(options = list(height = 1500),
            
            
            
+           # Create default --------------------------------------------------------
+           leaflet(current_spi_30) %>%
+             addTiles() %>%
+             addRasterImage(current_spi_30, colors = pal, opacity = 0.8, group = "30 Day")
+           
            # Create leaflet widget --------------------------------------------------------
-           m_raster = leaflet(watersheds_30) %>%
+           m_raster = leaflet(current_spi_30) %>%
              addTiles() 
            
            # Add multiple layers with a loop ----------------------------------------------
@@ -510,9 +521,9 @@ shinyApp(options = list(height = 1500),
            
            ########### Initial Lat Long (Missoula) ##########
            
-           output$testPlot <- renderPlot({
-             spi_calc_plot(46.865933, -113.985862)
-           })
+           # output$testPlot <- renderPlot({
+           #   spi_calc_plot(46.865933, -113.985862)
+           # })
            
            ############# User Defined Lat Long ############
            
