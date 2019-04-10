@@ -42,7 +42,7 @@ shinyApp(
          ui <- fluidPage(class = "text-center",
                          verticalLayout(),
                          
-           leafletOutput("mymap",height=400, width = 700),
+           leafletOutput("mymap"),
                          
            sidebarPanel(width = 5,
                         actionButton("evRaster", "Raw Map"),
@@ -70,6 +70,12 @@ shinyApp(
              )
            ),
          server <- function(input, output) {
+           
+           output$mymap = renderLeaflet({
+             leaflet() %>%
+               addTiles() %>%
+               setView(lng = -108, lat = 46.5, zoom = 5)
+           })
            
           #spatial datasets and libraries are in global.R
            

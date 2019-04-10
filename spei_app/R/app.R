@@ -23,9 +23,9 @@ shinyApp(
   ui <- fluidPage(class = "text-center",
                   verticalLayout(),
                   
-                  leafletOutput("mymap",height=400, width = 700),
+                  leafletOutput("mymap"),
                   
-                  sidebarPanel(width = 5,
+                  sidebarPanel(
                                actionButton("evRaster", "Raw Map"),
                                actionButton("evHUC", "Watersheds"),
                                actionButton("evCounty", "County")),
@@ -51,6 +51,12 @@ shinyApp(
              )
            ),
          server <- function(input, output) {
+           
+           output$mymap = renderLeaflet({
+             leaflet() %>%
+               addTiles() %>%
+               setView(lng = -108, lat = 46.5, zoom = 5)
+           })
            
            # current_spei_30 = raster::raster("../spei_app/maps/current_spei/current_spei_30.tif")
            # current_spei_60 = raster::raster("../spei_app/maps/current_spei/current_spei_60.tif")
@@ -241,7 +247,6 @@ shinyApp(
            })
            
            #output$mymap <- renderLeaflet(m %>% hideGroup(watershed_list_names))
-
+           
          }
-         
-           )
+  )

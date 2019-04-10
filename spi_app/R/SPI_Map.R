@@ -1,4 +1,4 @@
-rm(list = ls())
+#rm(list = ls())
 
 ## LOAD THE REQUIRED LIBRARYS
 library(ncdf4) # if running on windows, need opendap ncdf4 build https://github.com/pmjherman/r-ncdf4-build-opendap-windows
@@ -23,7 +23,7 @@ source("/home/zhoylman/drought_indicators/spi_app/R/gamma_fit.R")
 var="precipitation_amount"
 
 raster_precip = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pr_1979_CurrentYear_CONUS.nc", var= var)
-proj4string(raster_precip) = CRS("+init=EPSG:4326")
+#proj4string(raster_precip) = CRS("+init=EPSG:4326")
 
 #designate time scale
 time_scale = c(30,60,90,180,300)

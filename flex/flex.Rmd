@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <br>
 
-# Introduction
+# **Introduction**
 
 Welcome to the Upper Missouri River Basin (UMRB) drought indicators document. This document provides an overview of several drought metrics commonly used across the globe. In this document We focus on: 
 
@@ -30,7 +30,7 @@ Welcome to the Upper Missouri River Basin (UMRB) drought indicators document. Th
 
 # SPI {.tabset .tabset-dropdown}
 
-#### **The Standardized Precipitation Index**
+#### **The Standardized Precipitation Index (SPI)**
 
 <br>
 
@@ -41,7 +41,7 @@ The SPI is a commonly used metric which quantifies precipitation anomalies at va
 
 ##### **Data Requirements:**
 
-  + Precipitation data
+  + Precipitation 
 
 <br>  
 
@@ -92,8 +92,56 @@ Much of the background information regarding this metric was contributed by NCAR
 
 # SPEI {.tabset .tabset-dropdown}
 
+#### **Standardized Precipitation Evapotranspiration Index (SPEI)**
+
+<br>
+
+##### **Overview:**
+SPEI takes into account both precipitation and potential evapotranspiration to describe the wetness/dryness of a time period. Similar to the SPI, SPEI can be calculated at various timescales to represent different drought timescales. As such, the SPEI can approximate different impacts of drought on hydrological conditions and processes depending on the timescale used. Although similar to the SPI, SPEI incorporates the import effect of atmospheric demand on drought which can cause significant impacts over short time scales (flash drought). 
+
+<br>
+
+##### **Data Requirements:**
+
+  + Precipitation 
+  + Potential Evapotranspiration (PET)
+
+<br>
+
+###
 ```{r echo = F}
 library(shiny)
 shinyAppDir("../spei_app/R/", options = list(height = 1500))
 ```
+
+### **Derivation:**
+SPEI is an extension of the SPI in the sense that it uses a normalized probability distribution approximation of raw values to calculate deviation from normals. Similar to SPI, SPEI values are reported in units of standard deviation or z-score (Vicente-Serrano and NCAR staff, 2015). Although, the raw values for this metric are P-PET. 
+
+**Key Strengths:**
+
+  + Combines information about water availability (precipitation) and atmospheric demand for moisture (potential evapotranspiration)
+  + Relatively simple to calculate and only requires climatological data and statistical models
+  + Does not incorporate assumptions about the behavior of the underlying system
+  + Can be calculated where only T and P exist (if using Thornthwaite based PET)
+  + Can be calculated with more sophisticated PET algorithms if data is available 
+
+**Key Weaknesses:** 
+
+  + Sensitive to differences in PET calculations 
+  + Requires climatology of data to have accurate statistical reference distributions
+  + Sensitive to probability distribution used to normalize data distribution
+  
+### Historical Validation:
+The SPEI has been used in many studies to understand the effects of drought on hydrologic resource availability, including reservoir, stream discharge and groundwater. In general, SPEI calculated at longer timescales (>12 months) has shown greater correlation with water levels in lakes and reservoirs (McEvoy et al., 2012). 
+
+### UMRB Validation:
+Validation in progress
+
+### UMRB Recommendation:
+UMRB specific recommendations will be appended to this document as validation is completed
+
+Much of the background information regarding this metric was adapted from the NCAR/UCAR Climate Data Guide (here)
+
+
+# EDDI {.tabset .tabset-dropdown}
 
