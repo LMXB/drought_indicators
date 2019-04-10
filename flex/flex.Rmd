@@ -1,12 +1,13 @@
 ---
-title: "Drought Indicators"
+title: "UMRB Drought Indicators"
 output: 
   flexdashboard::flex_dashboard:
+    navbar:
+      - { title: "MCO GitHub", href: "https://github.com/mt-climate-office", align: right }
     css: styles.css
     vertical_layout: scroll
     includes:
       after_body: footer.html
-      
 runtime: shiny
 
 ---
@@ -42,6 +43,13 @@ This document provides an overview of several drought metrics commonly used acro
   + 6. Describe historical validation of a metric 
   + 7. Show validation of a metric using data collected within the UMRB
   + 8. Provide a simple recommendation of its usage across the UMRB for describing differing forms of drought
+
+<center>
+```{r, echo = F}
+# Small fig.width
+knitr::include_graphics("logos.png")
+```
+<center>
 
 SPI
 ========================================================
@@ -170,12 +178,3 @@ EDDI
 ========================================================
 
 **EDDI IS NOT SUPPORTED QUITE YET**
-
-
-Shiny Dashboard
-========================================================
-
-```{r echo = F}
-library(shiny)
-shinyAppDir("../shiny-dashboard/R/", options = list(height = 1500))
-```

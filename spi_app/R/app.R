@@ -42,11 +42,12 @@ county_300 = st_read("../spi_app/shp/current_spi/current_spi_county_300.shp")
 shinyApp(
          ui <- fluidPage(class = "text-center",
                          verticalLayout(),
-                         br("Select a Tab"),
+                         br(),
                          inputPanel(
                            actionButton("evRaster", "Raw Map"),
                            actionButton("evHUC", "Watersheds"),
-                           actionButton("evCounty", "County")),
+                           actionButton("evCounty", "County"),
+                           style="color: #add8e6; background-color: #337ab7; border-color: #00000"),
            #mainPanel(
              leafletOutput("mymap", height = 600),
              
