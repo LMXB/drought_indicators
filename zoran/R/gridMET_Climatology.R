@@ -3,27 +3,31 @@ library(ncdf4)
 library(rgdal)
 library(parallel)
 library(tictoc)
+library(stringr)
 library(foreach)
 library(doParallel)
 
 setwd("/mnt/ScratchDrive/data/Hoylman/gridMET_Climatology/")
 
-WGS_84 = raster("/mnt/ScratchDrive/data/Hoylman/gridMET_Climatology/target_grids/APCP24_20190314_conus_WGS84.tif")
-WGS_84_CONUS = raster("/mnt/ScratchDrive/data/Hoylman/gridMET_Climatology/target_grids/master_grid_clipped_2.5km.tif")
+WGS_84_CONUS = raster("/home/zhoylman/drought_indicators/zoran/master_warp_grid/master_grid_clipped_2.5km.tif")
 
-gridMET = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pr_1979_CurrentYear_CONUS.nc", var = "precipitation_amount")
+#Precip NetCDF
+#gridMET = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pr_1979_CurrentYear_CONUS.nc", var = "precipitation_amount")
 
-writeRaster(gridMET[[14000]], "/mnt/ScratchDrive/data/Hoylman/R/gridMET_14000.tif", format = "GTiff")
+#PET NetCDF
+gridMET = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pet_1979_CurrentYear_CONUS.nc", var = "daily_mean_reference_evapotranspiration_grass")
 
 time = as.Date(as.numeric(substring(names(gridMET),2)), origin = "1900-01-01")
 
-
 # reproject one MACA geotiff to match the NWS precip grids. 
 
-work.dir <- "/mnt/ScratchDrive/data/Hoylman/R/"
-write.dir = "/mnt/ScratchDrive/data/Hoylman/gridMET_Climatology/gridMET_precip_2.5km_warp_CONUS/"
+work.dir <- "/home/zhoylman/drought_indicators/zoran/R/"
+write.dir = "/mnt/ScratchDrive/data/Hoylman/gridMET_Climatology/gridMET_pet_2.5km/"
 
 source(paste0(work.dir, "ProjectRaster_function.R"))
+
+time_char = as.character(time)
+time_char_short = gsub("[^0-9.]", "", time_char) 
 
 tic()
 
@@ -37,7 +41,7 @@ projected_raster = foreach(i=1:length(time)) %dopar% {
   
   input.file <- gridMET[[i]]
   target.file <- WGS_84_CONUS
-  out.file <- paste0(write.dir, time[i],"_precip_2.5km_warp_clip.tif")
+  out.file <- paste0(write.dir, "gridMET_",time_char_short[i],"_pet_2.5km_warp.tif")
   
   gdalProjRaster(input.file, target.file, out.file)
   

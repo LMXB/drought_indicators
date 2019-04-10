@@ -9,13 +9,15 @@ library(rgdal)
 library(parallel)
 
 #define directories
-climatology.dir = "/mnt/ScratchDrive/data/Hoylman/gridMET_Climatology/gridMET_precip_2.5km_warp_CONUS/"
+climatology.dir = "/mnt/ScratchDrive/data/Hoylman/gridMET_Climatology/gridMET_precip_2.5km/"
 work.dir = "/mnt/ScratchDrive/data/Hoylman/SPI/"
 write.dir = "/mnt/ScratchDrive/data/Hoylman/SPI/SPI_Map_Output/"
+git.dir = '/home/zhoylman/drought_indicators/zoran/R/'
 
 #fits a gamma distrbution to a vector
 #returns the shape and rate parameters
-source(paste0(work.dir, "gamma_fit.R"))
+source(paste0(git.dir, "gamma_fit.R"))
+source(paste0(git.dir, "fdates.R"))
 
 #spi function
 spi_fun = function(x) { 
@@ -26,6 +28,12 @@ spi_fun = function(x) {
 }
 
 files = list.files(climatology.dir, pattern = ".tif$", full.names = T)
+
+#compute time from files
+time = fdates(files)
+time = data.frame(datetime = as.Date(time, format = "%Y%m%d"))
+time$day = strftime(time$datetime,"%m-%d")
+
 
 #designate time scale
 time_scale = c(30)#, 60, 90, 180, 360)#30,60,90,180,360)
@@ -43,8 +51,7 @@ for(t in 1:length(time_scale)){
   ##    UN HARD CODE THIS       ##
   ################################
   
-  time = data.frame(datetime = as.Date(substr(files, start = 85, stop = 94), format = "%Y-%m-%d"))
-  time$day = strftime(time$datetime,"%m-%d")
+
   
   #compute time breaks (indexes)
   first_date_breaks = which(time$day == time$day[length(time$datetime)])
