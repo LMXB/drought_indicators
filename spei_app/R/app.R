@@ -22,14 +22,15 @@ county_300 = st_read("../spei_app/shp/current_spei/current_spei_county_300.shp")
 shinyApp(
   ui <- fluidPage(class = "text-center",
                   verticalLayout(),
-                  
-                  leafletOutput("mymap"),
-                  
-                  sidebarPanel(
-                               actionButton("evRaster", "Raw Map"),
-                               actionButton("evHUC", "Watersheds"),
-                               actionButton("evCounty", "County")),
-           mainPanel(
+                  br("Select a Tab"),
+                  inputPanel(
+                    actionButton("evRaster", "Raw Map"),
+                    actionButton("evHUC", "Watersheds"),
+                    actionButton("evCounty", "County")),
+           #mainPanel(width = "100%",
+             leafletOutput("mymap", height = 600),
+             
+             
              tags$head(tags$style(type="text/css", "
                                   #loadmessage {
                                   position: fixed;
@@ -47,15 +48,15 @@ shinyApp(
                                   ")),
              conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                               tags$div("Calculating Climatology...",id="loadmessage")),
-             plotOutput("testPlot",height=900, width = 700) %>% withSpinner(color="#0dc5c1", type = 8, proxy.height = "200px") 
-             )
-           ),
+           plotOutput("testPlot", width = "100%", height = "900px")# %>% withSpinner(color="#0dc5c1", type = 8, proxy.height = "200px") 
+  ),
+           #),
          server <- function(input, output) {
            
            output$mymap = renderLeaflet({
              leaflet() %>%
                addTiles() %>%
-               setView(lng = -108, lat = 46.5, zoom = 5)
+               setView(lng = -108, lat = 46.5, zoom = 6)
            })
            
            # current_spei_30 = raster::raster("../spei_app/maps/current_spei/current_spei_30.tif")
@@ -141,7 +142,7 @@ shinyApp(
              #     #   layers = "nexrad-n0r-900913",
              #     #   options = WMSTileOptions(format = "image/png", transparent = TRUE, group = "Weather"))%>%
              
-             setView(lng = -108, lat = 46.5, zoom = 5) %>%
+             setView(lng = -108, lat = 46.5, zoom = 6) %>%
              addDrawToolbar(markerOptions = drawMarkerOptions(),
                             polylineOptions = FALSE,
                             polygonOptions = FALSE,
@@ -180,7 +181,7 @@ shinyApp(
              #     #   layers = "nexrad-n0r-900913",
              #     #   options = WMSTileOptions(format = "image/png", transparent = TRUE, group = "Weather"))%>%
              
-             setView(lng = -108, lat = 46.5, zoom = 5) %>%
+             setView(lng = -108, lat = 46.5, zoom = 6) %>%
              addDrawToolbar(markerOptions = drawMarkerOptions(),
                             polylineOptions = FALSE,
                             polygonOptions = FALSE,
@@ -220,7 +221,7 @@ shinyApp(
              #     #   layers = "nexrad-n0r-900913",
              #     #   options = WMSTileOptions(format = "image/png", transparent = TRUE, group = "Weather"))%>%
              
-             setView(lng = -108, lat = 46.5, zoom = 5) %>%
+             setView(lng = -108, lat = 46.5, zoom = 6) %>%
              addDrawToolbar(markerOptions = drawMarkerOptions(),
                             polylineOptions = FALSE,
                             polygonOptions = FALSE,

@@ -2,9 +2,11 @@
 title: "Drought Indicators"
 output: 
   flexdashboard::flex_dashboard:
+    css: styles.css
     vertical_layout: scroll
     includes:
       after_body: footer.html
+      
 runtime: shiny
 
 ---
@@ -13,11 +15,24 @@ runtime: shiny
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<style type="text/css">
+
+.chart-title {  /* chart_title  */
+   font-size: 30px;
+   font-family: Ariel;
+
+</style>
+
 <br>
 
-# **Introduction**
+Introduction
+========================================================
 
-Welcome to the Upper Missouri River Basin (UMRB) drought indicators document. This document provides an overview of several drought metrics commonly used across the globe. In this document We focus on: 
+### **Introduction**
+
+#### **Welcome to the Upper Missouri River Basin (UMRB) drought indicators document.**
+
+This document provides an overview of several drought metrics commonly used across the globe. In this document we focus on: 
 
   + 1. Describing general overview and theoretical basis for a metric 
   + 2. Describe the data required for calculation 
@@ -28,27 +43,31 @@ Welcome to the Upper Missouri River Basin (UMRB) drought indicators document. Th
   + 7. Show validation of a metric using data collected within the UMRB
   + 8. Provide a simple recommendation of its usage across the UMRB for describing differing forms of drought
 
-# SPI {.tabset .tabset-dropdown}
+SPI
+========================================================
 
-#### **The Standardized Precipitation Index (SPI)**
+### **The Standardized Precipitation Index (SPI)**
 
-<br>
+#### **Overview**
 
-##### **Overview:**
 The SPI is a commonly used metric which quantifies precipitation anomalies at various timescales. This metric is often used to approximate soil moisture anomalies when calculated over short time scales (days to weeks) and is related to groundwater and reservoir storage over longer timescales. The values of SPI can be interpreted as a number of standard deviations away from the average (mean) precipitation depth probability for a given time period. 
 
 <br>
 
-##### **Data Requirements:**
+#### **Data Requirements:**
 
   + Precipitation 
 
 <br>  
 
+
+##### Click on a tab to activate the map. 
+##### Click and drag pointer icon (left side of map below +/-) to initiate point specific analysis.
+
 ###
 ```{r echo=F}
 library(shiny)
-shinyAppDir("../spi_app/R/", options = list(height = 1500))
+  shinyAppDir("../spi_app/R/", options = list(height = 1600))
 ```
 
 ### **Derivation:**
@@ -81,37 +100,41 @@ https://journals.ametsoc.org/doi/abs/10.1175/JHM-D-13-0190.1
 
 https://journals.ametsoc.org/doi/abs/10.1175/JAMC-D-10-05015.1
 
-### UMRB Validation:
+### **UMRB Validation:**
 Validation in progress
 
-### UMRB Recommendation:
+### **UMRB Recommendation:**
 UMRB specific recommendations will be appended to this document as validation is completed
 
 Much of the background information regarding this metric was contributed by NCAR/UCAR Climate Data Guide
 
 
-# SPEI {.tabset .tabset-dropdown}
+SPEI
+========================================================
 
-#### **Standardized Precipitation Evapotranspiration Index (SPEI)**
+### **Standardized Precipitation Evapotranspiration Index (SPEI)**
 
-<br>
-
-##### **Overview:**
+#### **Overview:**
 SPEI takes into account both precipitation and potential evapotranspiration to describe the wetness/dryness of a time period. Similar to the SPI, SPEI can be calculated at various timescales to represent different drought timescales. As such, the SPEI can approximate different impacts of drought on hydrological conditions and processes depending on the timescale used. Although similar to the SPI, SPEI incorporates the import effect of atmospheric demand on drought which can cause significant impacts over short time scales (flash drought). 
 
 <br>
 
-##### **Data Requirements:**
+#### **Data Requirements:**
 
   + Precipitation 
   + Potential Evapotranspiration (PET)
 
 <br>
 
+
+##### Click on a tab to activate the map. 
+##### Click and drag pointer icon (left side of map below +/-) to initiate point specific analysis.
+
+
 ###
 ```{r echo = F}
 library(shiny)
-shinyAppDir("../spei_app/R/", options = list(height = 1500))
+shinyAppDir("../spei_app/R/", options = list(height = 1600))
 ```
 
 ### **Derivation:**
@@ -131,17 +154,28 @@ SPEI is an extension of the SPI in the sense that it uses a normalized probabili
   + Requires climatology of data to have accurate statistical reference distributions
   + Sensitive to probability distribution used to normalize data distribution
   
-### Historical Validation:
+### **Historical Validation:**
 The SPEI has been used in many studies to understand the effects of drought on hydrologic resource availability, including reservoir, stream discharge and groundwater. In general, SPEI calculated at longer timescales (>12 months) has shown greater correlation with water levels in lakes and reservoirs (McEvoy et al., 2012). 
 
-### UMRB Validation:
+### **UMRB Validation:**
 Validation in progress
 
-### UMRB Recommendation:
+### **UMRB Recommendation:**
 UMRB specific recommendations will be appended to this document as validation is completed
 
 Much of the background information regarding this metric was adapted from the NCAR/UCAR Climate Data Guide (here)
 
 
-# EDDI {.tabset .tabset-dropdown}
+EDDI
+========================================================
 
+**EDDI IS NOT SUPPORTED QUITE YET**
+
+
+Shiny Dashboard
+========================================================
+
+```{r echo = F}
+library(shiny)
+shinyAppDir("../shiny-dashboard/R/", options = list(height = 1500))
+```
