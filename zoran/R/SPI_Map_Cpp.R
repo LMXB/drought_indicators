@@ -9,9 +9,9 @@ library(rgdal)
 library(parallel)
 
 #define directories
-climatology.dir = "/mnt/ScratchDrive/data/Hoylman/gridMET_Climatology/gridMET_precip_2.5km/"
+climatology.dir = "/mnt/ScratchDrive/data/Hoylman/NWS_data/NWS_gridMET_mix/"
 work.dir = "/mnt/ScratchDrive/data/Hoylman/SPI/"
-write.dir = "/mnt/ScratchDrive/data/Hoylman/SPI/SPI_Map_Output/"
+write.dir = "/mnt/ScratchDrive/data/Hoylman/SPI/NWS_SPI_Test/"
 git.dir = '/home/zhoylman/drought_indicators/zoran/R/'
 
 #fits a gamma distrbution to a vector
@@ -34,9 +34,8 @@ time = fdates(files)
 time = data.frame(datetime = as.Date(time, format = "%Y%m%d"))
 time$day = strftime(time$datetime,"%m-%d")
 
-
 #designate time scale
-time_scale = c(30)#, 60, 90, 180, 360)#30,60,90,180,360)
+time_scale = c(30, 60, 90, 240)#, 60, 90, 180, 360)#30,60,90,180,360)
 
 for(t in 1:length(time_scale)){
   tmp.dir <- paste0(work.dir, "tmp_dir/", time_scale[t], "_days/")
@@ -44,14 +43,6 @@ for(t in 1:length(time_scale)){
   
   #calcualte run time
   tic()
-  
-  #compute time from file names
-  
-  ################################
-  ##    UN HARD CODE THIS       ##
-  ################################
-  
-
   
   #compute time breaks (indexes)
   first_date_breaks = which(time$day == time$day[length(time$datetime)])
@@ -131,7 +122,7 @@ for(t in 1:length(time_scale)){
        main = paste0("Current ", as.character(time_scale[t]), " Day SPI"))
   
   #write out raster
-  writeRaster(current_spi, paste0(write.dir,"current_spi_", as.character(time_scale[t]),".tif"), format = "GTiff", overwrite = T)
+  writeRaster(current_spi, paste0(write.dir,"NWS_current_spi_", as.character(time_scale[t]),".tif"), format = "GTiff", overwrite = T)
   
   toc()
   #do.call(file.remove, list(list.files(tmp.dir, full.names = T)))
