@@ -23,6 +23,7 @@ source(paste0(git.dir, "fdates.R"))
 spi_fun <- function(x) { 
   fit.gamma = gamma_fit(x)
   fit.cdf = pgamma(x, shape = fit.gamma$shape, rate = fit.gamma$rate)
+  #if precip is 0, replace it with 0.1%tile (really dry)
   if(any(fit.cdf == 0, na.rm = T)){
     index = which(fit.cdf == 0)
     fit.cdf[index] = quantile(fit.cdf,0.001)
