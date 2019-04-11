@@ -20,9 +20,13 @@ source(paste0(git.dir, "gamma_fit.R"))
 source(paste0(git.dir, "fdates.R"))
 
 #spi function
-spi_fun = function(x) { 
+spi_fun <- function(x) { 
   fit.gamma = gamma_fit(x)
   fit.cdf = pgamma(x, shape = fit.gamma$shape, rate = fit.gamma$rate)
+  if(any(fit.cdf == 0, na.rm = T)){
+    index = which(fit.cdf == 0)
+    fit.cdf[index] = quantile(fit.cdf,0.001)
+  }
   standard_norm = qnorm(fit.cdf, mean = 0, sd = 1)
   return(standard_norm[length(standard_norm)]) 
 }

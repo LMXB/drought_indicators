@@ -92,8 +92,6 @@ for(t in 1:length(time_scale)){
     integrated_diff[,i] = values(raster_p_pet_diff[[i]])
   }
   
-  integrated_diff[integrated_diff == 0] = NA
-  
   #spi function
   spei_fun <- function(x) {
     tryCatch(

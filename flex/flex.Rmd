@@ -58,7 +58,7 @@ SPI
 
 #### **Overview**
 
-The SPI is a commonly used metric which quantifies precipitation anomalies at various timescales. This metric is often used to approximate soil moisture anomalies when calculated over short time scales (days to weeks) and is related to groundwater and reservoir storage over longer timescales. The values of SPI can be interpreted as a number of standard deviations away from the average (mean) precipitation depth probability for a given time period. 
+The SPI is a commonly used metric which quantifies precipitation anomalies at various timescales. This metric is often used to estimate a range of hydrological conditions that respond to precipation over differing timescales. For example, SPI is related to soil moisture anomalies when calculated over short time scales (days to weeks) but is more related to groundwater and reservoir storage over longer timescales (months to years). The values of SPI can be interpreted as a number of standard deviations away from the average (mean) cumulative precipitation depth for a given time period. The SPI has unique statistical qualities in that it is directly related to precipitation probaility and it can be used to represent both dry (negative values; represented here with warmer colors) and wet (positive values; represented here with cooler colors) conditions. 
 
 <br>
 
