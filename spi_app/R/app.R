@@ -140,9 +140,9 @@ shinyApp(
            
            # Add Layer Controls  ----------------------------------------------    
            m_raster = m_raster %>%
-             addLayersControl(
+             addLayersControl(position = "topleft",
                baseGroups = watershed_raster_names,
-               options = layersControlOptions(collapsed = TRUE)) %>%
+               options = layersControlOptions(collapsed = FALSE)) %>%
              addLegend(pal = pal, values = -3.5:3.5,
                        title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
                        position = "bottomleft")%>%
@@ -179,9 +179,9 @@ shinyApp(
            
            # Add Layer Controls  ----------------------------------------------    
            m_huc = m_huc %>%
-             addLayersControl(
+             addLayersControl(position = "topleft",
                baseGroups = watershed_raster_names,
-               options = layersControlOptions(collapsed = TRUE)) %>%
+               options = layersControlOptions(collapsed = FALSE)) %>%
              addLegend(pal = pal, values = -3.5:3.5,
                        title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
                        position = "bottomleft")%>%
@@ -219,9 +219,9 @@ shinyApp(
            
            # Add Layer Controls  ----------------------------------------------    
            m_county = m_county %>%
-             addLayersControl(
+             addLayersControl(position = "topleft",
                baseGroups = watershed_raster_names,
-               options = layersControlOptions(collapsed = TRUE)) %>%
+               options = layersControlOptions(collapsed = FALSE)) %>%
              addLegend(pal = pal, values = -3.5:3.5,
                        title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
                        position = "bottomleft")%>%

@@ -60,23 +60,6 @@ shinyApp(
                setView(lng = -108, lat = 46.5, zoom = 6)
            })
            
-           # current_spei_30 = raster::raster("../spei_app/maps/current_spei/current_spei_30.tif")
-           # current_spei_60 = raster::raster("../spei_app/maps/current_spei/current_spei_60.tif")
-           # current_spei_90 = raster::raster("../spei_app/maps/current_spei/current_spei_90.tif")
-           # current_spei_180 = raster::raster("../spei_app/maps/current_spei/current_spei_180.tif")
-           # current_spei_300 = raster::raster("../spei_app/maps/current_spei/current_spei_300.tif")
-           # 
-           # watersheds_30 = st_read("../spei_app/shp/current_spei/current_spei_watershed_30.shp")
-           # watersheds_60 = st_read("../spei_app/shp/current_spei/current_spei_watershed_60.shp")
-           # watersheds_90 = st_read("../spei_app/shp/current_spei/current_spei_watershed_90.shp")
-           # watersheds_180 = st_read("../spei_app/shp/current_spei/current_spei_watershed_180.shp")
-           # watersheds_300 = st_read("../spei_app/shp/current_spei/current_spei_watershed_300.shp")
-           # 
-           # county_30 = st_read("../spei_app/shp/current_spei/current_spei_county_30.shp")
-           # county_60 = st_read("../spei_app/shp/current_spei/current_spei_county_60.shp")
-           # county_90 = st_read("../spei_app/shp/current_spei/current_spei_county_90.shp")
-           # county_180 = st_read("../spei_app/shp/current_spei/current_spei_county_180.shp")
-           # county_300 = st_read("../spei_app/shp/current_spei/current_spei_county_300.shp")
            
            watershed_list = list(watersheds_30, watersheds_60, watersheds_90, watersheds_180, watersheds_300)
            county_list = list(county_30, county_60, county_90, county_180, county_300)
@@ -130,9 +113,9 @@ shinyApp(
            
            # Add Layer Controls  ----------------------------------------------    
            m_raster = m_raster %>%
-             addLayersControl(
+             addLayersControl(position = "topleft",
                baseGroups = watershed_raster_names,
-               options = layersControlOptions(collapsed = TRUE)) %>%
+               options = layersControlOptions(collapsed = FALSE)) %>%
              addLegend(pal = pal, values = -3.5:3.5,
                        title = paste0("Current SPEI<br>", as.character(watersheds_30$crrnt_t[1])),
                        position = "bottomleft")%>%
@@ -169,9 +152,9 @@ shinyApp(
            
            # Add Layer Controls  ----------------------------------------------    
            m_huc = m_huc %>%
-             addLayersControl(
+             addLayersControl(position = "topleft",
                baseGroups = watershed_raster_names,
-               options = layersControlOptions(collapsed = TRUE)) %>%
+               options = layersControlOptions(collapsed = FALSE)) %>%
              addLegend(pal = pal, values = -3.5:3.5,
                        title = paste0("Current SPEI<br>", as.character(watersheds_30$crrnt_t[1])),
                        position = "bottomleft")%>%
@@ -209,9 +192,9 @@ shinyApp(
            
            # Add Layer Controls  ----------------------------------------------    
            m_county = m_county %>%
-             addLayersControl(
+             addLayersControl(position = "topleft",
                baseGroups = watershed_raster_names,
-               options = layersControlOptions(collapsed = TRUE)) %>%
+               options = layersControlOptions(collapsed = FALSE)) %>%
              addLegend(pal = pal, values = -3.5:3.5,
                        title = paste0("Current SPEI<br>", as.character(watersheds_30$crrnt_t[1])),
                        position = "bottomleft")%>%

@@ -83,12 +83,16 @@ for(t in 1:length(time_scale)){
   for(i in 1:length(unique(group_by_vec))){
     integrated_precip[,i] = values(raster_precip_clipped[[i]])
   }
-  integrated_precip[integrated_precip == 0] = NA
+  #integrated_precip[integrated_precip == 0] = NA
   
   #define spi function
   spi_fun <- function(x) { 
     fit.gamma = gamma_fit(x)
     fit.cdf = pgamma(x, shape = fit.gamma$shape, rate = fit.gamma$rate)
+    if(any(fit.cdf == 0, na.rm = T)){
+      index = which(fit.cdf == 0)
+      fit.cdf[index] = quantile(fit.cdf,0.001)
+    }
     standard_norm = qnorm(fit.cdf, mean = 0, sd = 1)
     return(standard_norm[length(standard_norm)]) 
   }
