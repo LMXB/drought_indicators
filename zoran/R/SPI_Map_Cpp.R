@@ -9,28 +9,16 @@ library(rgdal)
 library(parallel)
 
 #define directories
-climatology.dir = "/mnt/ScratchDrive/data/Hoylman/NWS_data/NWS_gridMET_mix/"
+climatology.dir = "/mnt/ScratchDrive/data/Hoylman/gridMET_Climatology/gridMET_precip_raw/"
 work.dir = "/mnt/ScratchDrive/data/Hoylman/SPI/"
-write.dir = "/mnt/ScratchDrive/data/Hoylman/SPI/NWS_SPI_Test/"
+write.dir = "/mnt/ScratchDrive/data/Hoylman/SPI/Raw_gridMET_SPI_test/"
 git.dir = '/home/zhoylman/drought_indicators/zoran/R/'
 
 #fits a gamma distrbution to a vector
 #returns the shape and rate parameters
 source(paste0(git.dir, "gamma_fit.R"))
 source(paste0(git.dir, "fdates.R"))
-
-#spi function
-spi_fun <- function(x) { 
-  fit.gamma = gamma_fit(x)
-  fit.cdf = pgamma(x, shape = fit.gamma$shape, rate = fit.gamma$rate)
-  #if precip is 0, replace it with 0.1%tile (really dry)
-  if(any(fit.cdf == 0, na.rm = T)){
-    index = which(fit.cdf == 0)
-    fit.cdf[index] = quantile(fit.cdf,0.001)
-  }
-  standard_norm = qnorm(fit.cdf, mean = 0, sd = 1)
-  return(standard_norm[length(standard_norm)]) 
-}
+source(paste0(git.dir, "spi_fun.R"))
 
 files = list.files(climatology.dir, pattern = ".tif$", full.names = T)
 
@@ -40,7 +28,7 @@ time = data.frame(datetime = as.Date(time, format = "%Y%m%d"))
 time$day = strftime(time$datetime,"%m-%d")
 
 #designate time scale
-time_scale = c(30, 60, 90, 240)#, 60, 90, 180, 360)#30,60,90,180,360)
+time_scale = c(30, 60, 90, 180, 360)
 
 for(t in 1:length(time_scale)){
   tmp.dir <- paste0(work.dir, "tmp_dir/", time_scale[t], "_days/")
@@ -101,6 +89,12 @@ for(t in 1:length(time_scale)){
   summed_rasters = list.files(tmp.dir, pattern = ".tif$", full.names = T)
   summed_raster_stack = stack(summed_rasters)
   
+  #test to see if 0s are causing NAs
+  #summed_raster_stack[summed_raster_stack == 0] = 0.001
+  
+  #set NULL value
+  NAvalue(summed_raster_stack) <- -2147483648
+  
   #reformat data
   summed_precip_vec = foreach(i=unique(group_by_vec)) %dopar% {
     library(raster)
@@ -109,7 +103,7 @@ for(t in 1:length(time_scale)){
   integrated_precip = structure(summed_precip_vec, row.names = c(NA, -length(summed_precip_vec[[1]])), class = "data.frame")
   
   #calculate SPI
-  clusterExport(cl, "gamma_fit")
+  clusterExport(cl, c("gamma_fit", "spi_fun"))
   spi_values = parApply(cl,integrated_precip, 1, FUN = spi_fun)
   stopCluster(cl)
   
@@ -120,16 +114,16 @@ for(t in 1:length(time_scale)){
   values(current_spi) = spi_values
   
   #compute color ramp for visualization
-  color_ramp = colorRampPalette(c("red", "white", "blue"))
+  color_ramp = colorRampPalette(c("darkred","red", "white", "blue", "darkblue"))
   
   #plot map
-  plot(current_spi, col = color_ramp(11), zlim = c(-3.5,3.5),
+  plot(current_spi, col = color_ramp(100), zlim = c(-5,5),
        main = paste0("Current ", as.character(time_scale[t]), " Day SPI"))
   
   #write out raster
-  writeRaster(current_spi, paste0(write.dir,"NWS_current_spi_", as.character(time_scale[t]),".tif"), format = "GTiff", overwrite = T)
+  writeRaster(current_spi, paste0(write.dir,"gridmet_current_spi_", as.character(time_scale[t]),".tif"), format = "GTiff", overwrite = T)
   
   toc()
-  #do.call(file.remove, list(list.files(tmp.dir, full.names = T)))
+  do.call(file.remove, list(list.files(tmp.dir, full.names = T)))
 }
 

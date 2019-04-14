@@ -37,6 +37,10 @@ projected_raster = foreach(i=1:length(time)) %dopar% {
   source(paste0(work.dir, "ProjectRaster_function.R"))
   
   input.file <- raster(NWS[i])
+  NAvalue(input.file) <- -9999
+  #convert to mm
+  input.file = input.file * 25.4
+  
   target.file <- WGS_84_CONUS
   out.file <- paste0(write.dir, "nws_",time_char[i],"_precip_2.5km_warp.tif")
   
