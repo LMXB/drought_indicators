@@ -13,6 +13,8 @@ library(doParallel)
 library(foreach)
 library(rgdal)
 library(glogis)
+library(PearsonDS)
+library(gsl)
 
 raster_precip = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pr_1979_CurrentYear_CONUS.nc", var= "precipitation_amount")
 #proj4string(raster_precip) = CRS("+init=EPSG:4326")
@@ -94,6 +96,7 @@ for(t in 1:length(time_scale)){
   
   #spi function
   spei_fun <- function(x) {
+    #first try log logistic
     tryCatch(
       {
         x = as.numeric(x)
@@ -103,13 +106,27 @@ for(t in 1:length(time_scale)){
         standard_norm = qnorm(fit.cdf, mean = 0, sd = 1)
         return(standard_norm[length(standard_norm)])
       },
+      #next try pearson
+      error=function(cond) {
+        x = as.numeric(x)
+        fit.pearson = pearsonFitML(x)
+        
+        fit.cdf = ppearson(x, a = fit.pearson$a, b = fit.pearson$b, location = fit.pearson$location,
+                           scale = fit.pearson$scale, params = fit.pearson, lower.tail = TRUE, log.p = FALSE)
+        
+        standard_norm = qnorm(fit.cdf, mean = 0, sd = 1)
+        return(standard_norm[length(standard_norm)])
+      },
+      #else return NA
       error=function(cond) {
         return(NA)
       })
   }
   
   #compute SPEI
-  clusterEvalQ(cl, library(glogis))
+  Packages <- c("glogis", "PearsonDS", "gsl")
+  
+  clusterCall(cl, function() {lapply(c("glogis", "PearsonDS", "gsl"), library, character.only = TRUE)})
   current_spei = parApply(cl,integrated_diff, 1, FUN = spei_fun)
   stopCluster(cl)
   
@@ -174,3 +191,5 @@ for(t in 1:length(time_scale)){
   
   toc()
 }
+
+

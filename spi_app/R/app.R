@@ -38,6 +38,10 @@ county_90 = st_read("../spi_app/shp/current_spi/current_spi_county_90.shp")
 county_180 = st_read("../spi_app/shp/current_spi/current_spi_county_180.shp")
 county_300 = st_read("../spi_app/shp/current_spi/current_spi_county_300.shp")
 
+current_usdm = st_read("../USDM_current/current_usdm.shp")
+
+current_usdm_date = read.csv("../USDM_current/usdm_time.csv")
+current_usdm_date = as.Date(as.character(current_usdm_date$x), format = "%Y%m%d")
 
 shinyApp(
          ui <- fluidPage(class = "text-center",
@@ -49,7 +53,7 @@ shinyApp(
                            actionButton("evCounty", "County"),
                            style="color: #add8e6; background-color: #337ab7; border-color: #00000"),
            #mainPanel(
-             leafletOutput("mymap", height = 600),
+             leafletOutput("mymap", height = 650),
              
 
              tags$head(tags$style(type="text/css", "
@@ -106,13 +110,25 @@ shinyApp(
              ) %>% lapply(htmltools::HTML)
            }
            
+           labels_usdm = list()
+           labels_usdm[[1]] <- sprintf(
+               "<strong>%s</strong><br/>USDM = D%g<sup></sup>",
+               current_usdm_date, current_usdm$DM
+             ) %>% lapply(htmltools::HTML)
+           
            
            
            #color pallets
-           pal_watershed <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#003366"), interpolate = "spline"), 
+           pal_watershed <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), interpolate = "spline"), 
                                      domain = -3.5:3.5, bins = seq(-3.5,3.5,0.5))
            
-           pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#003366"), -3.5:3.5, na.color = "transparent")
+           pal_usdm <- colorBin(colorRamp(c("#ffff00", "#d2b48c", "#ffa500", "#ff0000", "#811616"), interpolate = "spline"), 
+                                     domain = 0:4, bins = seq(0,4,1))
+           
+           
+           #pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -4.5:4.5, na.color = "transparent")
+           pal <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), interpolate = "spline"), 
+                           domain = -3.5:3.5, bins = c(-Inf,-3,-2.5,-2,-1.2,-0.7,-0.2,0.2,0.7,1.2,2,2.5,3,Inf), na.color = "transparent")
            
            #-----------------------------------------------------------------------------------#
            #-----------------------------------------------------------------------------------#
@@ -136,14 +152,20 @@ shinyApp(
              addRasterImage(current_spi_60, colors = pal, opacity = 0.8, group = "60 Day") %>%
              addRasterImage(current_spi_90, colors = pal, opacity = 0.8, group = "90 Day") %>%
              addRasterImage(current_spi_180, colors = pal, opacity = 0.8, group = "180 Day") %>%
-             addRasterImage(current_spi_300, colors = pal, opacity = 0.8, group = "300 Day")
+             addRasterImage(current_spi_300, colors = pal, opacity = 0.8, group = "300 Day") %>%
+             addPolygons(data = current_usdm, group = "USDM", fillColor = ~pal_usdm(DM), weight = 2, opacity = 1, color = "black", 
+                         fillOpacity = 0.5, highlight = 
+                           highlightOptions(weight = 5,color = "#666",fillOpacity = 0.7),label = labels_usdm[[1]], 
+                           labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto")) 
+                         
            
-           # Add Layer Controls  ----------------------------------------------    
+                      # Add Layer Controls  ----------------------------------------------    
            m_raster = m_raster %>%
              addLayersControl(position = "topleft",
                baseGroups = watershed_raster_names,
+               overlayGroups = "USDM",
                options = layersControlOptions(collapsed = FALSE)) %>%
-             addLegend(pal = pal, values = -3.5:3.5,
+             addLegend(pal = pal, values = -4.5:4.5,
                        title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
                        position = "bottomleft")%>%
              
@@ -173,7 +195,13 @@ shinyApp(
              m_huc = m_huc %>% addPolygons(data = watershed_list[[i]], group = watershed_raster_names[i], fillColor = ~pal_watershed(average), weight = 2, opacity = 1, color = "white", 
                                            dashArray = "3", fillOpacity = 0.7, highlight = 
                                              highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels[[i]], 
-                                           labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto")) 
+                                           labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))
+             if(i == length(watershed_list_names)){
+               m_huc = m_huc %>% addPolygons(data = current_usdm, group = "USDM", fillColor = ~pal_usdm(DM), weight = 2, opacity = 1, color = "black", 
+                                             fillOpacity = 0.5, highlight = 
+                                               highlightOptions(weight = 5,color = "#666",fillOpacity = 0.7),label = labels_usdm[[1]], 
+                                             labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto")) 
+             }
            }
            
            
@@ -181,6 +209,7 @@ shinyApp(
            m_huc = m_huc %>%
              addLayersControl(position = "topleft",
                baseGroups = watershed_raster_names,
+               overlayGroups = "USDM",
                options = layersControlOptions(collapsed = FALSE)) %>%
              addLegend(pal = pal, values = -3.5:3.5,
                        title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
@@ -213,7 +242,13 @@ shinyApp(
              m_county = m_county %>% addPolygons(data = county_list[[i]], group = watershed_raster_names[i], fillColor = ~pal_watershed(average), weight = 2, opacity = 1, color = "white", 
                                                  dashArray = "3", fillOpacity = 0.7, highlight = 
                                                    highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels_county[[i]], 
-                                                 labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto")) 
+                                                 labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))
+             if(i == length(watershed_list_names)){
+               m_county = m_county %>% addPolygons(data = current_usdm, group = "USDM", fillColor = ~pal_usdm(DM), weight = 2, opacity = 1, color = "black", 
+                                                   fillOpacity = 0.5, highlight = 
+                                                     highlightOptions(weight = 5,color = "#666",fillOpacity = 0.7),label = labels_usdm[[1]], 
+                                                   labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto")) 
+             }
            }
            
            
@@ -221,6 +256,7 @@ shinyApp(
            m_county = m_county %>%
              addLayersControl(position = "topleft",
                baseGroups = watershed_raster_names,
+               overlayGroups = "USDM",
                options = layersControlOptions(collapsed = FALSE)) %>%
              addLegend(pal = pal, values = -3.5:3.5,
                        title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
