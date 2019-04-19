@@ -50,7 +50,7 @@ for(t in 1:length(time_scale)){
   tic()
   
   #compute indexes for time breaks
-  target_day = which(time$datetime == "2018-08-29")
+  target_day = which(time$datetime == "2018-08-28")
   
   first_date_breaks = which(time$day == time$day[target_day])
   second_date_breaks = first_date_breaks-(time_scale[t]-1)
@@ -177,7 +177,7 @@ spi_maps = lapply(spi_maps_path,raster)
 order = c(2,4,5,1,3)
 
 par(mfrow = c(3,2))
-png(paste0('/home/zhoylman/drought_indicators/ecostress/',"spi_fig_08-01-2018.png"), width = 500, height = 800)
+png(paste0('/home/zhoylman/drought_indicators/ecostress/',"spi_fig_08-29-2018.png"), width = 500, height = 800)
 
 for(i in 1:5){
   plot(spi_maps[[order[i]]], col = color_ramp(100), zlim = c(-3.5,3.5),
@@ -187,16 +187,20 @@ for(i in 1:5){
 
 dev.off()
 
+county_crop = readOGR("/home/zhoylman/Downloads/MontanaCounties_shp/County.shp")
+county_crop = spTransform(county_crop, crs(montana))
+
 rasterplot = function(raster,name){
+  raster = mask(raster, montana)
   raster_points = as.data.frame(rasterToPoints(raster))
   colnames(raster_points) = c("x","y","SPI")
-  
+
   pal = c("darkred","red","white","blue","darkblue")
   
   plot = ggplot(data = raster_points, aes(x = x, y = y))+
     geom_raster(aes(fill = SPI))+
     geom_path(data = fortify(montana), aes(x = long, y = lat, group = group))+
-    geom_path(data = fortify(UMRB), aes(x = long, y = lat, group = group))+
+    geom_path(data = fortify(county_crop), aes(x = long, y = lat, group = group))+
     xlab("Longitude")+
     ylab("Latitude")+
     scale_fill_gradientn(colours=c("darkred", "red", "white", "blue", "darkblue"), limits = c(-3.5,3.5))+
@@ -207,13 +211,12 @@ rasterplot = function(raster,name){
   
 }
 
-plot1 = rasterplot(spi_maps[[4]],"August 1st, 2018 | 60 day SPI")
-plot2 = rasterplot(spi_maps[[5]],"August 1st, 2018 | 90 day SPI")
-plot3 = rasterplot(spi_maps[[1]],"August 1st, 2018 | 180 day SPI")
+plot1 = rasterplot(spi_maps[[4]],"August 28th, 2018 | 60 day SPI")
+ggsave(paste0("/home/zhoylman/drought_indicators/ecostress/", "spi60.png"), plot = plot1, width = 6, height = 4, units = "in", dpi = 600)
 
-img <- image_read(system.file("img", "/home/zhoylman/Downloads/drought_201808_map.jpg", package="png"))
-g <- rasterGrob(img, interpolate=TRUE)
+plot2 = rasterplot(spi_maps[[5]],"August 28th, 2018 | 90 day SPI")
+ggsave(paste0("/home/zhoylman/drought_indicators/ecostress/", "spi90.png"), plot = plot2, width = 6, height = 4, units = "in", dpi = 600)
 
-full = ggpubr::ggarrange(plot1,plot1,plot1,plot2,ncol =2, nrow=2)
+plot3 = rasterplot(spi_maps[[1]],"August 28th, 2018 | 180 day SPI")
 
-ggsave(paste0("/home/zhoylman/drought_indicators/ecostress/", "spi.png"), plot = full, width = 9, height = 6, units = "in", dpi = 600)
+plot4 = rasterplot(spi_maps[[3]],"August 28th, 2018 | 30 day SPI")

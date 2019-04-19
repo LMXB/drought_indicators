@@ -142,7 +142,7 @@ SPEI takes into account both precipitation and potential evapotranspiration to d
 ###
 ```{r echo = F}
 library(shiny)
-shinyAppDir("../spei_app/R/", options = list(height = 1600))
+shinyAppDir("../spei_app/R/", options = list(height = 1700))
 ```
 
 ### **Derivation:**

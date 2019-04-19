@@ -1,11 +1,28 @@
 library(glogis)
 library(PearsonDS)
 library(gsl)
+library(lmomco)
+
+x = as.numeric(integrated_diff[77,])
 
 spei_fun <- function(x) {
   #first try log logistic
   tryCatch(
     {
+      x = as.numeric(x)
+      #fit lmoments
+      lmoments_x = lmoms(x)
+      #fit pearson type 3
+      fit.parglo = parglo(lmoments_x)
+      #fit.parlogglo = c(exp(fit.parglo$para[1]), 1/fit.parglo$para[2])
+      #compute probabilistic cdf 
+      fit.cdf = cdfglo(x, fit.parglo)
+      #compute standard normal equivelant
+      standard_norm = qnorm(fit.cdf, mean = 0, sd = 1)
+      return(standard_norm[length(standard_norm)])
+    },
+    #next try generalized logistic
+    error=function(cond) {
       x = as.numeric(x)
       fit.loglogistic = glogisfit(x)
       fit.cdf = pglogis(x,location = fit.loglogistic$parameters['location'], scale = fit.loglogistic$parameters['scale'], 
@@ -13,14 +30,16 @@ spei_fun <- function(x) {
       standard_norm = qnorm(fit.cdf, mean = 0, sd = 1)
       return(standard_norm[length(standard_norm)])
     },
-    #next try pearson
+    #next try pearson type 3
     error=function(cond) {
       x = as.numeric(x)
-      fit.pearson = pearsonFitML(x)
-
-      fit.cdf = ppearson(x, a = fit.pearson$a, b = fit.pearson$b, location = fit.pearson$location,
-                         scale = fit.pearson$scale, params = fit.pearson, lower.tail = TRUE, log.p = FALSE)
-
+      #fit lmoments
+      lmoments_x = lmoms(x)
+      #fit pearson type 3
+      fit.pearson = parpe3(lmoments_x)
+      #compute probabilistic cdf 
+      fit.cdf = cdfpe3(x, fit.pearson)
+      #compute standard normal equivelant
       standard_norm = qnorm(fit.cdf, mean = 0, sd = 1)
       return(standard_norm[length(standard_norm)])
     },
@@ -30,9 +49,6 @@ spei_fun <- function(x) {
     })
 }
 
-x = as.numeric(integrated_diff[77,])
-
-fitdistrplus::fitdist(x, "lnorm")
 
 spei_fun(x)
 

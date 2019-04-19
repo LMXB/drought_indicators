@@ -17,7 +17,14 @@ library(tictoc)
 library(ncdf4) 
 library(lubridate)
 library(plotly)
+library(glogis)
+library(PearsonDS)
+library(gsl)
+library(lmomco)
 #library(shinydashboard)
+
+#load custom functions
+source("../spi_app/R/gamma_fit.R")
 
 #SPI data
 current_spi_30 = raster::raster("../spi_app/maps/current_spi/current_spi_30.tif")
@@ -42,6 +49,8 @@ current_usdm = st_read("../USDM_current/current_usdm.shp")
 
 current_usdm_date = read.csv("../USDM_current/usdm_time.csv")
 current_usdm_date = as.Date(as.character(current_usdm_date$x), format = "%Y%m%d")
+
+states = st_read("../shp_kml/states.shp")
 
 shinyApp(
          ui <- fluidPage(class = "text-center",
@@ -110,6 +119,16 @@ shinyApp(
              ) %>% lapply(htmltools::HTML)
            }
            
+           usdm_description = c("(Abnormally Dry)", "(Moderate Drought)",
+                                "(Severe Drought)", "(Extreme Drought)",
+                                "(Exceptional Drought)")
+           
+           #for some reason this kills the app??????
+           for(i in 1:length(current_usdm$DM)){
+             current_usdm$DM1[i] = paste(current_usdm$DM[i], 
+                                              usdm_description[i], sep = " ")}
+           ##########################################
+           
            labels_usdm = list()
            labels_usdm[[1]] <- sprintf(
                "<strong>%s</strong><br/>USDM = D%g<sup></sup>",
@@ -122,13 +141,13 @@ shinyApp(
            pal_watershed <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), interpolate = "spline"), 
                                      domain = -3.5:3.5, bins = seq(-3.5,3.5,0.5))
            
-           pal_usdm <- colorBin(colorRamp(c("#ffff00", "#d2b48c", "#ffa500", "#ff0000", "#811616"), interpolate = "spline"), 
+           pal_usdm <- colorBin(colorRamp(c("#ffff00", "#918151", "#ffa500", "#ff0000", "#811616"), interpolate = "spline"), 
                                      domain = 0:4, bins = seq(0,4,1))
            
            
-           #pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -4.5:4.5, na.color = "transparent")
-           pal <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), interpolate = "spline"), 
-                           domain = -3.5:3.5, bins = c(-Inf,-3,-2.5,-2,-1.2,-0.7,-0.2,0.2,0.7,1.2,2,2.5,3,Inf), na.color = "transparent")
+           pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3.5:3.5, na.color = "transparent")
+           # pal <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), interpolate = "spline"), 
+           #                 domain = -3.5:3.5, bins = c(-Inf,-3,-2.5,-2,-1.2,-0.7,-0.2,0.2,0.7,1.2,2,2.5,3,Inf), na.color = "transparent")
            
            #-----------------------------------------------------------------------------------#
            #-----------------------------------------------------------------------------------#
@@ -153,6 +172,7 @@ shinyApp(
              addRasterImage(current_spi_90, colors = pal, opacity = 0.8, group = "90 Day") %>%
              addRasterImage(current_spi_180, colors = pal, opacity = 0.8, group = "180 Day") %>%
              addRasterImage(current_spi_300, colors = pal, opacity = 0.8, group = "300 Day") %>%
+             addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
              addPolygons(data = current_usdm, group = "USDM", fillColor = ~pal_usdm(DM), weight = 2, opacity = 1, color = "black", 
                          fillOpacity = 0.5, highlight = 
                            highlightOptions(weight = 5,color = "#666",fillOpacity = 0.7),label = labels_usdm[[1]], 
@@ -163,9 +183,9 @@ shinyApp(
            m_raster = m_raster %>%
              addLayersControl(position = "topleft",
                baseGroups = watershed_raster_names,
-               overlayGroups = "USDM",
+               overlayGroups = c("USDM", "States"),
                options = layersControlOptions(collapsed = FALSE)) %>%
-             addLegend(pal = pal, values = -4.5:4.5,
+             addLegend(pal = pal, values = -3.5:3.5,
                        title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
                        position = "bottomleft")%>%
              
@@ -188,11 +208,12 @@ shinyApp(
            
 
            m_huc = leaflet(watersheds_30) %>%
-             addTiles() 
+             addTiles() %>%
+             addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)
            
            # Add multiple layers with a loop ----------------------------------------------
            for(i in 1:length(watershed_list_names)){
-             m_huc = m_huc %>% addPolygons(data = watershed_list[[i]], group = watershed_raster_names[i], fillColor = ~pal_watershed(average), weight = 2, opacity = 1, color = "white", 
+             m_huc = m_huc %>% addPolygons(data = watershed_list[[i]], group = watershed_raster_names[i], fillColor = ~pal_watershed(average), weight = 2, opacity = 1, color = "black", 
                                            dashArray = "3", fillOpacity = 0.7, highlight = 
                                              highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels[[i]], 
                                            labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))
@@ -209,7 +230,7 @@ shinyApp(
            m_huc = m_huc %>%
              addLayersControl(position = "topleft",
                baseGroups = watershed_raster_names,
-               overlayGroups = "USDM",
+               overlayGroups = c("USDM", "States"),
                options = layersControlOptions(collapsed = FALSE)) %>%
              addLegend(pal = pal, values = -3.5:3.5,
                        title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
@@ -235,11 +256,12 @@ shinyApp(
            
            
            m_county = leaflet(watersheds_30) %>%
-             addTiles() 
+             addTiles() %>%
+             addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)
            
            # Add multiple layers with a loop ----------------------------------------------
            for(i in 1:length(watershed_list_names)){
-             m_county = m_county %>% addPolygons(data = county_list[[i]], group = watershed_raster_names[i], fillColor = ~pal_watershed(average), weight = 2, opacity = 1, color = "white", 
+             m_county = m_county %>% addPolygons(data = county_list[[i]], group = watershed_raster_names[i], fillColor = ~pal_watershed(average), weight = 2, opacity = 1, color = "black", 
                                                  dashArray = "3", fillOpacity = 0.7, highlight = 
                                                    highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels_county[[i]], 
                                                  labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))
@@ -256,7 +278,7 @@ shinyApp(
            m_county = m_county %>%
              addLayersControl(position = "topleft",
                baseGroups = watershed_raster_names,
-               overlayGroups = "USDM",
+               overlayGroups = c("USDM", "States"),
                options = layersControlOptions(collapsed = FALSE)) %>%
              addLegend(pal = pal, values = -3.5:3.5,
                        title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
@@ -298,26 +320,15 @@ shinyApp(
            
            
            spi_calc_plot = function(lat_in, lon_in){
-             # generate an rnorm distribution and plot it
-             ## LOAD THE REQUIRED LIBRARYS
-             
              lat_of_interest = lat_in
              lon_of_interest = lon_in
-             
-             
+
              ### DEFINE THE URL to net cdf
              urltotal<-"http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pr_1979_CurrentYear_CONUS.nc"
              
              ## OPEN THE FILE
              nc <- nc_open(urltotal)
              
-             ## SHOW SOME METADATA if you need to ficure out the attribute name
-             nc
-             
-             ## DISPLAY INFORMATION ABOUT AN ATTRIBUTE
-             ncatt_get(nc,"precipitation_amount")
-             
-             ## GET DATA SIZES: http://www.inside-r.org/packages/cran/ncdf4/docs/ncvar_get
              ## NOTE: FILE DIMENSIONS ARE lon,lat,time
              v3 <- nc$var[[1]]
              lonsize <- v3$varsize[1]
@@ -325,84 +336,42 @@ shinyApp(
              endcount <- v3$varsize[3] 
              
              ### DEFINE OUR POINT OF INTEREST 
-             ## NOTE: MAKE SURE TO CHECK WHETHER YOUR SOURCE STARTS COUNTING AT 0 OR 1
-             ## e.g. ncdf4 PACKAGE STARTS COUNTING AT 1 BUT OPeNDAP DATASET ACCESS FORM STARTS AT 0:
-             
              lon_matrix = nc$var[[1]]$dim[[1]]$vals
              lat_matrix = nc$var[[1]]$dim[[2]]$vals
              
+             #find lat long that corispond
              lon=which(abs(lon_matrix-lon_of_interest)==min(abs(lon_matrix-lon_of_interest)))  
              lat=which(abs(lat_matrix-lat_of_interest)==min(abs(lat_matrix-lat_of_interest))) 
-             
              
              ## DEFINE OUR VARIABLE NAME 
              var="precipitation_amount"
              
              ## READ THE DATA VARIABLE 
-             ## ORDER OF start= AND count= IS BASED ON ORDER IN BRACKETS AFTER VARIABLE NAME (SHOWN WHEN DISPLAYING YOUR METADATA)
-             ## FROM THE DOCUMENTATION... "If [start] not specified, reading starts at the beginning of the file (1,1,1,...)."
-             ## AND "If [count] not specified and the variable does NOT have an unlimited dimension, the entire variable is read. 
-             ## As a special case, the value "-1" indicates that all entries along that dimension should be read."
              data <- ncvar_get(nc, var, start=c(lon,lat,1),count=c(1,1,endcount))
              ## READ THE TIME VARIABLE
              time <- ncvar_get(nc, "day", start=c(1),count=c(endcount))
              ## CONVERT TIME FROM "days since 1900-01-01" TO YYYY-MM-DD
-             time=as.Date(time, origin="1900-01-01") ##note: assumes leap years! http://stat.ethz.ch/R-manual/R-patched/library/base/html/as.Date.html
+             time=as.Date(time, origin="1900-01-01") 
              # PUT EVERYTHING INTO A DATA FRAME
              c <- data.frame(time,data)
              
              ## CLOSE THE FILE
              nc_close(nc)
              
+             #define some date based variables
              c$day = yday(c$time)
              c$year = year(c$time)
              c$month = month(c$time)
              
-             #load spi function from alternative file
-             
-             
-             #fits a gamma distrbution to a vector
-             #returns the shape and rate parameters
-             
-             gamma_fit <- function(p) {
-               gamma_ <- data.frame()
-               q <- p
-               q <- q[!is.na(q)]
-               
-               pzero <- sum(q==0) / length(q)
-               
-               avg <- mean(q[q > 0.0])
-               
-               alpha <- 0.0
-               beta  <- avg
-               gamm  <- 1.0
-               
-               pgz <- length(q[q > 0.0])
-               
-               if ( pgz >= 1) {
-                 alpha <- log(avg) - sum(log(q[q > 0.0])) / pgz 
-                 gamm <- (1.0 + sqrt(1.0 + 4.0 * alpha / 3.0)) / (4.0 * alpha)
-                 beta  <- avg / gamm
-               } 
-               gamma_ <- list(shape=gamm, rate= (1/beta))
-               
-               return(gamma_)
-             }
-             
              spi_calc = function(data, time_scale){
                #Start SPI calculation
-               for(i in rev((length(data$time)-364):length(data$time))){
+               for(i in rev((length(data$time)-365):length(data$time))){
                  #calcualte index vectors of interest based on time
                  first_date_breaks = which(data$day == data$day[i])
                  second_date_breaks = first_date_breaks-(time_scale-1)
                  
                  #if there are negative indexes remove last year (incomplete data range)
                  #change this to remove all indexes from both vectors that are negative
-                 
-                 # if(!all(second_date_breaks < 0)){
-                 #   first_date_breaks = first_date_breaks[-1]
-                 #   second_date_breaks = second_date_breaks[-1]
-                 # }
                  if(!all(second_date_breaks < 0)){
                    pos_index = which(second_date_breaks > 0)
                    first_date_breaks = first_date_breaks[c(pos_index)]
@@ -429,7 +398,7 @@ shinyApp(
                    dplyr::summarise(sum = sum(data))
                  
                  #remove zeros because they cause the gamma dist to blow up to Inf
-                 data_time_filter$sum[data_time_filter$sum == 0] = NA
+                 data_time_filter$sum[data_time_filter$sum == 0] = 0.01
                  
                  #compute date time for day/year of interest
                  date_time = as.POSIXct(paste(data$day[first_date_breaks], data$year[first_date_breaks], sep = "-"), format = "%j-%Y")
@@ -459,7 +428,6 @@ shinyApp(
                
                return(output.df)
              }
-             
              
              spi_30 = spi_calc(c,30)
              spi_300 = spi_calc(c,300)
@@ -546,8 +514,6 @@ shinyApp(
              #raw Precip
              monthly_precip_plot = precip_plot(monthly_precip1,"Precipitation (mm)")
              
-             #monthly_precip_plot
-             
              #calcualte timeseries plots
              spi_30_plot = spi_plot(spi_30, "30 Day SPI")
              spi_300_plot = spi_plot(spi_300, "300 Day SPI")
@@ -585,4 +551,4 @@ shinyApp(
            })
          }
          
-           )
+      )

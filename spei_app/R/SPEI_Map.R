@@ -15,6 +15,8 @@ library(rgdal)
 library(glogis)
 library(PearsonDS)
 library(gsl)
+library(lmomco)
+
 
 raster_precip = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pr_1979_CurrentYear_CONUS.nc", var= "precipitation_amount")
 #proj4string(raster_precip) = CRS("+init=EPSG:4326")
@@ -94,11 +96,24 @@ for(t in 1:length(time_scale)){
     integrated_diff[,i] = values(raster_p_pet_diff[[i]])
   }
   
-  #spi function
   spei_fun <- function(x) {
     #first try log logistic
     tryCatch(
       {
+        x = as.numeric(x)
+        #fit lmoments
+        lmoments_x = lmoms(x)
+        #fit generalized logistic
+        fit.parglo = parglo(lmoments_x)
+        #fit.parlogglo = c(exp(fit.parglo$para[1]), 1/fit.parglo$para[2])
+        #compute probabilistic cdf 
+        fit.cdf = cdfglo(x, fit.parglo)
+        #compute standard normal equivelant
+        standard_norm = qnorm(fit.cdf, mean = 0, sd = 1)
+        return(standard_norm[length(standard_norm)])
+      },
+      #next try generalized logistic
+      error=function(cond) {
         x = as.numeric(x)
         fit.loglogistic = glogisfit(x)
         fit.cdf = pglogis(x,location = fit.loglogistic$parameters['location'], scale = fit.loglogistic$parameters['scale'], 
@@ -106,14 +121,16 @@ for(t in 1:length(time_scale)){
         standard_norm = qnorm(fit.cdf, mean = 0, sd = 1)
         return(standard_norm[length(standard_norm)])
       },
-      #next try pearson
+      #next try pearson type 3
       error=function(cond) {
         x = as.numeric(x)
-        fit.pearson = pearsonFitML(x)
-        
-        fit.cdf = ppearson(x, a = fit.pearson$a, b = fit.pearson$b, location = fit.pearson$location,
-                           scale = fit.pearson$scale, params = fit.pearson, lower.tail = TRUE, log.p = FALSE)
-        
+        #fit lmoments
+        lmoments_x = lmoms(x)
+        #fit pearson type 3
+        fit.pearson = parpe3(lmoments_x)
+        #compute probabilistic cdf 
+        fit.cdf = cdfpe3(x, fit.pearson)
+        #compute standard normal equivelant
         standard_norm = qnorm(fit.cdf, mean = 0, sd = 1)
         return(standard_norm[length(standard_norm)])
       },
@@ -124,9 +141,9 @@ for(t in 1:length(time_scale)){
   }
   
   #compute SPEI
-  Packages <- c("glogis", "PearsonDS", "gsl")
+  Packages <- c("glogis", "PearsonDS", "gsl", "lmomco")
   
-  clusterCall(cl, function() {lapply(c("glogis", "PearsonDS", "gsl"), library, character.only = TRUE)})
+  clusterCall(cl, function() {lapply(c("glogis", "PearsonDS", "gsl", "lmomco"), library, character.only = TRUE)})
   current_spei = parApply(cl,integrated_diff, 1, FUN = spei_fun)
   stopCluster(cl)
   
@@ -145,7 +162,7 @@ for(t in 1:length(time_scale)){
   color_ramp = colorRampPalette(c("red", "white", "blue"))
   
   #plot map
-  plot(spei_map, col = color_ramp(11), zlim = c(-3.5,3.5), 
+  plot(spei_map, col = color_ramp(100), zlim = c(-3.5,3.5), 
        main = paste0("Current ", as.character(time_scale[t]), " Day SPEI"))
   plot(montana, add = T)
   
