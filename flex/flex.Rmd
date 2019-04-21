@@ -180,7 +180,7 @@ EDDI
 ### **Evaporative Demand Drought Index (EDDI)**
 
 #### **Overview:**
-
+EDDI calculates the rank of accumulated PET for a given region. Unlike SPI and SPEI, EDDI does not standardize data based off of probability distributions. Instead, EDDI uses a non-parametric approach to compute empirical probabilities using inverse normal approximation. This method calculates EDDI by ranking the data from smallest to largest and accounting for the number of observations. Therefore, maximum and minimum values of EDDI are constrained by the number of years on record (which determines the number of observations). Practically, this causes EDDI to only show the relative ranking of year, with respect to the period of record, and does not approximate the magnitude of PET anomalies. 
 <br>
 
 #### **Data Requirements:**
@@ -205,20 +205,14 @@ shinyAppDir("../eddi_app/R/", options = list(height = 1700))
 
 **Key Strengths:**
 
-  + Combines information about water availability (precipitation) and atmospheric demand for moisture (potential evapotranspiration)
-  + Relatively simple to calculate and only requires climatological data and statistical models
-  + Does not incorporate assumptions about the behavior of the underlying system
-  + Can be calculated where only T and P exist (if using Thornthwaite based PET)
-  + Can be calculated with more sophisticated PET algorithms if data is available 
+  + NEED TO FILL THIS IN
 
 **Key Weaknesses:** 
 
-  + Sensitive to differences in PET calculations 
-  + Requires climatology of data to have accurate statistical reference distributions
-  + Sensitive to probability distribution used to normalize data distribution
+  + NEED TO FILL THIS IN
   
 ### **Historical Validation:**
-The SPEI has been used in many studies to understand the effects of drought on hydrologic resource availability, including reservoir, stream discharge and groundwater. In general, SPEI calculated at longer timescales (>12 months) has shown greater correlation with water levels in lakes and reservoirs (McEvoy et al., 2012). 
+Fill this in 
 
 ### **UMRB Validation:**
 Validation in progress
