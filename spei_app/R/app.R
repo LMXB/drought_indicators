@@ -367,8 +367,11 @@ shinyApp(
                  
                  #compute date time for day/year of interest
                  date_time = as.POSIXct(paste(data$day[first_date_breaks], data$year[first_date_breaks], sep = "-"), format = "%j-%Y")
-                 #fit lmoments
-                 lmoments_x = lmoms(data_time_filter$sum)
+                 
+                 #Unbiased Sample Probability-Weighted Moments (following Beguer ́ıa et al 2014)
+                 pwm = pwm.ub(data_time_filter$sum)
+                 #Probability-Weighted Moments to L-moments
+                 lmoments_x = pwm2lmom(pwm)
                  #fit generalized logistic
                  fit.parglo = parglo(lmoments_x)
                  #compute probabilistic cdf 

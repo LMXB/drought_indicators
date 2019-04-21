@@ -2,19 +2,53 @@ library(glogis)
 library(PearsonDS)
 library(gsl)
 library(lmomco)
+library(actuar)
 
-x = as.numeric(integrated_diff[77,])
+x = as.numeric(integrated_diff[74,])
+
+x = as.numeric(x)
+#fit lmoments
+lmoments_x = lmoms(x)
+#fit pearson type 3
+fit.parglo = parglo(lmoments_x)
+#fit.parlogglo = c(exp(fit.parglo$para[1]), 1/fit.parglo$para[2])
+#compute probabilistic cdf 
+fit.cdf = cdfglo(x, fit.parglo)
+#compute standard normal equivelant
+standard_norm = qnorm(fit.cdf, mean = 0, sd = 1)
+
+
+#New way
+x = as.numeric(x)
+#Unbiased Sample Probability-Weighted Moments (following Beguer ́ıa et al 2014)
+pwm = pwm.ub(x)
+#Probability-Weighted Moments to L-moments
+lmoments_x = pwm2lmom(pwm)
+#fit generalized logistic
+fit.parglo = parglo(lmoments_x)
+
+#test to make sure the packages compute the same reults
+fortran_vec = c(lmoments_x$lambdas[1:2], lmoments_x$ratios[3])
+test = lmom::pelglo(fortran_vec)
+
+#compute probabilistic cdf 
+fit.cdf = cdfglo(x, fit.parglo)
+#compute standard normal equivelant
+standard_norm2 = qnorm(fit.cdf, mean = 0, sd = 1)
+
+
 
 spei_fun <- function(x) {
   #first try log logistic
   tryCatch(
     {
       x = as.numeric(x)
-      #fit lmoments
-      lmoments_x = lmoms(x)
-      #fit pearson type 3
+      #Unbiased Sample Probability-Weighted Moments (following Beguer ́ıa et al 2014)
+      pwm = pwm.ub(x)
+      #Probability-Weighted Moments to L-moments
+      lmoments_x = pwm2lmom(pwm)
+      #fit generalized logistic
       fit.parglo = parglo(lmoments_x)
-      #fit.parlogglo = c(exp(fit.parglo$para[1]), 1/fit.parglo$para[2])
       #compute probabilistic cdf 
       fit.cdf = cdfglo(x, fit.parglo)
       #compute standard normal equivelant
