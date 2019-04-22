@@ -4,19 +4,25 @@ current_eddi_30 = raster::raster("../eddi_app/maps/current_eddi/current_eddi_30.
 current_eddi_60 = raster::raster("../eddi_app/maps/current_eddi/current_eddi_60.tif")
 current_eddi_90 = raster::raster("../eddi_app/maps/current_eddi/current_eddi_90.tif")
 current_eddi_180 = raster::raster("../eddi_app/maps/current_eddi/current_eddi_180.tif")
-current_eddi_300 = raster::raster("../eddi_app/maps/current_eddi/current_eddi_300.tif")
+current_eddi_365 = raster::raster("../eddi_app/maps/current_eddi/current_eddi_365.tif")
+current_eddi_water_year = raster::raster("../eddi_app/maps/current_eddi/current_eddi_water_year.tif")
+current_eddi_year_to_date = raster::raster("../eddi_app/maps/current_eddi/current_eddi_year_to_date.tif")
 
 watersheds_30 = st_read("../eddi_app/shp/current_eddi/current_eddi_watershed_30.shp")
 watersheds_60 = st_read("../eddi_app/shp/current_eddi/current_eddi_watershed_60.shp")
 watersheds_90 = st_read("../eddi_app/shp/current_eddi/current_eddi_watershed_90.shp")
 watersheds_180 = st_read("../eddi_app/shp/current_eddi/current_eddi_watershed_180.shp")
-watersheds_300 = st_read("../eddi_app/shp/current_eddi/current_eddi_watershed_300.shp")
+watersheds_365 = st_read("../eddi_app/shp/current_eddi/current_eddi_watershed_365.shp")
+watersheds_water_year = st_read("../eddi_app/shp/current_eddi/current_eddi_watershed_water_year.shp")
+watersheds_year_to_date = st_read("../eddi_app/shp/current_eddi/current_eddi_watershed_year_to_date.shp")
 
 county_30 = st_read("../eddi_app/shp/current_eddi/current_eddi_county_30.shp")
 county_60 = st_read("../eddi_app/shp/current_eddi/current_eddi_county_60.shp")
 county_90 = st_read("../eddi_app/shp/current_eddi/current_eddi_county_90.shp")
 county_180 = st_read("../eddi_app/shp/current_eddi/current_eddi_county_180.shp")
-county_300 = st_read("../eddi_app/shp/current_eddi/current_eddi_county_300.shp")
+county_365 = st_read("../eddi_app/shp/current_eddi/current_eddi_county_365.shp")
+county_water_year = st_read("../eddi_app/shp/current_eddi/current_eddi_county_water_year.shp")
+county_year_to_date = st_read("../eddi_app/shp/current_eddi/current_eddi_county_year_to_date.shp")
 
 current_usdm = st_read("../USDM_current/current_usdm.shp")
 
@@ -68,11 +74,11 @@ shinyApp(
     })
     
     
-    watershed_list = list(watersheds_30, watersheds_60, watersheds_90, watersheds_180, watersheds_300)
-    county_list = list(county_30, county_60, county_90, county_180, county_300)
+    watershed_list = list(watersheds_30, watersheds_60, watersheds_90, watersheds_180, watersheds_365, watersheds_water_year, watersheds_year_to_date)
+    county_list = list(county_30, county_60, county_90, county_180, county_365, county_water_year, county_year_to_date)
     
-    watershed_list_names = c("30 Day HUC8", "60 Day HUC8", "90 Day HUC8", "180 Day HUC8", "300 Day HUC8")
-    watershed_raster_names = c("30 Day", "60 Day", "90 Day", "180 Day", "300 Day")
+    watershed_list_names = c("30 Day HUC8", "60 Day HUC8", "90 Day HUC8", "180 Day HUC8", "365 Day HUC8", "Water Year HUC8", "Year to Date HUC8")
+    watershed_raster_names = c("30 Day", "60 Day", "90 Day", "180 Day", "365 Day", "Water Year", "Year to Date")
     
     #labels for watershed highligh
     labels = list()
@@ -127,7 +133,10 @@ shinyApp(
       addRasterImage(current_eddi_60, colors = pal, opacity = 0.8, group = "60 Day") %>%
       addRasterImage(current_eddi_90, colors = pal, opacity = 0.8, group = "90 Day") %>%
       addRasterImage(current_eddi_180, colors = pal, opacity = 0.8, group = "180 Day") %>%
-      addRasterImage(current_eddi_300, colors = pal, opacity = 0.8, group = "300 Day") %>%
+      addRasterImage(current_eddi_365, colors = pal, opacity = 0.8, group = "365 Day") %>%
+      addRasterImage(current_eddi_water_year, colors = pal, opacity = 0.8, group = "Water Year") %>%
+      addRasterImage(current_eddi_year_to_date, colors = pal, opacity = 0.8, group = "Year to Date") %>%
+      
       addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
       addPolygons(data = current_usdm, group = "USDM", fillColor = ~pal_usdm(DM), weight = 2, opacity = 1,  color = "black", 
                   fillOpacity = 0.5, highlight = 
@@ -423,7 +432,7 @@ shinyApp(
       }
 
       eddi_30 = eddi_calc(c,30)
-      eddi_300 = eddi_calc(c,300)
+      eddi_365 = eddi_calc(c,365)
 
       #calculate monthly pet totals
       monthly_pet1 = c %>%
@@ -507,15 +516,15 @@ shinyApp(
 
       #calcualte timeseries plots
       eddi_30_plot = eddi_plot(eddi_30, "30 Day EDDI")
-      eddi_300_plot = eddi_plot(eddi_300, "300 Day EDDI")
+      eddi_365_plot = eddi_plot(eddi_365, "365 Day EDDI")
 
       #calcualte histogram plots
       eddi_30_hist = hist_plot(eddi_30, "30 Day EDDI")
-      eddi_300_hist = hist_plot(eddi_300, "300 Day EDDI")
+      eddi_365_hist = hist_plot(eddi_365, "365 Day EDDI")
 
       #combine for presentation
-      final_plot = gridExtra::grid.arrange(pet_plot, eddi_30_plot,eddi_300_plot,
-                                           eddi_30_hist, eddi_300_hist,
+      final_plot = gridExtra::grid.arrange(pet_plot, eddi_30_plot,eddi_365_plot,
+                                           eddi_30_hist, eddi_365_hist,
                                            layout_matrix = rbind(c(1,1,1,1,1),
                                                                  c(2,2,2,4,4),
                                                                  c(3,3,3,5,5)))

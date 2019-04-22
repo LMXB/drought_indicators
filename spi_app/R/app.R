@@ -31,19 +31,25 @@ current_spi_30 = raster::raster("../spi_app/maps/current_spi/current_spi_30.tif"
 current_spi_60 = raster::raster("../spi_app/maps/current_spi/current_spi_60.tif")
 current_spi_90 = raster::raster("../spi_app/maps/current_spi/current_spi_90.tif")
 current_spi_180 = raster::raster("../spi_app/maps/current_spi/current_spi_180.tif")
-current_spi_300 = raster::raster("../spi_app/maps/current_spi/current_spi_300.tif")
+current_spi_365 = raster::raster("../spi_app/maps/current_spi/current_spi_365.tif")
+current_spi_water_year = raster::raster("../spi_app/maps/current_spi/current_spi_water_year.tif")
+current_spi_year_to_date = raster::raster("../spi_app/maps/current_spi/current_spi_year_to_date.tif")
 
 watersheds_30 = st_read("../spi_app/shp/current_spi/current_spi_watershed_30.shp")
 watersheds_60 = st_read("../spi_app/shp/current_spi/current_spi_watershed_60.shp")
 watersheds_90 = st_read("../spi_app/shp/current_spi/current_spi_watershed_90.shp")
 watersheds_180 = st_read("../spi_app/shp/current_spi/current_spi_watershed_180.shp")
-watersheds_300 = st_read("../spi_app/shp/current_spi/current_spi_watershed_300.shp")
+watersheds_365 = st_read("../spi_app/shp/current_spi/current_spi_watershed_365.shp")
+watersheds_water_year = st_read("../spi_app/shp/current_spi/current_spi_watershed_water_year.shp")
+watersheds_year_to_date = st_read("../spi_app/shp/current_spi/current_spi_watershed_year_to_date.shp")
 
 county_30 = st_read("../spi_app/shp/current_spi/current_spi_county_30.shp")
 county_60 = st_read("../spi_app/shp/current_spi/current_spi_county_60.shp")
 county_90 = st_read("../spi_app/shp/current_spi/current_spi_county_90.shp")
 county_180 = st_read("../spi_app/shp/current_spi/current_spi_county_180.shp")
-county_300 = st_read("../spi_app/shp/current_spi/current_spi_county_300.shp")
+county_365 = st_read("../spi_app/shp/current_spi/current_spi_county_365.shp")
+county_water_year = st_read("../spi_app/shp/current_spi/current_spi_county_water_year.shp")
+county_year_to_date = st_read("../spi_app/shp/current_spi/current_spi_county_year_to_date.shp")
 
 current_usdm = st_read("../USDM_current/current_usdm.shp")
 
@@ -96,11 +102,11 @@ shinyApp(
            
           #spatial datasets and libraries are in global.R
            
-           watershed_list = list(watersheds_30, watersheds_60, watersheds_90, watersheds_180, watersheds_300)
-           county_list = list(county_30, county_60, county_90, county_180, county_300)
+           watershed_list = list(watersheds_30, watersheds_60, watersheds_90, watersheds_180, watersheds_365, watersheds_water_year, watersheds_year_to_date)
+           county_list = list(county_30, county_60, county_90, county_180, county_365, county_water_year, county_year_to_date)
            
-           watershed_list_names = c("30 Day HUC8", "60 Day HUC8", "90 Day HUC8", "180 Day HUC8", "300 Day HUC8")
-           watershed_raster_names = c("30 Day", "60 Day", "90 Day", "180 Day", "300 Day")
+           watershed_list_names = c("30 Day HUC8", "60 Day HUC8", "90 Day HUC8", "180 Day HUC8", "365 Day HUC8", "Water Year", "Year to Date")
+           watershed_raster_names = c("30 Day", "60 Day", "90 Day", "180 Day", "365 Day", "Water Year", "Year to Date")
            
            #labels for watershed highligh
            labels = list()
@@ -171,7 +177,9 @@ shinyApp(
              addRasterImage(current_spi_60, colors = pal, opacity = 0.8, group = "60 Day") %>%
              addRasterImage(current_spi_90, colors = pal, opacity = 0.8, group = "90 Day") %>%
              addRasterImage(current_spi_180, colors = pal, opacity = 0.8, group = "180 Day") %>%
-             addRasterImage(current_spi_300, colors = pal, opacity = 0.8, group = "300 Day") %>%
+             addRasterImage(current_spi_365, colors = pal, opacity = 0.8, group = "365 Day") %>%
+             addRasterImage(current_spi_water_year, colors = pal, opacity = 0.8, group = "Water Year") %>%
+             addRasterImage(current_spi_year_to_date, colors = pal, opacity = 0.8, group = "Year to Date") %>%
              addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
              addPolygons(data = current_usdm, group = "USDM", fillColor = ~pal_usdm(DM), weight = 2, opacity = 1, color = "black", 
                          fillOpacity = 0.5, highlight = 
@@ -430,7 +438,7 @@ shinyApp(
              }
              
              spi_30 = spi_calc(c,30)
-             spi_300 = spi_calc(c,300)
+             spi_365 = spi_calc(c,365)
              
              #calculate monthly precip totals
              monthly_precip1 = c %>%
@@ -516,15 +524,15 @@ shinyApp(
              
              #calcualte timeseries plots
              spi_30_plot = spi_plot(spi_30, "30 Day SPI")
-             spi_300_plot = spi_plot(spi_300, "300 Day SPI")
+             spi_365_plot = spi_plot(spi_365, "365 Day SPI")
              
              #calcualte histogram plots
              spi_30_hist = hist_plot(spi_30, "30 Day SPI")
-             spi_300_hist = hist_plot(spi_300, "300 Day SPI")
+             spi_365_hist = hist_plot(spi_365, "365 Day SPI")
              
              #combine for presentation
-             final_plot = gridExtra::grid.arrange(monthly_precip_plot, spi_30_plot,spi_300_plot, 
-                                                  spi_30_hist, spi_300_hist,
+             final_plot = gridExtra::grid.arrange(monthly_precip_plot, spi_30_plot,spi_365_plot, 
+                                                  spi_30_hist, spi_365_hist,
                                                   layout_matrix = rbind(c(1,1,1,1,1),
                                                                         c(2,2,2,4,4),
                                                                         c(3,3,3,5,5)))

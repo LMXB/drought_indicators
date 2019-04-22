@@ -180,7 +180,7 @@ EDDI
 ### **Evaporative Demand Drought Index (EDDI)**
 
 #### **Overview:**
-EDDI calculates the rank of accumulated PET for a given region. Unlike SPI and SPEI, EDDI does not standardize data based off of probability distributions. Instead, EDDI uses a non-parametric approach to compute empirical probabilities using inverse normal approximation. This method calculates EDDI by ranking the data from smallest to largest and accounting for the number of observations. Therefore, maximum and minimum values of EDDI are constrained by the number of years on record (which determines the number of observations). Practically, this causes EDDI to only show the relative ranking of year, with respect to the period of record, and does not approximate the magnitude of PET anomalies. 
+EDDI calculates the rank of accumulated PET for a given region. Unlike SPI and SPEI, EDDI does not standardize data based off of theoretical (parameterized) probability distributions. Instead, EDDI uses a non-parametric approach to compute empirical probabilities using inverse normal approximation. This method calculates EDDI by ranking the data from smallest to largest and accounting for the number of observations. Therefore, maximum and minimum values of EDDI are constrained by the number of years on record (which determines the number of observations). Practically, this causes EDDI to only show the relative ranking of year, with respect to the period of record, and does not approximate the magnitude of PET anomalies outside of relative ranking. 
 <br>
 
 #### **Data Requirements:**

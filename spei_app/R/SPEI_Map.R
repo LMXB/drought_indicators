@@ -24,9 +24,6 @@ raster_precip = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/
 raster_pet = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pet_1979_CurrentYear_CONUS.nc", var = "daily_mean_reference_evapotranspiration_grass")
 #proj4string(raster_pet) = CRS("+init=EPSG:4326")
 
-#designate time scale
-time_scale = c(30,60,90,180,300)
-
 #import UMRB outline for clipping and watershed for aggregating
 UMRB = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/UMRB_Outline_Conus.shp")
 watersheds = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/UMRB_Clipped_HUC8_Simple.shp")
@@ -37,12 +34,19 @@ montana = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/montana_outl
 raster_precip_spatial_clip = crop(raster_precip, extent(UMRB))
 raster_pet_spatial_clip = crop(raster_pet, extent(UMRB))
 
+time = data.frame(datetime = as.Date(as.numeric(substring(names(raster_precip_spatial_clip),2)), origin="1900-01-01"))
+time$day = strftime(time$datetime,"%m-%d")
+
+water_year = (length(time$day) - which(time$day == "10-01")[length(which(time$day == "10-01"))])
+year_to_date = (length(time$day) - which(time$day == "01-01")[length(which(time$day == "01-01"))])
+
+#designate time scale
+time_scale = c(30,60,90,180,365, water_year, year_to_date)
+
 for(t in 1:length(time_scale)){
   
   #calcualte time
   tic()
-  time = data.frame(datetime = as.Date(as.numeric(substring(names(raster_precip_spatial_clip),2)), origin="1900-01-01"))
-  time$day = strftime(time$datetime,"%m-%d")
   
   first_date_breaks = which(time$day == time$day[length(time$datetime)])
   second_date_breaks = first_date_breaks-(time_scale[t]-1)
@@ -148,6 +152,19 @@ for(t in 1:length(time_scale)){
   #define path to export and wrtie GEOtiff
   path_file = paste("/home/zhoylman/drought_indicators/spei_app/maps/current_spei/current_spei_",
                     as.character(time_scale[t]),".tif", sep = "")
+  
+  # wateryear and year to date file name
+  if(t > (length(time_scale)-2)){
+    if(t == (length(time_scale)-1)){
+      path_file = paste("/home/zhoylman/drought_indicators/spei_app/maps/current_spei/current_spei_",
+                        "water_year",".tif", sep = "")
+    }
+    if(t == (length(time_scale))){
+      path_file = paste("/home/zhoylman/drought_indicators/spei_app/maps/current_spei/current_spei_",
+                        "year_to_date",".tif", sep = "")
+    }
+  }
+  
   writeRaster(spei_map, path_file, format = "GTiff", overwrite = T)
 
   ############################################
@@ -168,6 +185,17 @@ for(t in 1:length(time_scale)){
   watersheds_export$average = as.vector(unlist(r.median))
   path_file_watershed = paste("/home/zhoylman/drought_indicators/spei_app/shp/current_spei/", sep = "")
   layer_name = paste("current_spei_watershed_",as.character(time_scale[t]), sep = "")
+  
+  # wateryear and year to date file name
+  if(t > (length(time_scale)-2)){
+    if(t == (length(time_scale)-1)){
+      layer_name = paste("current_spei_watershed_water_year", sep = "")
+    }
+    if(t == (length(time_scale))){
+      layer_name = paste("current_spei_watershed_year_to_date", sep = "")
+    }
+  }
+  
   rgdal::writeOGR(obj=watersheds_export, dsn=path_file_watershed, layer = layer_name, driver="ESRI Shapefile", overwrite_layer = T)
   
   #extract raster values for each county
@@ -183,6 +211,17 @@ for(t in 1:length(time_scale)){
   county_export$average = as.vector(unlist(r.median))
   path_file_watershed = paste("/home/zhoylman/drought_indicators/spei_app/shp/current_spei/", sep = "")
   layer_name = paste("current_spei_county_",as.character(time_scale[t]), sep = "")
+  
+  # wateryear and year to date file name
+  if(t > (length(time_scale)-2)){
+    if(t == (length(time_scale)-1)){
+      layer_name = paste("current_spei_county_water_year", sep = "")
+    }
+    if(t == (length(time_scale))){
+      layer_name = paste("current_spei_county_year_to_date", sep = "")
+    }
+  }
+  
   rgdal::writeOGR(obj=county_export, dsn=path_file_watershed, layer = layer_name, driver="ESRI Shapefile", overwrite_layer = T)
   
   toc()
