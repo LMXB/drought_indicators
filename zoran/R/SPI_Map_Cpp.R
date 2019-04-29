@@ -9,9 +9,10 @@ library(rgdal)
 library(parallel)
 
 #define directories
-climatology.dir = "/mnt/ScratchDrive/data/Hoylman/gridMET_Climatology/gridMET_precip_raw/"
-work.dir = "/mnt/ScratchDrive/data/Hoylman/SPI/"
+climatology.dir = "/mnt/ScratchDrive/data/Hoylman/gridMET_Climatology/gridMET_precip_raw"
 write.dir = "/mnt/ScratchDrive/data/Hoylman/SPI/Raw_gridMET_SPI_test/"
+
+work.dir = "/mnt/ScratchDrive/data/Hoylman/SPI/"
 git.dir = '/home/zhoylman/drought_indicators/zoran/R/'
 
 #fits a gamma distrbution to a vector
@@ -82,18 +83,12 @@ for(t in 1:length(time_scale)){
     
     # call C++ sum program here
     # aruments are: 1. text file which lists geotiffs; 2. name of the output file; 3. NoData value 
-    system(paste0("/mnt/ScratchDrive/data/Hoylman/drought_anomaly/drought_anomaly_sum ", txt.filename, " ", out.file, " ", -9999  ))
+    system(paste0("/home/zhoylman/drought_indicators/zoran/cpp/drought_anomaly_sum ", txt.filename, " ", out.file, " ", -9999  ))
   }
   
   #import summed rasters
   summed_rasters = list.files(tmp.dir, pattern = ".tif$", full.names = T)
   summed_raster_stack = stack(summed_rasters)
-  
-  #test to see if 0s are causing NAs
-  #summed_raster_stack[summed_raster_stack == 0] = 0.001
-  
-  #set NULL value
-  NAvalue(summed_raster_stack) <- -2147483648
   
   #reformat data
   summed_precip_vec = foreach(i=unique(group_by_vec)) %dopar% {
@@ -121,7 +116,7 @@ for(t in 1:length(time_scale)){
        main = paste0("Current ", as.character(time_scale[t]), " Day SPI"))
   
   #write out raster
-  writeRaster(current_spi, paste0(write.dir,"gridmet_current_spi_", as.character(time_scale[t]),".tif"), format = "GTiff", overwrite = T)
+  writeRaster(current_spi, paste0(write.dir,"nws_current_spi_", as.character(time_scale[t]),".tif"), format = "GTiff", overwrite = T)
   
   toc()
   do.call(file.remove, list(list.files(tmp.dir, full.names = T)))
