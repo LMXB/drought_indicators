@@ -9,18 +9,16 @@ library(rgdal)
 library(parallel)
 
 #define directories
-work.dir = "/mnt/ScratchDrive/data/Hoylman/SPI/"
+work.dir = "/mnt/ScratchDrive/data/Hoylman/EDDI/"
 git.dir = '/home/zhoylman/drought_indicators/zoran/R/'
-climatology.dir = "/mnt/ScratchDrive/data/Hoylman/gridMET_Climatology/gridMET_precip_raw"
+climatology.dir = "/mnt/ScratchDrive/data/Hoylman/gridMET_Climatology/gridMET_pet_raw"
 
-write.dir = paste0(work.dir,"Raw_gridMET_SPI_test/")
+write.dir = paste0(work.dir,"Raw_gridMET_EDDI_test/")
 dir.create(write.dir)
 
-#fits a gamma distrbution to a vector
-#returns the shape and rate parameters
-source(paste0(git.dir, "gamma_fit.R"))
+#import fdates function
 source(paste0(git.dir, "fdates.R"))
-source(paste0(git.dir, "spi_fun.R"))
+source(paste0(git.dir, "eddi_fun.R"))
 
 files = list.files(climatology.dir, pattern = ".tif$", full.names = T)
 
@@ -93,32 +91,33 @@ for(t in 1:length(time_scale)){
   summed_raster_stack = stack(summed_rasters)
   
   #reformat data
-  summed_precip_vec = foreach(i=unique(group_by_vec)) %dopar% {
+  summed_pet_vec = foreach(i=unique(group_by_vec)) %dopar% {
     library(raster)
     values(summed_raster_stack[[i]])
   }
-  integrated_precip = structure(summed_precip_vec, row.names = c(NA, -length(summed_precip_vec[[1]])), class = "data.frame")
+  integrated_pet = structure(summed_pet_vec, row.names = c(NA, -length(summed_pet_vec[[1]])), class = "data.frame")
   
-  #calculate SPI
-  clusterExport(cl, c("gamma_fit", "spi_fun"))
-  spi_values = parApply(cl,integrated_precip, 1, FUN = spi_fun)
+  #calculate EDDI
+  clusterExport(cl, c("git.dir"))
+  clusterCall(cl, function() {source(paste0(git.dir,"eddi_fun.R"))})
+  eddi_values = parApply(cl,integrated_pet, 1, FUN = eddi_fun)
   stopCluster(cl)
   
   #create spatial template for current spi values
-  current_spi = summed_raster_stack[[1]]
+  current_eddi = summed_raster_stack[[1]]
   
   #allocate curent spi values to spatial template
-  values(current_spi) = spi_values
+  values(current_eddi) = eddi_values
   
   #compute color ramp for visualization
-  color_ramp = colorRampPalette(c("darkred","red", "white", "blue", "darkblue"))
+  color_ramp = colorRampPalette(rev(c("darkred","red", "white", "blue", "darkblue")))
   
   #plot map
-  plot(current_spi, col = color_ramp(100), zlim = c(-3.5,3.5),
-       main = paste0("Current ", as.character(time_scale[t]), " Day SPI"))
+  plot(current_eddi, col = color_ramp(100), zlim = c(-3.5,3.5),
+       main = paste0("Current ", as.character(time_scale[t]), " Day EDDI"))
   
   #write out raster
-  writeRaster(current_spi, paste0(write.dir,"spi_",time_fdates[length(time_fdates)],"_", 
+  writeRaster(current_eddi, paste0(write.dir,"eddi_",time_fdates[length(time_fdates)],"_", 
                                    as.character(time_scale[t]),"_day" ,".tif"), format = "GTiff", overwrite = T)
   
   toc()
