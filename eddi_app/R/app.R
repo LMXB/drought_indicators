@@ -41,6 +41,13 @@ shinyApp(
                     actionButton("evHUC", "Watersheds"),
                     actionButton("evCounty", "County"),
                     style="color: #add8e6; background-color: #337ab7; border-color: #00000"),
+                  textOutput('time'),
+                  tags$head(tags$style("#time{color: black;
+                                 font-size: 24px;
+                                 font-style: bold;
+                                 }"
+                  )
+                  ),
                   #mainPanel(width = "100%",
                   leafletOutput("mymap", height = 650),
                   
@@ -66,6 +73,7 @@ shinyApp(
                   ),
   #),
   server <- function(input, output) {
+    output$time = renderText({paste("The most recent data available is from ",as.character(watersheds_30$crrnt_t[1]))})
     
     output$mymap = renderLeaflet({
       leaflet() %>%

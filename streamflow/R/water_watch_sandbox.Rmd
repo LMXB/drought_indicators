@@ -1,0 +1,88 @@
+---
+title: "Water Watch"
+output: 
+  flexdashboard::flex_dashboard:
+    vertical_layout: scroll
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo = F}
+library(shiny)
+library(png)
+library(leaflet)
+
+shinyApp(# Define UI for app that draws a histogram ----
+ui <- fluidPage(
+  
+  # App title ----
+  titlePanel("Water Watch"),
+  
+  leafletOutput("mymap", height = 650),
+
+  # Sidebar layout with input and output definitions ----
+  sidebarLayout(
+
+    # Sidebar panel for inputs ----
+    sidebarPanel(
+
+      # Input: Slider for the number of bins ----
+      numericInput(inputId = "site",
+                  label = "site",
+                  min = 1,
+                  max = Inf,
+                  value = 12340000),
+      actionButton("do", "GO!")
+
+    ),
+
+    # Main panel for displaying outputs ----
+    mainPanel(
+
+      # Output: 
+      htmlOutput("Plot")
+      # htmlOutput("legend")
+
+    )
+  )
+),
+server <- function(input, output) {
+  output$mymap = renderLeaflet({
+             leaflet() %>%
+               addTiles() %>%
+               setView(lng = -108, lat = 46.5, zoom = 6)
+           })
+observeEvent(input$do, {
+  id <- input$site
+  
+  output$Plot <- renderText({
+    #define parts of URL string (ID is in the middle)
+        first = "https://waterwatch.usgs.gov/wwapps/wwdur4.php?sno="
+        site = as.character(id)
+        end = '&amp;yr=2019&amp;ytp=wy&amp;dt=dv01d&amp;nyr=1&amp;xps=line&amp;nyor=10&amp;legend=0&amp;otp=plot'
+        
+        #complile full url
+        url = paste0(first,site,end)
+        
+        c('<center><img src="',url,'"></center>')
+      })
+  
+    # output$legend <- renderText({
+    # 
+    #   legend = '/home/zhoylman/drought_indicators/streamflow/img/sitedur_line.png'
+    #   c('<center><img src="',legend,'"></center>')
+    # 
+    #   })
+    })
+
+})
+
+
+## Water Watch
+# <center><img src="`r url`"></center>
+# <center><img src="`r legend`"></center>
+
+```

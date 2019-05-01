@@ -1,0 +1,1 @@
+# This script will update point values for mapping
