@@ -8,6 +8,7 @@ library(data.table)
 library(lubridate)
 library(dplyr)
 library(sf)
+library(ggplot2)
 
 #define input shp files
 snotel = st_read("/home/zhoylman/drought_indicators/snotel/shp/Snotel_Sites.shp")
@@ -22,14 +23,16 @@ registerDoParallel(cl)
 
 current = foreach(i = 1:length(snotel$site_num)) %dopar%{
   library(RNRCS)
+  library(lubridate)
+  #rule for start date depending on if date is between Oct - Dec use current year data,
+  #else (Jan - Sept), start date is the previous year (water year)
+  if(month(as.Date(Sys.time()))>=10){
+    start = paste0(year(as.Date(Sys.time())),"-10-01")
+  } else {
+    start = paste0((year(as.Date(Sys.time()))-1),"-10-01")
+  }
+  
   tryCatch({
-    #rule for start date depending on if date is between Oct - Dec use current year data,
-    #else (Jan - Sept), start date is the previous year (water year)
-    if(month(as.Date(Sys.time()))>=10){
-      start = paste0(year(as.Date(Sys.time())),"-10-01")
-    } else {
-      start = paste0((year(as.Date(Sys.time()))-1),"-10-01")
-    }
     #pull in data
     grabNRCS.data("SNTL", as.numeric(snotel$site_num[i]), timescale = "daily", DayBgn = start,
                   DayEnd = as.Date(Sys.time()))
@@ -49,8 +52,10 @@ clusterExport(cl, "extract_columns")
 
 current_select = foreach(i = 1:length(snotel$site_num)) %dopar%{
   library(dplyr)
+  collumn_name = c("Snow.Water.Equivalent..in..Start.of.Day.Values", 
+                   "Precipitation.Accumulation..in..Start.of.Day.Values", "Date")
   tryCatch({
-    extract_columns(current[[i]], "Snow.Water.Equivalent..in..Start.of.Day.Values")
+    extract_columns(current[[i]], collumn_name)
   }, error = function(e){
     return(NA)
   }
@@ -61,44 +66,40 @@ stopCluster(cl)
 
 toc()
 
-#clean up data and turn into data.frame
-current_select_df = t(as.data.frame(current_select))
-rownames(current_select_df) = snotel$site_name
-colnames(current_select_df) = "SWE"
+#clean up data
+for(i in 1:length(snotel$site_num)){
+  if(length(current_select[[i]])>1){
+    colnames(current_select[[i]]) = c("SWE", "Precip","Date")
+    current_select[[i]]$yday = yday(current_select[[i]]$Date)
+    current_select[[i]]$Date = as.POSIXct(current_select[[i]]$Date, format = "%Y-%m-%d")
+    current_select[[i]]$SWE = current_select[[i]]$SWE*25.4
+    current_select[[i]]$Precip = current_select[[i]]$Precip*25.4
+  }
+}
 
 #load in climatology data
 load("/home/zhoylman/drought_indicators/snotel/climatology/snotel_climatology.RData")
 
-#get current yday for lookup
-current_yday = yday(as.Date(Sys.time()))
+climatology_WY = climatology
 
-#compute percent of average
-daily_lookup = data.frame(matrix(nrow=length(snotel$site_num), ncol = 1))
-colnames(daily_lookup) = "daily_mean"
-
+#compute index and sequences for water year
 for(i in 1:length(snotel$site_num)){
-  tryCatch({
-    daily_lookup$daily_mean[i] = climatology[[i]] %>%
-      filter(yday == current_yday) %>%
-      select(mean_swe)
-  }, error = function(e){
-    return(NA)
+  if(length(climatology_WY[[1]]$yday) == 366){
+    climatology_WY$WY = c(seq(91,366,1), seq(1,90,1))
   }
-  )
-  
+  if(length(climatology_WY[[1]]$yday) == 365){
+    climatology_WY$WY = c(seq(91,365,1), seq(1,90,1))
+  }
 }
 
-#merge
-daily_lookup$current = current_select_df
+plot_snotel = function(current_data){
+  plot = ggplot(data = current_data, aes(x = Date, y = SWE))+
+    geom_line(color = "darkblue")+
+    ylab("SWE & Precipitaiton (mm)")+
+    xlim(c(current_select[[1]]$Date[1], 
+         as.POSIXct(paste0(year(current_select[[1]]$Date[1])+1,"-10-01"), format = "%Y-%m-%d")))+
+  theme_bw(base_size = 16)
+  return(plot)
+}
 
-#compute pervent average
-daily_lookup$percent = (as.numeric(daily_lookup$current)/as.numeric(daily_lookup$daily_mean))*100
-
-#add station id
-daily_lookup$site_name = as.character(snotel$site_name)
-
-#flatten list for export
-daily_lookup = data.frame(daily_lookup)
-
-#Write daily table
-save(daily_lookup, file = "/home/zhoylman/drought_indicators/snotel/climatology/current_precent_SWE.RData")
+plot_snotel(current_select[[1]])
