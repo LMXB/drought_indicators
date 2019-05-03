@@ -7,7 +7,6 @@ library(dplyr)
 library(data.table)
 library(lubridate)
 library(dplyr)
-library(sf)
 
 #define input shp files
 snotel = st_read("/home/zhoylman/drought_indicators/snotel/shp/Snotel_Sites.shp")
@@ -24,7 +23,7 @@ current = foreach(i = 1:length(snotel$site_num)) %dopar%{
   library(RNRCS)
   tryCatch({
     grabNRCS.data("SNTL", as.numeric(snotel$site_num[i]), timescale = "daily", DayBgn = as.Date(Sys.time()),
-                  DayEnd = as.Date(Sys.time()))
+                                 DayEnd = as.Date(Sys.time()))
   }, error = function(e){
     return(NA)
   }
@@ -71,8 +70,8 @@ colnames(daily_lookup) = "daily_mean"
 for(i in 1:length(snotel$site_num)){
   tryCatch({
     daily_lookup$daily_mean[i] = climatology[[i]] %>%
-      filter(yday == current_yday) %>%
-      select(mean_swe)
+    filter(yday == current_yday) %>%
+    select(mean_swe)
   }, error = function(e){
     return(NA)
   }
@@ -93,4 +92,4 @@ daily_lookup$site_name = as.character(snotel$site_name)
 daily_lookup = data.frame(daily_lookup)
 
 #Write daily table
-save(daily_lookup, file = "/home/zhoylman/drought_indicators/snotel/climatology/current_precent_SWE.RData")
+write.csv(daily_lookup, file = "/home/zhoylman/drought_indicators/snotel/climatology/current_precent_SWE.csv")
