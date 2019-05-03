@@ -7,6 +7,7 @@ library(dplyr)
 library(data.table)
 library(lubridate)
 library(dplyr)
+library(sf)
 
 #define input shp files
 snotel = st_read("/home/zhoylman/drought_indicators/snotel/shp/Snotel_Sites.shp")
@@ -92,4 +93,4 @@ daily_lookup$site_name = as.character(snotel$site_name)
 daily_lookup = data.frame(daily_lookup)
 
 #Write daily table
-write.csv(daily_lookup, file = "/home/zhoylman/drought_indicators/snotel/climatology/current_precent_SWE.csv")
+save(daily_lookup, file = "/home/zhoylman/drought_indicators/snotel/climatology/current_precent_SWE.RData")
