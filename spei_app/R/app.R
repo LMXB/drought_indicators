@@ -446,17 +446,19 @@ shinyApp(
              
              monthly_total = rbind(monthly_precip1, monthly_pet1)
              
+             color_ramp = colorRampPalette(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"))
+             
              spei_plot = function(data,title_str){
                plot1 = ggplot(data = data, aes(x = time, y = spei))+
-                 geom_bar(stat = "identity", aes(fill=col), size = 1.5)+
-                 scale_fill_manual(values = c("#0000FF","#ff0000"))+
+                 geom_bar(stat = "identity", aes(colour=spei), size = 0.5)+
+                 scale_color_gradientn(colours = color_ramp(100), limits = c(-3.5,3.5))+
                  theme_bw(base_size = base_font_size)+
                  xlab("Time")+
                  ylab("SPEI")+
                  theme(legend.position="none")+
                  ylim(c(-3.5,3.5))+
                  ggtitle(title_str)+
-                 scale_x_datetime(limits = as.POSIXct(c(data$time[length(data$time)-365*10],data$time[length(data$time)]), format = "%Y-%m-%d"))
+                 scale_x_datetime(limits = as.POSIXct(c(data$time[length(data$time)-365*4],data$time[length(data$time)]), format = "%Y-%m-%d"))
                return(plot1)
              }
              
@@ -481,9 +483,9 @@ shinyApp(
              # 
              
              hist_plot = function(data, title_str){
-               hist_plot = ggplot(data=data, aes(spei)) + 
-                 geom_histogram(binwidth = 0.05, aes(fill = col))+
-                 scale_fill_manual(values = c("#0000FF","#ff0000"))+
+               hist_plot = ggplot(data=data, aes(x = spei, fill = cut(spei, breaks=c(-Inf, seq(-3.5,3.5, length.out = 98), Inf)))) + 
+                 geom_histogram(aes(x = spei), bins = 100)+
+                 scale_fill_manual(values = color_ramp(100)) +
                  geom_vline(xintercept = data$spei[length(data$spei)], size = 2)+
                  xlab(title_str)+
                  ylab("Frequency")+

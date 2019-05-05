@@ -455,19 +455,22 @@ shinyApp(
 
       monthly_pet1$percent_average = round(100*(monthly_pet1$monthly_sum / rep(mean_monthly_pet$monthly_mean, length.out = length(monthly_pet1$time))),0)
 
+      color_ramp = colorRampPalette(rev(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66")))
+      
       eddi_plot = function(data,title_str){
         plot1 = ggplot(data = data, aes(x = time, y = eddi))+
-          geom_bar(stat = "identity", aes(fill=col), size = 1.5)+
-          scale_fill_manual(values = (c("#0000FF","#ff0000")))+
+          geom_bar(stat = "identity", aes(colour=eddi), size = 0.5)+
+          scale_color_gradientn(colours = color_ramp(100), limits = c(-3.5,3.5))+
           theme_bw(base_size = base_font_size)+
           xlab("Time")+
           ylab("EDDI")+
           theme(legend.position="none")+
           ylim(c(-3.5,3.5))+
           ggtitle(title_str)+
-          scale_x_datetime(limits = as.POSIXct(c(data$time[length(data$time)-365*10],data$time[length(data$time)]), format = "%Y-%m-%d"))
+          scale_x_datetime(limits = as.POSIXct(c(data$time[length(data$time)-365*4],data$time[length(data$time)]), format = "%Y-%m-%d"))
         return(plot1)
       }
+      
 
       # #interactive plot
       # spi_plot_interactive = function(data, title_str){
@@ -490,9 +493,9 @@ shinyApp(
       #
 
       hist_plot = function(data, title_str){
-        hist_plot = ggplot(data=data, aes(eddi)) +
-          geom_histogram(binwidth = 0.05, aes(fill = col))+
-          scale_fill_manual(values = (c("#0000FF","#ff0000")))+
+        hist_plot = ggplot(data=data, aes(x = eddi, fill = cut(eddi, breaks=c(-Inf, seq(-3.5,3.5, length.out = 98), Inf)))) + 
+          geom_histogram(aes(x = eddi), bins = 100)+
+          scale_fill_manual(values = color_ramp(100)) +
           geom_vline(xintercept = data$eddi[length(data$eddi)], size = 2)+
           xlab(title_str)+
           ylab("Frequency")+
