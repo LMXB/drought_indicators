@@ -498,11 +498,26 @@ shinyApp(
                        type = "h", xlab = "Time", ylab = "SPI")
              }
              
-
+            
+             
+             
              hist_plot = function(data, title_str){
-               hist_plot = ggplot(data=data, aes(x = spi, fill = cut(spi, breaks=c(-Inf, seq(-3.5,3.5, length.out = 98), Inf)))) + 
-                 geom_histogram(aes(x = spi), bins = 100)+
-                 scale_fill_manual(values = color_ramp(100)) +
+               
+               data$bins = cut(data$spi, breaks=c(-Inf, seq(-3.5,3.5, length.out = 99), Inf))
+               
+               count = data %>% 
+                 dplyr::group_by(bins, .drop=FALSE)%>%
+                 dplyr::summarize(n = length(bins))
+               
+               count$n[count$n == 0] = NA
+               
+                count$bin_edge = seq(-3.5,3.5, length.out = 100)
+               
+               hist_plot = ggplot(data=count, aes(x = bin_edge, y = n)) + 
+                 geom_bar(stat = "identity", aes(fill=bin_edge, colour = bin_edge), size = 0.5)+
+                 stat_smooth(method = lm, formula = y ~ poly(x, 10), se = FALSE, colour = "black")+
+                 scale_fill_gradientn(colours = color_ramp(100), limits = c(-3.5,3.5))+
+                 scale_colour_gradientn(colours = color_ramp(100), limits = c(-3.5,3.5))+
                  geom_vline(xintercept = data$spi[length(data$spi)], size = 2)+
                  xlab(title_str)+
                  ylab("Frequency")+
