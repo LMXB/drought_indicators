@@ -103,10 +103,11 @@ shinyApp(
            
            output$time = renderText({paste("The most recent data available is from ",as.character(watersheds_30$crrnt_t[1]))})
            
-           output$mymap = renderLeaflet({
+           output$mymap = renderLeaflet({#m_raster
              leaflet() %>%
                addTiles() %>%
                setView(lng = -108, lat = 46.5, zoom = 6)
+             
            })
            
           #spatial datasets and libraries are in global.R

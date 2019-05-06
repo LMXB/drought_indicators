@@ -18,8 +18,18 @@ load("/home/zhoylman/drought_indicators/snotel/climatology/current_precent_SWE.R
 daily_lookup$percent_crop = daily_lookup$percent
 daily_lookup$percent_crop[daily_lookup$percent_crop >200] = 200
 
+na.index = which(is.na(daily_lookup), arr.ind=TRUE)
+na.index = unique(na.index[,1])
+
+snotel$lat[na.index] = NA
+snotel$lon[na.index] = NA
+
+daily_lookup$percent_crop[which(daily_lookup$current == 0)] = NA
+daily_lookup$percent_crop[which(daily_lookup$percent_crop == 0)] = NA
+
+
 #color pallet
-pal <- colorNumeric(c("red", "white", "blue"), domain = c(0,200))
+pal <- colorNumeric(c("red", "yellow", "green", "blue", "darkblue"), domain = c(0,200), na.color = "white")
 
 #custom legend fix
 css_fix <- "div.info.legend.leaflet-control br {clear: both;}"
@@ -46,13 +56,13 @@ shinyApp(
       leaflet(snotel) %>%
         addTiles() %>%
         addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
-        addCircleMarkers(~lon, ~lat, ~site_num, popup = ~htmlEscape(site_name), radius = 10,
-                         color = ~pal(daily_lookup$percent_crop)#, clusterOptions = markerClusterOptions()
+        addCircleMarkers(~lon, ~lat, ~site_num, popup = ~htmlEscape(site_name), radius = 10, stroke = TRUE, fillOpacity = 0.9,
+                         color = "black", fillColor = ~pal(daily_lookup$percent_crop)#, clusterOptions = markerClusterOptions()
         )%>%
         addLegend("bottomleft", pal = pal, values = ~daily_lookup$percent_crop,
                   title = "% Average <br>Daily SWE",
                   opacity = 1,
-                  na.label = "NA"
+                  na.label = "No Snow or NA"
         )%>%
         setView(lng = -108, lat = 46.5, zoom = 6)
     })
