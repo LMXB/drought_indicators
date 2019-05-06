@@ -84,11 +84,13 @@ climatology_WY = climatology
 
 #compute index and sequences for water year
 for(i in 1:length(snotel$site_num)){
-  if(length(climatology_WY[[1]]$yday) == 366){
-    climatology_WY$WY = c(seq(91,366,1), seq(1,90,1))
+  if(length(climatology_WY[[i]]$yday) == 366){
+    climatology_WY[[i]] = climatology_WY[[i]] %>%
+      dplyr::mutate(WY = c(seq(91,366,1), seq(1,90,1)))
   }
-  if(length(climatology_WY[[1]]$yday) == 365){
-    climatology_WY$WY = c(seq(91,365,1), seq(1,90,1))
+  if(length(climatology_WY[[i]]$yday) == 365){
+    climatology_WY[[i]] = climatology_WY[[i]] %>%
+      dplyr::mutate(WY = c(seq(91,365,1), seq(1,90,1)))
   }
 }
 

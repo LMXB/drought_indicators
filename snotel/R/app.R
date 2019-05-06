@@ -29,7 +29,7 @@ daily_lookup$percent_crop[which(daily_lookup$percent_crop == 0)] = NA
 
 
 #color pallet
-pal <- colorNumeric(c("red", "yellow", "green", "blue", "darkblue"), domain = c(0,200), na.color = "white")
+pal <- colorNumeric(c("red", "yellow", "green", "blue", "purple"), domain = c(0,200), na.color = "black")
 
 #custom legend fix
 css_fix <- "div.info.legend.leaflet-control br {clear: both;}"
@@ -60,7 +60,7 @@ shinyApp(
                          color = "black", fillColor = ~pal(daily_lookup$percent_crop)#, clusterOptions = markerClusterOptions()
         )%>%
         addLegend("bottomleft", pal = pal, values = ~daily_lookup$percent_crop,
-                  title = "% Average <br>Daily SWE",
+                  title = "% Average<br>SWE (Daily)",
                   opacity = 1,
                   na.label = "No Snow or NA"
         )%>%
