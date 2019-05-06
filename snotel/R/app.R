@@ -16,11 +16,15 @@ snotel$site_num = gsub("[^0-9.]","",as.character(snotel$site_name))
 #load current conditions 
 load("/home/zhoylman/drought_indicators/snotel/climatology/current_precent_SWE.RData")
 
+daily_lookup = data.frame(daily_mean = unlist(daily_lookup[1]),
+                  SWE = unlist(daily_lookup[2]),
+                  percent = unlist(daily_lookup[3]))
+
 daily_lookup$percent_crop = daily_lookup$percent
 daily_lookup$percent_crop[daily_lookup$percent_crop >200] = 200
+daily_lookup$percent_crop[daily_lookup$percent_crop == "NaN"] = NA
 
-na.index = which(is.na(daily_lookup), arr.ind=TRUE)
-na.index = unique(na.index[,1])
+na.index = which(is.na(daily_lookup$daily_mean), arr.ind=TRUE)
 
 snotel$lat[na.index] = NA
 snotel$lon[na.index] = NA
