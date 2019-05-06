@@ -6,6 +6,7 @@ library(sf)
 library(htmltools)
 library(lubridate)
 library(htmlwidgets)
+library(leaflet.esri)
 
 #define input shp files
 snotel = st_read("/home/zhoylman/drought_indicators/snotel/shp/Snotel_Sites.shp")
@@ -54,7 +55,7 @@ shinyApp(
     
     output$map = renderLeaflet({
       leaflet(snotel) %>%
-        addTiles() %>%
+        addEsriBasemapLayer("Terrain", autoLabels=TRUE) %>%
         addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
         addCircleMarkers(~lon, ~lat, ~site_num, popup = ~htmlEscape(site_name), radius = 10, stroke = TRUE, fillOpacity = 0.9,
                          color = "black", fillColor = ~pal(daily_lookup$percent_crop)#, clusterOptions = markerClusterOptions()

@@ -40,7 +40,8 @@ clusterExport(cl, "extract_columns")
 
 historical_select = foreach(i = 1:length(snotel$site_num)) %dopar%{
   library(dplyr)
-  collumn_name = c("Snow.Water.Equivalent..in..Start.of.Day.Values", "Date")
+  collumn_name = c("Snow.Water.Equivalent..in..Start.of.Day.Values", #"Precipitation.Accumulation..in..Start.of.Day.Values",
+                   "Date")
   tryCatch({
     extract_columns(historical[[i]], collumn_name)
   }, error = function(e){
