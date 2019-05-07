@@ -51,10 +51,6 @@ shinyApp(
                                  font-style: bold;
                                  }"
       ))),
-      tags$head(tags$style(
-        type="text/css",
-        "#plot img {width: 100%; height: auto}")),
-      
       column(6,imageOutput("Plot"))
     )
   ),
@@ -84,8 +80,13 @@ shinyApp(
       end = ".png"
       filename = paste0(first,mid,end)
 
+      width  <- session$clientData$output_Plot_width
+      height <- session$clientData$output_Plot_height
+      
       output$Plot <- renderImage({
-        list(src =filename)
+        list(src =filename,
+             width = width,
+             height = "auto")
       }, deleteFile = FALSE)
     })
   })
