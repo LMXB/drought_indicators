@@ -88,26 +88,80 @@ for(i in 1:length(snotel$site_num)){
     climatology_WY[[i]] = climatology_WY[[i]] %>%
       dplyr::mutate(WY = c(seq(91,366,1), seq(1,90,1)))%>%
       dplyr::mutate(WY_date = as.POSIXct(as.Date(WY, origin = as.Date(current_select[[i]]$Date[1])), format = "%Y-%m-%d"))%>%
-      dplyr::mutate(mean_swe_mm = mean_swe *25.4)
+      dplyr::mutate(median_swe_mm = median_swe *25.4)%>%
+      dplyr::mutate(swe_quantiles_005 = swe_quantiles_005 *25.4)%>%
+      dplyr::mutate(swe_quantiles_025 = swe_quantiles_025 *25.4)%>%
+      dplyr::mutate(swe_quantiles_075 = swe_quantiles_075 *25.4)%>%
+      dplyr::mutate(swe_quantiles_095 = swe_quantiles_095 *25.4)%>%
+      dplyr::mutate(median_precip_mm = median_precip *25.4)%>%
+      dplyr::mutate(precip_quantiles_005 = precip_quantiles_005 *25.4)%>%
+      dplyr::mutate(precip_quantiles_025 = precip_quantiles_025 *25.4)%>%
+      dplyr::mutate(precip_quantiles_075 = precip_quantiles_075 *25.4)%>%
+      dplyr::mutate(precip_quantiles_095 = precip_quantiles_095 *25.4)
   }
   if(length(climatology_WY[[i]]$yday) == 365){
     climatology_WY[[i]] = climatology_WY[[i]] %>%
       dplyr::mutate(WY = c(seq(91,365,1), seq(1,90,1)))%>%
       dplyr::mutate(WY_date = as.POSIXct(as.Date(WY, origin = as.Date(current_select[[i]]$Date[1])), format = "%Y-%m-%d"))%>%
-      dplyr::mutate(mean_swe_mm = mean_swe *25.4)
+      dplyr::mutate(median_swe_mm = median_swe *25.4)%>%
+      dplyr::mutate(swe_quantiles_005 = swe_quantiles_005 *25.4)%>%
+      dplyr::mutate(swe_quantiles_025 = swe_quantiles_025 *25.4)%>%
+      dplyr::mutate(swe_quantiles_075 = swe_quantiles_075 *25.4)%>%
+      dplyr::mutate(swe_quantiles_095 = swe_quantiles_095 *25.4)%>%
+      dplyr::mutate(median_precip_mm = median_precip *25.4)%>%
+      dplyr::mutate(precip_quantiles_005 = precip_quantiles_005 *25.4)%>%
+      dplyr::mutate(precip_quantiles_025 = precip_quantiles_025 *25.4)%>%
+      dplyr::mutate(precip_quantiles_075 = precip_quantiles_075 *25.4)%>%
+      dplyr::mutate(precip_quantiles_095 = precip_quantiles_095 *25.4)
   }
 }
 
-plot_snotel = function(current_data, climatology_data){
-  plot = ggplot(data = current_data, aes(x = Date, y = SWE))+
-    geom_line(data = climatology_data, aes(x = WY_date, y = mean_swe_mm), color = "lightblue")+
-    geom_line(color = "darkblue")+
-    geom_line(aes(x = Date, y = Precip),color = "darkred")+
-    ylab("SWE & Precipitaiton (mm)")+
-    xlim(c(current_select[[1]]$Date[1], 
-         as.POSIXct(paste0(year(current_select[[1]]$Date[1])+1,"-10-01"), format = "%Y-%m-%d")))+
-  theme_bw(base_size = 16)
-  return(plot)
+plot_snotel = function(current_data, climatology_data, names){
+  tryCatch({
+    plot = ggplot()+
+      ggtitle(names)+
+      geom_ribbon(data = climatology_data, aes(x = WY_date, ymin = swe_quantiles_075, ymax = swe_quantiles_095, fill = "75th - 95th"), alpha = 0.25)+
+      geom_ribbon(data = climatology_data, aes(x = WY_date, ymin = swe_quantiles_025, ymax = swe_quantiles_075, fill = "25th - 75th"), alpha = 0.25)+
+      geom_ribbon(data = climatology_data, aes(x = WY_date, ymin = swe_quantiles_005, ymax = swe_quantiles_025, fill = "5th - 25th"), alpha = 0.25)+
+      geom_line(data = climatology_data, aes(x = WY_date, y = median_swe_mm, color = "Median"), size = 0.75)+
+      geom_line(data = current_data, aes(x = current_data$Date, y = current_data$SWE, color = "Current"), size = 1.5)+
+      scale_color_manual(name = "",values = c(
+        'Median' = 'black',
+        'Current' = 'blue')) +
+      scale_fill_manual(name = 'Percentiles', values = c("green","red","blue")) +
+      ylab("Snow Water Equivalent (mm)")+
+      xlab("Date")+
+      xlim(c(current_select[[1]]$Date[1], 
+             as.POSIXct(paste0(year(current_select[[1]]$Date[1])+1,"-10-01"), format = "%Y-%m-%d")))+
+      theme_bw(base_size = 16)
+    
+    return(plot)
+  },
+  error = function(e){
+    plot = ggplot()+
+      ylab("Snow Water Equivalent (mm)")+
+      xlab("Date")+
+      theme_bw(base_size = 16)+
+      geom_text(label = "Sorry, no data available", aes(x = 1, y = 1), size = 9)
+  })
+  
 }
 
-plot_snotel(current_select[[1]], climatology_WY[[1]])
+write.dir = "/home/zhoylman/drought_indicators/snotel/plots/"
+
+error_plot = ggplot()+
+  ylab("Snow Water Equivalent (mm)")+
+  xlab("Date")+
+  theme_bw(base_size = 16)+
+  geom_text(label = "Sorry, no data available", aes(x = 1, y = 1), size = 9)
+
+for(i in 1:length(snotel$site_name)){
+  filename = paste0(write.dir,"snotel_plot_", i,".png")
+  temp_plot = plot_snotel(current_select[[i]], climatology_WY[[i]], snotel$site_name[i])
+  tryCatch({
+    ggsave(filename, plot = temp_plot, units = c("in"), width = 7, height = 4, dpi = 150)
+  },
+  error = function(e){
+    ggsave(filename, plot = error_plot, units = c("in"), width = 7, height = 4, dpi = 150)
+  })
+}

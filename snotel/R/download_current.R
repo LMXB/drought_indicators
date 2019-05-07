@@ -72,7 +72,7 @@ for(i in 1:length(snotel$site_num)){
   tryCatch({
     daily_lookup$daily_mean[i] = climatology[[i]] %>%
     filter(yday == current_yday) %>%
-    select(mean_swe)
+    select(median_swe)
   }, error = function(e){
     return(NA)
   }

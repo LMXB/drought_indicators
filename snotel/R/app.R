@@ -12,6 +12,7 @@ library(leaflet.esri)
 snotel = st_read("/home/zhoylman/drought_indicators/snotel/shp/Snotel_Sites.shp")
 states = st_read("/home/zhoylman/drought_indicators/shp_kml/states.shp")
 snotel$site_num = gsub("[^0-9.]","",as.character(snotel$site_name))
+snotel$simple_id = c(1:length(snotel$site_num))
 
 #load current conditions 
 load("/home/zhoylman/drought_indicators/snotel/climatology/current_precent_SWE.RData")
@@ -50,7 +51,11 @@ shinyApp(
                                  font-style: bold;
                                  }"
       ))),
-      column(6,htmlOutput("Plot"))
+      tags$head(tags$style(
+        type="text/css",
+        "#plot img {width: 100%; height: auto}")),
+      
+      column(6,imageOutput("Plot"))
     )
   ),
   server <- function(input, output, session) {
@@ -61,8 +66,8 @@ shinyApp(
       leaflet(snotel) %>%
         addEsriBasemapLayer("Terrain", autoLabels=TRUE) %>%
         addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
-        addCircleMarkers(~lon, ~lat, ~site_num, popup = ~htmlEscape(site_name), radius = 10, stroke = TRUE, fillOpacity = 0.9,
-                         color = "black", fillColor = ~pal(daily_lookup$percent_crop)#, clusterOptions = markerClusterOptions()
+        addCircleMarkers(~lon, ~lat, ~simple_id, popup = ~htmlEscape(site_name), radius = 10, stroke = TRUE, fillOpacity = 0.9,
+                         color = "black", fillColor = ~pal(daily_lookup$percent_crop)
         )%>%
         addLegend("bottomleft", pal = pal, values = ~daily_lookup$percent_crop,
                   title = "% Average<br>SWE (Daily)",
@@ -74,16 +79,37 @@ shinyApp(
     observe({
       click = input$map_marker_click
       id = click$id
+      first = "/home/zhoylman/drought_indicators/snotel/plots/snotel_plot_"
+      mid = as.character(id)
+      end = ".png"
+      filename = paste0(first,mid,end)
 
-      output$Plot <- renderText({
-        first = "https://wcc.sc.egov.usda.gov/nwcc/plot?sitenum="
-        site = as.character(id)
-        mid = '&report=WYGRAPH&timeseries=Daily&interval=WATERYEAR='
-        year = as.character(year(Sys.time()))
-        end = '&temp_unit=8&format=plot&autoscale=false&legendpos=right'
-        url = paste0(first,site,mid,year,end)
-
-        c('<center><img src="',url,'"></center>')
-      })
+      output$Plot <- renderImage({
+        list(src =filename)
+      }, deleteFile = FALSE)
     })
   })
+
+
+
+
+###using NRCS plots
+
+# })
+# observe({
+#   click = input$map_marker_click
+#   id = click$id
+#   
+#   output$Plot <- renderText({
+#     first = "https://wcc.sc.egov.usda.gov/nwcc/plot?sitenum="
+#     site = as.character(id)
+#     mid = '&report=WYGRAPH&timeseries=Daily&interval=WATERYEAR='
+#     year = as.character(year(Sys.time()))
+#     end = '&temp_unit=8&format=plot&autoscale=false&legendpos=right'
+#     url = paste0(first,site,mid,year,end)
+#     
+#     c('<center><img src="',url,'"></center>')
+#   })
+# })
+# })
+
