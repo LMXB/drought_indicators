@@ -51,6 +51,7 @@ shinyApp(
                                  font-style: bold;
                                  }"
       ))),
+      tags$style(type='text/css', "#Plot {margin-top: 150px;}"),
       column(6,imageOutput("Plot"))
     )
   ),
