@@ -1,0 +1,7 @@
+git pull
+
+git add files
+
+git commit -a -m "commit message here"
+
+git push origin master
