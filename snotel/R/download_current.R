@@ -49,6 +49,12 @@ current_select = foreach(i = 1:length(snotel$site_num)) %dopar%{
   )
 }
 
+
+for(i in 1:length(snotel$site_name)){
+  if(length(historical_select[[i]]) == 2){
+    historical_select[[i]]$yday = yday(historical_select[[i]]$Date)
+  }
+}
 stopCluster(cl)
 
 toc()
@@ -57,6 +63,16 @@ toc()
 current_select_df = t(as.data.frame(current_select))
 rownames(current_select_df) = snotel$site_name
 colnames(current_select_df) = "SWE"
+
+#calcualte yday percentiles for cdf
+for(i in 1:length(snotel$site_name)){
+  if(length(historical_select[[i]])==3){
+    historical_select[[i]] = historical_select[[i]]%>%
+      filter(yday == yday(as.Date(Sys.time())))
+    colnames(historical_select[[i]]) = c("SWE", "Date", "yday")
+  }
+}
+
 
 #load in climatology data
 load("/home/zhoylman/drought_indicators/snotel/climatology/snotel_climatology.RData")

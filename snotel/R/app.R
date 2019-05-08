@@ -60,8 +60,10 @@ shinyApp(
     map = createLeafletMap(session, 'map')
     
     output$map = renderLeaflet({
-      leaflet(snotel) %>%
-        addEsriBasemapLayer("Terrain", autoLabels=TRUE) %>%
+      leaflet(snotel, options = leafletOptions(maxZoom = 10)) %>%
+        addTiles("https://maps.tilehosting.com/data/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
+        leaflet::addProviderTiles("Stamen.TonerLines") %>%
+        leaflet::addProviderTiles("Stamen.TonerLabels") %>%
         addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
         addCircleMarkers(~lon, ~lat, ~simple_id, popup = ~htmlEscape(site_name), radius = 10, stroke = TRUE, fillOpacity = 0.9,
                          color = "black", fillColor = ~pal(daily_lookup$percent_crop)
