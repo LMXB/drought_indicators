@@ -60,7 +60,11 @@ shinyApp(
     map = createLeafletMap(session, 'map')
     
     output$map = renderLeaflet({
-      leaflet(snotel, options = leafletOptions(maxZoom = 10)) %>%
+      leaflet(snotel, options = leafletOptions(minZoom = 5, maxZoom = 10)) %>%
+        setMaxBounds( lng1 = -118.239466
+                      , lat1 = 49.177568
+                      , lng2 = -95.818551
+                      , lat2 = 42.270448 )%>%
         addTiles("https://maps.tilehosting.com/data/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
         leaflet::addProviderTiles("Stamen.TonerLines") %>%
         leaflet::addProviderTiles("Stamen.TonerLabels") %>%
