@@ -1,3 +1,4 @@
+setwd('/home/zhoylman/drought_indicators/eddi_app')
 
 #EDDI Data
 current_eddi_30 = raster::raster("../eddi_app/maps/current_eddi/current_eddi_30.tif")
@@ -76,8 +77,14 @@ shinyApp(
     output$time = renderText({paste("The most recent data available is from ",as.character(watersheds_30$crrnt_t[1]))})
     
     output$mymap = renderLeaflet({
-      leaflet() %>%
-        addTiles() %>%
+      leaflet(current_eddi_30, options = tileOptions(minZoom = 5, maxZoom = 10)) %>%
+        addTiles("https://maps.tilehosting.com/data/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
+        leaflet::addProviderTiles("Stamen.TonerLines") %>%
+        leaflet::addProviderTiles("Stamen.TonerLabels") %>%
+        setMaxBounds( lng1 = -118.239466
+                      , lat1 = 49.177568
+                      , lng2 = -95.818551
+                      , lat2 = 42.270448 )%>%
         setView(lng = -108, lat = 46.5, zoom = 6)
     })
     
@@ -132,8 +139,10 @@ shinyApp(
     
     
     # Create leaflet widget --------------------------------------------------------
-    m_raster = leaflet(watersheds_30) %>%
-      addTiles() 
+    m_raster = leaflet(watersheds_30, options = tileOptions(minZoom = 5, maxZoom = 10)) %>%
+      addTiles("https://maps.tilehosting.com/data/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
+      leaflet::addProviderTiles("Stamen.TonerLines") %>%
+      leaflet::addProviderTiles("Stamen.TonerLabels")  
     
     # Add multiple layers with a loop ----------------------------------------------
     m_raster = m_raster %>% 
@@ -170,6 +179,10 @@ shinyApp(
       #     #   options = WMSTileOptions(format = "image/png", transparent = TRUE, group = "Weather"))%>%
       
       setView(lng = -108, lat = 46.5, zoom = 6) %>%
+      setMaxBounds( lng1 = -118.239466
+                    , lat1 = 49.177568
+                    , lng2 = -95.818551
+                    , lat2 = 42.270448 )%>%
       addDrawToolbar(markerOptions = drawMarkerOptions(),
                      polylineOptions = FALSE,
                      polygonOptions = FALSE,
@@ -181,8 +194,10 @@ shinyApp(
                      targetGroup='draw')
     
     
-    m_huc = leaflet(watersheds_30) %>%
-      addTiles() %>%
+    m_huc = leaflet(watersheds_30, options = tileOptions(minZoom = 5, maxZoom = 10)) %>%
+      addTiles("https://maps.tilehosting.com/data/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
+      leaflet::addProviderTiles("Stamen.TonerLines") %>%
+      leaflet::addProviderTiles("Stamen.TonerLabels")  %>%
       addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)
     
     # Add multiple layers with a loop ----------------------------------------------
@@ -218,6 +233,10 @@ shinyApp(
       #     #   options = WMSTileOptions(format = "image/png", transparent = TRUE, group = "Weather"))%>%
       
       setView(lng = -108, lat = 46.5, zoom = 6) %>%
+      setMaxBounds( lng1 = -118.239466
+                    , lat1 = 49.177568
+                    , lng2 = -95.818551
+                    , lat2 = 42.270448 )%>%
       addDrawToolbar(markerOptions = drawMarkerOptions(),
                      polylineOptions = FALSE,
                      polygonOptions = FALSE,
@@ -230,8 +249,10 @@ shinyApp(
     
     
     
-    m_county = leaflet(watersheds_30) %>%
-      addTiles() %>% 
+    m_county = leaflet(watersheds_30, options = tileOptions(minZoom = 5, maxZoom = 10)) %>%
+      addTiles("https://maps.tilehosting.com/data/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
+      leaflet::addProviderTiles("Stamen.TonerLines") %>%
+      leaflet::addProviderTiles("Stamen.TonerLabels")  %>% 
       addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)
     
     # Add multiple layers with a loop ----------------------------------------------
@@ -267,6 +288,10 @@ shinyApp(
       #     #   options = WMSTileOptions(format = "image/png", transparent = TRUE, group = "Weather"))%>%
       
       setView(lng = -108, lat = 46.5, zoom = 6) %>%
+      setMaxBounds( lng1 = -118.239466
+                    , lat1 = 49.177568
+                    , lng2 = -95.818551
+                    , lat2 = 42.270448 )%>%
       addDrawToolbar(markerOptions = drawMarkerOptions(),
                      polylineOptions = FALSE,
                      polygonOptions = FALSE,
