@@ -3,7 +3,6 @@ library(ncdf4)
 library(rgdal)
 library(parallel)
 library(tictoc)
-library(stringr)
 library(foreach)
 library(doParallel)
 
@@ -12,10 +11,13 @@ setwd("/mnt/ScratchDrive/data/Hoylman/gridMET_Climatology/")
 WGS_84_CONUS = raster("/home/zhoylman/drought_indicators/zoran/master_warp_grid/master_grid_clipped_2.5km.tif")
 
 #Precip NetCDF
-#gridMET = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pr_1979_CurrentYear_CONUS.nc", var = "precipitation_amount")
+gridMET = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pr_1979_CurrentYear_CONUS.nc", var = "precipitation_amount")
+
+test = nc_open("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pr_1979_CurrentYear_CONUS.nc")
+test = ncvar_get(test, "precipitation_amount")
 
 #PET NetCDF
-gridMET = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pet_1979_CurrentYear_CONUS.nc", var = "daily_mean_reference_evapotranspiration_grass")
+#gridMET = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pet_1979_CurrentYear_CONUS.nc", var = "daily_mean_reference_evapotranspiration_grass")
 
 time = as.Date(as.numeric(substring(names(gridMET),2)), origin = "1900-01-01")
 
@@ -41,7 +43,7 @@ projected_raster = foreach(i=1:length(time)) %dopar% {
   
   input.file <- gridMET[[i]]
   target.file <- WGS_84_CONUS
-  out.file <- paste0(write.dir, "gridMET_",time_char_short[i],"_pet_2.5km_warp.tif")
+  out.file <- paste0(write.dir, "gridMET_",time_char_short[i],"_precip_2.5km_warp.tif")
   
   gdalProjRaster(input.file, target.file, out.file)
   
@@ -51,7 +53,3 @@ projected_raster = foreach(i=1:length(time)) %dopar% {
 stopCluster(cl)
 
 toc()
-
-test = raster(paste0(write.dir, time[length(time)],"_precip_2.5km_warp_clip.tif"))
-names(test)
-plot(test)

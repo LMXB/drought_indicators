@@ -1,0 +1,57 @@
+# this function updates the gridmet climatology directory
+
+update_gridMET = function(climatology.dir, git.dir, master_grid){
+  library(raster)
+  library(ncdf4)
+  library(rgdal)
+  library(parallel)
+  library(tictoc)
+  library(foreach)
+  library(doParallel)
+  
+  files = list.files(climatology.dir, pattern = ".tif$", full.names = T)
+  
+  #compute time from files
+  source(paste0(git.dir,"fdates.R"))
+  time_fdates = fdates(files)
+  time = as.Date(fdates(files), format = "%Y%m%d")
+  
+  #import gridMET netcdf and compute time for comparison
+  gridMET = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pr_1979_CurrentYear_CONUS.nc", var = "precipitation_amount")
+  crs(gridMET) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0" 
+  time_gridMET = as.Date(as.numeric(substring(names(gridMET),2)), origin = "1900-01-01")
+  
+  #finding missing days and fin index for days in gridmet file
+  missing_days = time_gridMET[! time_gridMET %in% time]
+  missing_index = which(time_gridMET %in% missing_days)
+  
+  #short date characters for writing
+  time_char_short = gsub("[^0-9.]", "", time_gridMET) 
+  
+  #fill in missing data if there is missing data 
+  if(length(missing_index)>0){
+    #start cluster
+    cl = makeCluster(20)
+    registerDoParallel(cl)
+    
+    #sum and mask precip in parellel
+    projected_raster = foreach(i=missing_index) %dopar% {
+      library(raster)
+      source(paste0(git.dir, "ProjectRaster_function.R"))
+      
+      input.file <- gridMET[[i]]
+      target.file <- master_grid
+      out.file <- paste0(climatology.dir, "gridMET_",time_char_short[i],"_precip_2.5km_warp.tif")
+      
+      gdalProjRaster(input.file, target.file, out.file)
+      
+    }
+    
+    #stop parellel cluster
+    stopCluster(cl)
+    print(paste0(as.character(length(missing_index)), " Files Updated"))
+  }
+  else{
+    print("Data is up to date. No files to update.")
+  }
+}
