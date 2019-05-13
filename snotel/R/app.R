@@ -35,7 +35,7 @@ daily_lookup$percent_crop[which(daily_lookup$percent_crop == 0)] = NA
 
 
 #color pallet
-pal <- colorNumeric(c("red", "yellow", "green", "blue", "purple"), domain = c(0,200), na.color = "black")
+pal <- colorNumeric(c("red", "yellow", "green", "blue", "purple"), domain = c(0,200), na.color = "grey")
 
 #custom legend fix
 css_fix <- "div.info.legend.leaflet-control br {clear: both;}"
