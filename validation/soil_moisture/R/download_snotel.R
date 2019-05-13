@@ -41,8 +41,8 @@ clusterExport(cl, "extract_columns")
 
 historical_select = foreach(i = 1:length(snotel$site_num)) %dopar%{
   library(dplyr)
-  collumn_name = c(
-                   "Date")
+  collumn_name = c("Date","Soil.Moisture.Percent..2in..pct..Start.of.Day.Values", "Soil.Moisture.Percent..8in..pct..Start.of.Day.Values",
+                   "Soil.Moisture.Percent..20in..pct..Start.of.Day.Values")
   tryCatch({
     extract_columns(historical[[i]], collumn_name)
   }, error = function(e){
@@ -53,42 +53,7 @@ historical_select = foreach(i = 1:length(snotel$site_num)) %dopar%{
 
 stopCluster(cl)
 
-#reformat, add metadata
-for(i in 1:length(historical_select)){
-  if(length(historical_select[[i]]) == 3){
-    colnames(historical_select[[i]]) = c("SWE", "Precip", "Date")
-    historical_select[[i]]$Date = as.Date(historical_select[[i]]$Date)
-    historical_select[[i]]$yday = yday(historical_select[[i]]$Date)
-  }
-}
+#rename
+snotel_soil_moisture = historical_select
 
-#create daily climatology for each station
-climatology = list()
-
-for(i in 1:length(snotel$site_num)){
-  tryCatch({
-    temp_clim = historical_select[[i]]%>%
-      dplyr::group_by(yday)%>%
-      dplyr::summarize(median_swe = median(SWE, na.rm = T),
-                       swe_quantiles_005 = quantile(SWE, probs = c(0.05), na.rm = T),
-                       swe_quantiles_025 = quantile(SWE, probs = c(0.25), na.rm = T),
-                       swe_quantiles_075 = quantile(SWE, probs = c(0.75), na.rm = T),
-                       swe_quantiles_095 = quantile(SWE, probs = c(0.95), na.rm = T),
-                       median_precip = median(Precip, na.rm = T),
-                       precip_quantiles_005 = quantile(Precip, probs = c(0.05), na.rm = T),
-                       precip_quantiles_025 = quantile(Precip, probs = c(0.25), na.rm = T),
-                       precip_quantiles_075 = quantile(Precip, probs = c(0.75), na.rm = T),
-                       precip_quantiles_095 = quantile(Precip, probs = c(0.95), na.rm = T))
-    
-    climatology[[i]] = temp_clim
-  },
-  error = function(e){
-    return(NA)
-    
-  })
-}
-
-#add names metadata
-names(climatology) = snotel$site_name
-
-save(climatology, file = "/home/zhoylman/drought_indicators/snotel/climatology/snotel_climatology.RData")
+save(snotel_soil_moisture, file = "/home/zhoylman/drought_indicators/validation/soil_moisture/snotel_data/snotel_soil_moisture.RData")
