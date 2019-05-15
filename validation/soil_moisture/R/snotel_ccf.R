@@ -2,9 +2,30 @@ library(dplyr)
 library(foreach)
 library(doParallel)
 library(parallel)
+library(sf)
+library(tictoc)
+library(timeSeries)
 
 load("/home/zhoylman/drought_indicators_data/snotel_spei/snotel_spei.RData")
 load("/home/zhoylman/drought_indicators/validation/soil_moisture/snotel_data/snotel_soil_moisture.RData")
+
+snotel = st_read("/home/zhoylman/drought_indicators/snotel/shp/Snotel_Sites.shp")
+states = st_read("/home/zhoylman/drought_indicators/shp_kml/states.shp")
+snotel$site_num = gsub("[^0-9.]","",as.character(snotel$site_name))
+
+length_vec = data.frame()
+
+for(i in 1:length(snotel_soil_moisture)){
+  tryCatch({
+    length_vec[i,1] = length(na.contiguous(snotel_soil_moisture[[i]]$Soil.Moisture.Percent..2in..pct..Start.of.Day.Values))
+    length_vec[i,2] = length(na.contiguous(snotel_soil_moisture[[i]]$Soil.Moisture.Percent..8in..pct..Start.of.Day.Values))
+    length_vec[i,3] = length(na.contiguous(snotel_soil_moisture[[i]]$Soil.Moisture.Percent..20in..pct..Start.of.Day.Values))
+  },
+  error = function(e){
+    return(c(NA,NA,NA))
+  })
+  print(i)
+}
 
 cross_cor = function(snotel_sm,snotel_spei){
   tryCatch({
@@ -80,25 +101,25 @@ correlation_matrix = foreach(site = 1:length(snotel$lat)) %dopar% {
   cross_cor(snotel_soil_moisture[[site]], snotel_spei[[site]])
 }
 toc()
-
-foreach(i = 1:length(snotel$lat)) %dopar% {
-  tryCatch({
-    png(filename = paste0("/home/zhoylman/drought_indicators/validation/soil_moisture/plots/Soil_Moisture_SPEI_Correlation_", 
-                        i,".png"), width = 6, height = 5, units = "in", res = 300)
-  plot(c(seq(15,360,15)), as.numeric(correlation_matrix[[i]][1,]), type = "l", 
-       ylim = c(min(correlation_matrix[[i]]),max(correlation_matrix[[i]])), 
-       xlab = "Time scale (Days)", ylab = "Correlation", main = paste0(snotel$site_name[i], " Soil Moisture ~ SPEI Correlation"))
-  lines(c(seq(15,360,15)), as.numeric(correlation_matrix[[i]][2,]), type = "l", col = "red")
-  lines(c(seq(15,360,15)), as.numeric(correlation_matrix[[i]][3,]), type = "l", col = "blue")
-  legend(300, max(correlation_matrix[[i]]), legend=c("2 in", "8 in", "20 in"),
-         col=c("black", "red", "blue"), lty=c(1,1,1), cex=0.8)
-  dev.off()
-  }, error = function(e){
-    plot(1,1, xlab = "Time scale (Days)", ylab = "Correlation", main = paste0(snotel$site_name[i], " Soil Moisture ~ SPEI Correlation"))
-    text(1, 1.2, "Sorry, no data to correlate")
-    dev.off()
-  })
-}
+# 
+# foreach(i = 1:length(snotel$lat)) %dopar% {
+#   tryCatch({
+#     png(filename = paste0("/home/zhoylman/drought_indicators/validation/soil_moisture/plots/correlation/Soil_Moisture_SPEI_Correlation_", 
+#                           i,".png"), width = 6, height = 5, units = "in", res = 300)
+#     plot(c(seq(15,360,15)), as.numeric(correlation_matrix[[i]][1,]), type = "l", 
+#          ylim = c(min(correlation_matrix[[i]]),max(correlation_matrix[[i]])), 
+#          xlab = "Time scale (Days)", ylab = "Correlation", main = paste0(snotel$site_name[i], " Soil Moisture ~ SPEI Correlation"))
+#     lines(c(seq(15,360,15)), as.numeric(correlation_matrix[[i]][2,]), type = "l", col = "red")
+#     lines(c(seq(15,360,15)), as.numeric(correlation_matrix[[i]][3,]), type = "l", col = "blue")
+#     legend(300, max(correlation_matrix[[i]]), legend=c("2 in", "8 in", "20 in"),
+#            col=c("black", "red", "blue"), lty=c(1,1,1), cex=0.8)
+#     dev.off()
+#   }, error = function(e){
+#     plot(1,1, xlab = "Time scale (Days)", ylab = "Correlation", main = paste0(snotel$site_name[i], " Soil Moisture ~ SPEI Correlation"))
+#     text(1, 1.2, "Sorry, no data to correlate")
+#     dev.off()
+#   })
+# }
 
 stopCluster(cl)
 find_best = function(x){
@@ -148,18 +169,45 @@ time_series_plot = function(site_number, depth){
   
   best_spei = which(best_spei_time == c(seq(15,360,15)))
   
-  data = na.contiguous(data)
+  #find data that was used for corelation
+  data = timeSeries::na.contiguous(data)
+  data = as.data.frame(data)
+  data$x = as.Date(data$x)
+  
+  #filter SPEI data
+  data2 = as.data.frame(snotel_spei[[site_id]][[best_spei]])
+  data2$time = as.Date(data2$time)
+  data2 = data2 %>%
+    dplyr::filter(time >= data$x[1] & time <= data$x[length(data$x)])
+  
   
   par(mar = c(5, 4, 4, 4) + 0.3)  # Leave space for z axis
-  plot(data$x, data$y, type = "l", ylim = c(0,max(data$y)), xlab = "Time", ylab = "Soil Moisture",
-       xlim = c(data$x[1], data$x[length(data$x)]), main = paste0("Best timescale = ", best_spei_time, " days")) # first plot
+  plot(data$x, data$y, type = "l", ylim = c(min(data$y),max(data$y)), xlab = "Time", ylab = "Soil Moisture",
+       xlim = c(data$x[1], data$x[length(data$x)]), main = paste0("Depth = ",depth , "in\nBest timescale = ", best_spei_time, " days")) # first plot
   
   par(new = TRUE)
-  plot(as.Date(snotel_spei[[site_id]][[best_spei]]$time), snotel_spei[[site_id]][[best_spei]]$spei, type = "l", 
+  
+  plot(as.Date(data2$time), data2$spei, type = "l", 
        axes = FALSE, bty = "n", xlab = "", ylab = "",xlim = c(data$x[1], data$x[length(data$x)]), col = "red")
   abline(0, 0,col = "red", lty = 2)
-  axis(side=4, at = pretty(range(snotel_spei[[1]][[3]]$spei)), col = "red")
+  axis(side=4, at = pretty(range(data2$spei)), col = "red")
   mtext("SPEI", side=4, line=3, col = "red")
 }
+
+for(i in 1:length(snotel$site_num)){
+  tryCatch({
+    png(filename = paste0("/home/zhoylman/drought_indicators/validation/soil_moisture/plots/time_series/Soil_Moisture_SPEI_timeseries_", 
+                          i,".png"), width = 10, height = 3, units = "in", res = 300)
+    par(mfrow = c(1,3))
+    time_series_plot(snotel$site_num[i], 2)
+    time_series_plot(snotel$site_num[i], 8)
+    time_series_plot(snotel$site_num[i], 20)
+    dev.off()
+  }, error = function(e){
+    plot(1,1, xlab = "Time scale (Days)", ylab = "Correlation", main = paste0(snotel$site_name[i], " Soil Moisture ~ SPEI Correlation"))
+    text(1, 1.2, "Sorry, no data to correlate")
+    dev.off()
+  })
+  print(i)
+}
   
-time_series_plot(610, 8)

@@ -7,6 +7,7 @@ library(htmltools)
 library(lubridate)
 library(htmlwidgets)
 library(leaflet.esri)
+library(xts)
 
 #define input shp files
 snotel = st_read("/home/zhoylman/drought_indicators/snotel/shp/Snotel_Sites.shp")
@@ -30,10 +31,6 @@ css_fix <- "div.info.legend.leaflet-control br {clear: both;}"
 
 base_map = function(){
   leaflet(snotel, options = leafletOptions(minZoom = 5, maxZoom = 10)) %>%
-    setMaxBounds( lng1 = -119.239466
-                  , lat1 = 49.177568
-                  , lng2 = -95.818551
-                  , lat2 = 40.270448) %>%
     addTiles("https://maps.tilehosting.com/data/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
     leaflet::addProviderTiles("Stamen.TonerLines") %>%
     leaflet::addProviderTiles("Stamen.TonerLabels") %>%
@@ -43,7 +40,7 @@ base_map = function(){
 shinyApp(
   ui <- fluidPage(
     fillPage(padding = 50,
-             column(6,leafletOutput("map", height = 650)%>%
+             column(4,leafletOutput("map", height = 650)%>%
                       prependContent(tags$style(type = "text/css", css_fix)),
                     textOutput('site'),
                     tags$head(tags$style("#time{color: black;
@@ -51,8 +48,10 @@ shinyApp(
                                  font-style: bold;
                                  }"
                     ))),
-             tags$style(type='text/css', "#Plot {margin-top: 150px;}"),
-             column(6,imageOutput("Plot"))
+             tags$style(type='text/css', "#Plot {margin-top: 0px;}"),
+             tags$style(type='text/css', "#Plot2 {margin-top: 200px;}"),
+             column(8,imageOutput("Plot")),
+             column(8,imageOutput("Plot2"))
     )
   ),
   server <- function(input, output, session) {
@@ -70,7 +69,7 @@ shinyApp(
         addCircleMarkers(~lon, ~lat, ~simple_id, popup = ~htmlEscape(site_name), radius = 10, stroke = TRUE, fillOpacity = 0.9,
                          color = "black", fillColor = ~pal(correlation_times$X20in), group = "20 in"
         )%>%
-        addLegend("bottomleft", pal = pal, values = ~correlation_times$X2in,
+        leaflet::addLegend("bottomleft", pal = pal, values = ~correlation_times$X2in,
                   title = "Timescale",
                   opacity = 1,
                   na.label = "NA"
@@ -83,7 +82,7 @@ shinyApp(
     observe({
       click = input$map_marker_click
       id = click$id
-      first = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/Soil_Moisture_SPEI_Correlation_"
+      first = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/correlation/Soil_Moisture_SPEI_Correlation_"
       mid = as.character(id)
       end = ".png"
       filename = paste0(first,mid,end)
@@ -93,6 +92,20 @@ shinyApp(
       
       output$Plot <- renderImage({
         list(src =filename,
+             width = (width*0.6),
+             height = "auto")
+      }, deleteFile = FALSE)
+      
+      first = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/time_series/Soil_Moisture_SPEI_timeseries_"
+      mid = as.character(id)
+      end = ".png"
+      filename2 = paste0(first,mid,end)
+      
+      width  <- session$clientData$output_Plot_width
+      height <- session$clientData$output_Plot_height
+      
+      output$Plot2 <- renderImage({
+        list(src =filename2,
              width = width,
              height = "auto")
       }, deleteFile = FALSE)

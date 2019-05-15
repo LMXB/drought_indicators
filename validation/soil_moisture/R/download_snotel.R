@@ -15,7 +15,7 @@ snotel$site_num = gsub("[^0-9.]","",as.character(snotel$site_name))
 #hit the NRCS server for historical
 tic()
 current = list()
-cl = makeCluster(detectCores()-1)
+cl = makeCluster(detectCores()-2)
 registerDoParallel(cl)
 
 historical = foreach(i = 1:length(snotel$site_num)) %dopar%{
