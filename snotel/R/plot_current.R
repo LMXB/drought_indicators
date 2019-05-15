@@ -119,7 +119,7 @@ for(i in 1:length(snotel$site_num)){
 plot_snotel = function(current_data, climatology_data, names){
   tryCatch({
     plot = ggplot()+
-      ggtitle(names)+
+      ggtitle(paste0(names, " (", as.Date(current_data$Date[length(current_data$Date)]), ")"))+
       geom_ribbon(data = climatology_data, aes(x = WY_date, ymin = swe_quantiles_075, ymax = swe_quantiles_095, fill = "75th - 95th"), alpha = 0.25)+
       geom_ribbon(data = climatology_data, aes(x = WY_date, ymin = swe_quantiles_025, ymax = swe_quantiles_075, fill = "25th - 75th"), alpha = 0.25)+
       geom_ribbon(data = climatology_data, aes(x = WY_date, ymin = swe_quantiles_005, ymax = swe_quantiles_025, fill = "5th - 25th"), alpha = 0.25)+
@@ -131,8 +131,6 @@ plot_snotel = function(current_data, climatology_data, names){
       scale_fill_manual(name = 'Percentiles', values = c("green","red","blue")) +
       ylab("Snow Water Equivalent (mm)")+
       xlab("Date")+
-      xlim(c(current_select[[1]]$Date[1], 
-             as.POSIXct(paste0(year(current_select[[1]]$Date[1])+1,"-10-01"), format = "%Y-%m-%d")))+
       theme_bw(base_size = 16)
     
     return(plot)

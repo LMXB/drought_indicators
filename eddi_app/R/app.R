@@ -1,4 +1,4 @@
-setwd('/home/zhoylman/drought_indicators/eddi_app')
+#setwd('/home/zhoylman/drought_indicators/eddi_app')
 
 #EDDI Data
 current_eddi_30 = raster::raster("../eddi_app/maps/current_eddi/current_eddi_30.tif")

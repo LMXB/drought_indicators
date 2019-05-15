@@ -1,4 +1,4 @@
-setwd('/home/zhoylman/drought_indicators/spei_app')
+#setwd('/home/zhoylman/drought_indicators/spei_app')
 
 #SPEI Data
 current_spei_30 = raster::raster("../spei_app/maps/current_spei/current_spei_30.tif")
