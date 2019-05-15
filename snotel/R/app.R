@@ -78,6 +78,8 @@ shinyApp(
                   na.label = "No Snow or NA"
         )%>%
         setView(lng = -108, lat = 46.5, zoom = 6)
+    
+      
     })
     observe({
       click = input$map_marker_click
