@@ -84,6 +84,9 @@ shinyApp(
     observe({
       click = input$map_marker_click
       id = click$id
+      if(length(id)==0){
+        id = 1
+      }
       first = "/home/zhoylman/drought_indicators/snotel/plots/snotel_plot_"
       mid = as.character(id)
       end = ".png"
