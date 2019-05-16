@@ -82,10 +82,15 @@ shinyApp(
     observe({
       click = input$map_marker_click
       id = click$id
+      if(length(id)==0){
+        id = 1
+      }
       first = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/correlation/Soil_Moisture_SPEI_Correlation_"
       mid = as.character(id)
       end = ".png"
       filename = paste0(first,mid,end)
+      
+      print(filename)
       
       width  <- session$clientData$output_Plot_width
       height <- session$clientData$output_Plot_height
