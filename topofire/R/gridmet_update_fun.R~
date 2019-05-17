@@ -1,4 +1,12 @@
 # this function updates the gridmet climatology directory
+library(raster)
+library(ncdf4)
+library(rgdal)
+library(parallel)
+library(tictoc)
+library(foreach)
+library(doParallel)
+
 update_gridMET = function(climatology.dir, git.dir, master_grid){  
   files = list.files(climatology.dir, pattern = ".tif$", full.names = T)
   
