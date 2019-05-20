@@ -112,19 +112,34 @@ for(t in 1:length(time_scale)){
   stopCluster(cl)
   
   #create spatial template for current spi values
-  current_spi = summed_raster_stack[[1]]
+  forecast_spi = summed_raster_stack[[1]]
   
   #allocate curent spi values to spatial template
-  values(current_spi) = spi_values
+  values(forecast_spi) = spi_values
   
   #write out archive raster
-  writeRaster(current_spi, paste0(archive.dir,"forecast_spi_",time_fdates[length(time_fdates)],"_", 
+  writeRaster(forecast_spi, paste0(archive.dir,"forecast_spi_",time_fdates[length(time_fdates)],"_", 
+                                   as.character(time_scale[t]),"_day" ,".tif"), format = "GTiff", overwrite = T)
+  
+  #write out raster as "current forecast"
+  writeRaster(forecast_spi, paste0(write.dir,"forecast_spi_", 
+                                   as.character(time_scale[t]),"_day" ,".tif"), format = "GTiff", overwrite = T)
+    #import real current spi to calcualte forecasted change in SPI
+  raster_name = paste0('/mnt/DataDrive2/data/drought_indices/spi/current/current_spi_', as.character(time_scale[t]), "_day.tif")
+
+  current_spi = raster(raster_name)
+
+  #compute forcasted change (forecast - current)
+  forecasted_change = forecast_spi - current_spi
+
+    #write out archive raster
+  writeRaster(forecasted_change, paste0(archive.dir,"forecasted_change_spi_",time_fdates[length(time_fdates)],"_", 
                                    as.character(time_scale[t]),"_day" ,".tif"), format = "GTiff", overwrite = T)
   
   #write out raster as "current"
-  writeRaster(current_spi, paste0(write.dir,"forecast_spi_", 
+  writeRaster(forecasted_change, paste0(write.dir,"forecasted_change_spi_", 
                                    as.character(time_scale[t]),"_day" ,".tif"), format = "GTiff", overwrite = T)
-  
+
   toc()
   do.call(file.remove, list(list.files(tmp.dir, full.names = T)))
   

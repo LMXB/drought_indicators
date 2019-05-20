@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 #ingest forecast grid, and reporject
 library(raster)
 library(ncdf4)
