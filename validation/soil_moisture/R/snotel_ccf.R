@@ -5,6 +5,7 @@ library(parallel)
 library(sf)
 library(tictoc)
 library(timeSeries)
+library(stringr)
 
 load("/home/zhoylman/drought_indicators_data/snotel_spei/snotel_spei.RData")
 load("/home/zhoylman/drought_indicators/validation/soil_moisture/snotel_data/snotel_soil_moisture.RData")
@@ -13,21 +14,76 @@ snotel = st_read("/home/zhoylman/drought_indicators/snotel/shp/Snotel_Sites.shp"
 states = st_read("/home/zhoylman/drought_indicators/shp_kml/states.shp")
 snotel$site_num = gsub("[^0-9.]","",as.character(snotel$site_name))
 
-length_vec = data.frame()
-
-for(i in 1:length(snotel_soil_moisture)){
+cross_cor = function(spei,soil_moisture){ 
   tryCatch({
-    length_vec[i,1] = length(na.contiguous(snotel_soil_moisture[[i]]$Soil.Moisture.Percent..2in..pct..Start.of.Day.Values))
-    length_vec[i,2] = length(na.contiguous(snotel_soil_moisture[[i]]$Soil.Moisture.Percent..8in..pct..Start.of.Day.Values))
-    length_vec[i,3] = length(na.contiguous(snotel_soil_moisture[[i]]$Soil.Moisture.Percent..20in..pct..Start.of.Day.Values))
-  },
-  error = function(e){
-    return(c(NA,NA,NA))
+    x_size = length(x)
+    for(t in 1:length(x)){
+      x1 = x[[t]]
+      
+      x1$time = as.POSIXct(x1$time)
+      y$Date = as.POSIXct(y$Date)
+      
+      x_filter <- x1[x1$time %in% y$Date,]
+      y_filter <- y[y$Date %in% x1$time,]
+      
+      merged = cbind(x_filter, y_filter$Soil.Moisture.Percent..2in..pct..Start.of.Day.Values,
+                     y_filter$Soil.Moisture.Percent..8in..pct..Start.of.Day.Values,
+                     y_filter$Soil.Moisture.Percent..20in..pct..Start.of.Day.Values,
+                     y_filter$Snow.Water.Equivalent..in..Start.of.Day.Values)
+      
+      depth = c("soil_moisture_2in", "soil_moisture_8in", "soil_moisture_20in")
+      
+      colnames(merged)[3:6] = c(depth,"swe")
+      
+      if(t == 1){
+        correlation_matrix = data.frame(matrix(nrow = length(depth),
+                                               ncol = x_size))
+        rownames(correlation_matrix) = depth
+        colnames(correlation_matrix) = paste0("spei_",c(seq(15,360,15)))
+      }
+      
+      for(i in 1: length(depth)){
+        x_select = merged %>%
+          #select the collums I want, depth
+          select(time, spei, depth[i]) %>%
+          #filter negative soil moisture data
+          dplyr::filter(get(depth[i]) > 0) %>%
+          #filter for complete cases
+          dplyr::filter(complete.cases(.))
+        
+        correlation_matrix[i,t] = cor(x_select['spei'], x_select[depth[i]])
+      }
+    }
+    return(correlation_matrix)
+  }, error = function(e){
+    return(NA)
   })
-  print(i)
 }
 
-cross_cor = function(snotel_sm,snotel_spei){
+site = 1
+x = snotel_spei[[site]]
+y = snotel_soil_moisture[[site]]
+cross_cor(x,y)
+
+##################################################################################
+cl = makeCluster(detectCores()-1)
+registerDoParallel(cl)
+
+tic()
+correlation_matrix = foreach(site = 1) %dopar% {
+  library(dplyr)
+  cross_cor(snotel_spei[[site]], snotel_soil_moisture[[site]])
+}
+toc()
+stopCluster(cl)
+##################################################################################
+
+
+
+
+
+
+cross_cor_2 = function(snotel_sm,snotel_spei){
   tryCatch({
     for(i in 1:length(snotel_spei)){
       x = snotel_sm
@@ -55,10 +111,10 @@ cross_cor = function(snotel_sm,snotel_spei){
       
       #filter shared time periods
       x_filter = x %>% 
-        filter(Date >= time_start & Date <= time_end)
+        dplyr::filter(Date >= time_start & Date <= time_end)
       
       y_filter = y %>% 
-        filter(time >= time_start & time <= time_end)
+        dplyr::filter(time >= time_start & time <= time_end)
       
       #computing for the longest stretch of time that there is continuous data
       #na.contiguous
@@ -91,6 +147,8 @@ cross_cor = function(snotel_sm,snotel_spei){
   })
 }
 
+test2 = cross_cor_2(snotel_soil_moisture[[site]], snotel_spei[[site]])
+
 cl = makeCluster(detectCores()-1)
 registerDoParallel(cl)
 
@@ -98,7 +156,7 @@ tic()
 
 correlation_matrix = foreach(site = 1:length(snotel$lat)) %dopar% {
   library(dplyr)
-  cross_cor(snotel_soil_moisture[[site]], snotel_spei[[site]])
+  cross_cor_2(snotel_soil_moisture[[site]], snotel_spei[[site]])
 }
 toc()
 # 
@@ -210,4 +268,4 @@ for(i in 1:length(snotel$site_num)){
   })
   print(i)
 }
-  
+
