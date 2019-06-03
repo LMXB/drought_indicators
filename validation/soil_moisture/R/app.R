@@ -40,7 +40,7 @@ base_map = function(){
 shinyApp(
   ui <- fluidPage(
     fillPage(padding = 50,
-             column(4,leafletOutput("map", height = 650)%>%
+             column(4,leafletOutput("map", height = 900)%>%
                       prependContent(tags$style(type = "text/css", css_fix)),
                     textOutput('site'),
                     tags$head(tags$style("#time{color: black;
@@ -50,7 +50,7 @@ shinyApp(
                     ))),
              tags$style(type='text/css', "#Plot {margin-top: 0px;}"),
              tags$style(type='text/css', "#Plot2 {margin-top: 200px;}"),
-             column(8,imageOutput("Plot")),
+             column(8,align="center",imageOutput("Plot")),
              column(8,imageOutput("Plot2"))
     )
   ),
