@@ -13,11 +13,17 @@ cross_cor = function(spei,soil_moisture){
       merged = cbind(x_filter, y_filter$Soil.Moisture.Percent..2in..pct..Start.of.Day.Values,
                      y_filter$Soil.Moisture.Percent..8in..pct..Start.of.Day.Values,
                      y_filter$Soil.Moisture.Percent..20in..pct..Start.of.Day.Values,
-                     y_filter$Snow.Water.Equivalent..in..Start.of.Day.Values)
+                     y_filter$Snow.Water.Equivalent..in..Start.of.Day.Values) 
       
       depth = c("soil_moisture_2in", "soil_moisture_8in", "soil_moisture_20in")
       
       colnames(merged)[3:6] = c(depth,"swe")
+      
+      merged = merged %>%
+        rowwise() %>%
+        mutate(mean_soil_moisture = mean(c(soil_moisture_2in,soil_moisture_8in,soil_moisture_20in), na.rm = T))
+      
+      depth = c("soil_moisture_2in", "soil_moisture_8in", "soil_moisture_20in", "mean_soil_moisture")
       
       if(t == 1){
         correlation_matrix = data.frame(matrix(nrow = length(depth),
@@ -33,7 +39,7 @@ cross_cor = function(spei,soil_moisture){
           #filter negative soil moisture data
           dplyr::filter(get(depth[i]) > 0) %>%
           #filter for complete cases
-          dplyr::filter(complete.cases(.))%>%
+          tidyr::drop_na()%>%
           #compute standardized value
           mutate(standardized = gamma_standard_fun(get(depth[i])))
         

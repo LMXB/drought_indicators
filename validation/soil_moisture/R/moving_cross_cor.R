@@ -19,6 +19,12 @@ moving_cross_cor = function(spei,soil_moisture){
       
       colnames(merged)[3:6] = c(depth,"swe")
       
+      merged = merged %>%
+        rowwise() %>%
+        mutate(mean_soil_moisture = mean(c(soil_moisture_2in,soil_moisture_8in,soil_moisture_20in), na.rm = T))
+      
+      depth = c("soil_moisture_2in", "soil_moisture_8in", "soil_moisture_20in", "mean_soil_moisture")
+      
       if(t == 1){
         correlation_matrix = list()
       }
@@ -30,10 +36,10 @@ moving_cross_cor = function(spei,soil_moisture){
           #filter negative soil moisture data
           dplyr::filter(get(depth[i]) > 0) %>%
           #filter for complete cases
-          dplyr::filter(complete.cases(.))%>%
+          tidyr::drop_na()%>%
           #compute standardized value
           mutate(standardized = gamma_standard_fun(get(depth[i])))%>%
-          #add yday
+          #add month id
           mutate(month = lubridate::month(time))
         
         if(i == 1){
@@ -50,9 +56,13 @@ moving_cross_cor = function(spei,soil_moisture){
           
           correlation_full = cbind(correlation_full, correlation$correlation)
         }
+        if(i == length(depth)){
+          colnames(correlation_full) = c("month",depth)
+          correlation_matrix[[t]] = correlation_full
+        }
       }
     }
-    return(correlation_full)
+    return(correlation_matrix)
   }, error = function(e){
     return(NA)
   })
