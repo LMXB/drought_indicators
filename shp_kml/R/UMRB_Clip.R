@@ -24,6 +24,10 @@ watersheds_umrb = watersheds %>%
   st_intersection(county_umrb) %>%
   sf::st_simplify()
 
+watersheds_umrb = rmapshaper::ms_simplify(watersheds_umrb, keep = 0.05)
+
+watersheds_umrb = rmapshaper::ms_simplify(watersheds_umrb, keep = 0.01)
+
 st_write(county_umrb, "/home/zhoylman/drought_indicators/shp_kml/larger_extent/county_umrb.shp", "county_umrb", driver = "ESRI Shapefile")
 st_write(outline_umrb, "/home/zhoylman/drought_indicators/shp_kml/larger_extent/outline_umrb.shp", "outline_umrb", driver = "ESRI Shapefile")
 st_write(watersheds_umrb, "/home/zhoylman/drought_indicators/shp_kml/larger_extent/watersheds_umrb.shp", "watersheds_umrb", driver = "ESRI Shapefile")
