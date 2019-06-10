@@ -33,8 +33,6 @@ clusterExport(cl, "gamma_standard_fun")
 
 tic()
 correlation_matrix = foreach(site = 1:length(snotel_soil_moisture)) %dopar% {
-  #source("/home/zhoylman/drought_indicators/spi_app/R/gamma_fit.R")
-  #source("/home/zhoylman/drought_indicators/validation/soil_moisture/R/gamma_standard_fun.R")
   library(dplyr)
   cross_cor(snotel_spei[[site]], snotel_soil_moisture[[site]])
 }
@@ -49,8 +47,6 @@ clusterExport(cl, "gamma_fit")
 clusterExport(cl, "gamma_standard_fun")
 tic()
 moving_correlation_matrix = foreach(site = 1:length(snotel_soil_moisture)) %dopar% {
-  #source("/home/zhoylman/drought_indicators/spi_app/R/gamma_fit.R")
-  #source("/home/zhoylman/drought_indicators/validation/soil_moisture/R/gamma_standard_fun.R")
   library(dplyr)
   moving_cross_cor(snotel_spei[[site]], snotel_soil_moisture[[site]])
 }
