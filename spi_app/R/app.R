@@ -21,6 +21,7 @@ library(glogis)
 library(PearsonDS)
 library(gsl)
 library(lmomco)
+library(mapview)
 #library(shinydashboard)
 
 setwd('/home/zhoylman/drought_indicators/spi_app')
@@ -60,7 +61,7 @@ current_usdm_date = as.Date(as.character(current_usdm_date$x), format = "%Y%m%d"
 
 states = st_read("../shp_kml/states.shp")
 
-shinyApp(
+shinyApp( 
          ui <- fluidPage(class = "text-center",
                          verticalLayout(),
                          br(),
@@ -76,6 +77,7 @@ shinyApp(
                                  }"
                          )
                          ),
+                         # downloadButton(outputId = "dl"),
            #mainPanel(
              leafletOutput("mymap", height = 650),
              
@@ -101,7 +103,7 @@ shinyApp(
              plotOutput("testPlot", width = "100%", height = "900px")# %>% withSpinner(color="#0dc5c1", type = 8, proxy.height = "200px") 
              ),
            #),
-         server <- function(input, output) {
+         server <- function(input, output) { 
            
            output$time = renderText({paste("The most recent data available is from ",as.character(watersheds_30$crrnt_t[1]))})
            
@@ -193,13 +195,13 @@ shinyApp(
            
            # Add multiple layers with a loop ----------------------------------------------
            m_raster = m_raster %>% 
-             addRasterImage(current_spi_30, colors = pal, opacity = 0.8, group = "30 Day") %>%
-             addRasterImage(current_spi_60, colors = pal, opacity = 0.8, group = "60 Day") %>%
-             addRasterImage(current_spi_90, colors = pal, opacity = 0.8, group = "90 Day") %>%
-             addRasterImage(current_spi_180, colors = pal, opacity = 0.8, group = "180 Day") %>%
-             addRasterImage(current_spi_365, colors = pal, opacity = 0.8, group = "365 Day") %>%
-             addRasterImage(current_spi_water_year, colors = pal, opacity = 0.8, group = "Water Year") %>%
-             addRasterImage(current_spi_year_to_date, colors = pal, opacity = 0.8, group = "Year to Date") %>%
+             addRasterImage(current_spi_30, colors = pal, opacity = 0.8, group = "30 Day", project = FALSE) %>%
+             addRasterImage(current_spi_60, colors = pal, opacity = 0.8, group = "60 Day", project = FALSE) %>%
+             addRasterImage(current_spi_90, colors = pal, opacity = 0.8, group = "90 Day", project = FALSE) %>%
+             addRasterImage(current_spi_180, colors = pal, opacity = 0.8, group = "180 Day", project = FALSE) %>%
+             addRasterImage(current_spi_365, colors = pal, opacity = 0.8, group = "365 Day", project = FALSE) %>%
+             addRasterImage(current_spi_water_year, colors = pal, opacity = 0.8, group = "Water Year", project = FALSE) %>%
+             addRasterImage(current_spi_year_to_date, colors = pal, opacity = 0.8, group = "Year to Date", project = FALSE) %>%
              addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
              addPolygons(data = current_usdm, group = "USDM", fillColor = ~pal_usdm(DM), weight = 2, opacity = 1, color = "black", 
                          fillOpacity = 0.5, highlight = 
@@ -348,8 +350,25 @@ shinyApp(
            
            
            
+           
+           
            observeEvent(input$evHUC,{
              output$mymap <- renderLeaflet(m_huc)
+           #   output$dl <- downloadHandler(
+           #     filename = paste0( Sys.Date()
+           #                        , "_custom_drought_map"
+           #                        , ".png"
+           #     )
+           #     
+           #     , content = function(file) {
+           #       mapshot( x = m_huc
+           #                , file = file
+           #                , cliprect = "viewport" # the clipping rectangle matches the height & width from the viewing port
+           #                , selfcontained = FALSE
+           #                , remove_controls = c("zoomControl")# when this was not specified, the function for produced a PDF of two pages: one of the leaflet map, the other a blank page.
+           #       )
+           #     } # end of content() function
+           #   ) # end of downloadHandler() function
            })
            
            observeEvent(input$evCounty,{
