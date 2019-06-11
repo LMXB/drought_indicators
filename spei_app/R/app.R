@@ -147,13 +147,13 @@ shinyApp(
            
            # Add multiple layers with a loop ----------------------------------------------
            m_raster = m_raster %>% 
-             addRasterImage(current_spei_30, colors = pal, opacity = 0.8, group = "30 Day") %>%
-             addRasterImage(current_spei_60, colors = pal, opacity = 0.8, group = "60 Day") %>%
-             addRasterImage(current_spei_90, colors = pal, opacity = 0.8, group = "90 Day") %>%
-             addRasterImage(current_spei_180, colors = pal, opacity = 0.8, group = "180 Day") %>%
-             addRasterImage(current_spei_365, colors = pal, opacity = 0.8, group = "365 Day") %>%
-             addRasterImage(current_spei_water_year, colors = pal, opacity = 0.8, group = "Water Year") %>%
-             addRasterImage(current_spei_year_to_date, colors = pal, opacity = 0.8, group = "Year to Date") %>%
+             addRasterImage(current_spei_30, colors = pal, opacity = 0.8, group = "30 Day", project = FALSE) %>%
+             addRasterImage(current_spei_60, colors = pal, opacity = 0.8, group = "60 Day", project = FALSE) %>%
+             addRasterImage(current_spei_90, colors = pal, opacity = 0.8, group = "90 Day", project = FALSE) %>%
+             addRasterImage(current_spei_180, colors = pal, opacity = 0.8, group = "180 Day", project = FALSE) %>%
+             addRasterImage(current_spei_365, colors = pal, opacity = 0.8, group = "365 Day", project = FALSE) %>%
+             addRasterImage(current_spei_water_year, colors = pal, opacity = 0.8, group = "Water Year", project = FALSE) %>%
+             addRasterImage(current_spei_year_to_date, colors = pal, opacity = 0.8, group = "Year to Date", project = FALSE) %>%
              addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
              addPolygons(data = current_usdm, group = "USDM", fillColor = ~pal_usdm(DM), weight = 2, opacity = 1,  color = "black", 
                          fillOpacity = 0.5, highlight = 
