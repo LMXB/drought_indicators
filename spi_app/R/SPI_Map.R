@@ -31,10 +31,9 @@ raster_precip = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/
 #proj4string(raster_precip) = CRS("+init=EPSG:4326")
 
 #import UMRB outline for clipping and watershed for aggregating
-UMRB = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/UMRB_Outline_Conus.shp")
-watersheds = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/UMRB_Clipped_HUC8_Simple.shp")
-county = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/UMRB_Clipped_County_Simple.shp")
-montana = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/montana_outline.kml")
+UMRB = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/larger_extent/outline_umrb.shp")
+watersheds = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/larger_extent/watersheds_umrb.shp")
+county = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/larger_extent/county_umrb.shp")
 
 #clip precip grids to the extent of UMRB, to reduce dataset and bring grids into memory
 raster_precip_spatial_clip = crop(raster_precip, extent(UMRB))
@@ -120,8 +119,7 @@ for(t in 1:length(time_scale)){
   #plot map
   plot(spi_map, col = color_ramp(100), zlim = c(-3.5,3.5),
        main = paste0("Current ", as.character(time_scale[t]), " Day SPI"))
-  plot(montana, add = T)
-  
+
   #define path for map export
   path_file = paste("/home/zhoylman/drought_indicators/spi_app/maps/current_spi/current_spi_",
                     as.character(time_scale[t]),".tif", sep = "")
@@ -151,6 +149,13 @@ for(t in 1:length(time_scale)){
   # Use list apply to calculate median for each polygon
   r.median <- lapply(r.vals, FUN=median,na.rm=TRUE)
   
+  nullToNA <- function(x) {
+    x[sapply(x, is.null)] <- NA
+    return(x)
+  }
+  
+  r.median = nullToNA(r.median)
+  
   #create export shp file, define most current time and define aggregate values
   watersheds_export = watersheds
   watersheds_export$current_time = substr(time$datetime[length(time$datetime)],1,10)
@@ -177,7 +182,7 @@ for(t in 1:length(time_scale)){
   
   # Use list apply to calculate median for each county
   r.median <- lapply(r.vals, FUN=median,na.rm=TRUE)
-  
+  r.median = nullToNA(r.median)
   #create export shp file and define aggregate values
   county_export = county
   county_export$average = as.vector(unlist(r.median))

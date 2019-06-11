@@ -25,10 +25,9 @@ raster_pet = brick("http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg
 #proj4string(raster_pet) = CRS("+init=EPSG:4326")
 
 #import UMRB outline for clipping and watershed for aggregating
-UMRB = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/UMRB_Outline_Conus.shp")
-watersheds = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/UMRB_Clipped_HUC8_Simple.shp")
-county = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/UMRB_Clipped_County_Simple.shp")
-montana = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/montana_outline.kml")
+UMRB = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/larger_extent/outline_umrb.shp")
+watersheds = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/larger_extent/watersheds_umrb.shp")
+county = rgdal::readOGR("/home/zhoylman/drought_indicators/shp_kml/larger_extent/county_umrb.shp")
 
 #clip precip and PET grids to the extent of UMRB, to reduce dataset and bring grids into memory
 raster_precip_spatial_clip = crop(raster_precip, extent(UMRB))
@@ -147,7 +146,6 @@ for(t in 1:length(time_scale)){
   #plot map
   plot(spei_map, col = color_ramp(100), zlim = c(-3.5,3.5), 
        main = paste0("Current ", as.character(time_scale[t]), " Day SPEI"))
-  plot(montana, add = T)
   
   #define path to export and wrtie GEOtiff
   path_file = paste("/home/zhoylman/drought_indicators/spei_app/maps/current_spei/current_spei_",
@@ -181,6 +179,12 @@ for(t in 1:length(time_scale)){
   watersheds_export = watersheds
   watersheds_export$current_time = substr(time$datetime[length(time$datetime)],1,10)
   
+  nullToNA <- function(x) {
+    x[sapply(x, is.null)] <- NA
+    return(x)
+  }
+  
+  r.median = nullToNA(r.median)
   #assign watershed aggregate values to shps, define path to export and export
   watersheds_export$average = as.vector(unlist(r.median))
   path_file_watershed = paste("/home/zhoylman/drought_indicators/spei_app/shp/current_spei/", sep = "")
@@ -206,6 +210,8 @@ for(t in 1:length(time_scale)){
   
   #create shp file for export
   county_export = county
+  
+  r.median = nullToNA(r.median)
   
   #assign county aggregate values to shps, define path to export and export
   county_export$average = as.vector(unlist(r.median))
