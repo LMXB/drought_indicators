@@ -23,7 +23,7 @@ library(PearsonDS)
 library(gsl)
 library(lmomco)
 
-setwd('/home/zhoylman/drought_indicators/spi_app')
+setwd('/home/zhoylman/drought_indicators/spi_app/')
 
 #load custom functions
 source("../spi_app/R/gamma_fit.R")
