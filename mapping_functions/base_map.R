@@ -1,4 +1,30 @@
 #define base map information as a function used for all leaflet maps
+#load base map dependent data
+states = st_read("../shp_kml/states.shp")
+current_usdm = st_read("../USDM_current/current_usdm.shp")
+current_usdm_date = read.csv("../USDM_current/usdm_time.csv")
+current_usdm_date = as.Date(as.character(current_usdm_date$x), format = "%Y%m%d")
+usdm_description = c("(Abnormally Dry)", "(Moderate Drought)",
+                     "(Severe Drought)", "(Extreme Drought)",
+                     "(Exceptional Drought)")
+
+for(i in 1:length(current_usdm$DM)){
+  current_usdm$DM1[i] = paste(current_usdm$DM[i], 
+                              usdm_description[i], sep = " ")}
+
+labels_usdm = list()
+labels_usdm[[1]] <- sprintf(
+  "<strong>%s</strong><br/>USDM = D%g<sup></sup>",
+  current_usdm_date, current_usdm$DM
+) %>% lapply(htmltools::HTML)
+
+pal_usdm <- colorBin(colorRamp(c("#ffff00", "#918151", "#ffa500", "#ff0000", "#811616"), interpolate = "spline"), 
+                     domain = 0:4, bins = seq(0,4,1))
+
+pal_usdm_legend <- colorFactor(c("#ffff00", "#918151", "#ffa500", "#ff0000", "#811616"), domain = c("D0 (Abnormally Dry)", "D1 (Moderate Drought)",
+                                                                                                    "D2 (Severe Drought)", "D3 (Extreme Drought)",
+                                                                                                    "D4 (Exceptional Drought)"))
+#define basemap function
 base_map = function(x){
   leaflet(options = tileOptions(minZoom = 4, maxZoom = 10)) %>%
     addMapPane("USDM", zIndex = 410) %>%
