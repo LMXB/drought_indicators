@@ -21,6 +21,7 @@ library(glogis)
 library(PearsonDS)
 library(gsl)
 library(lmomco)
+library(mapview)
 #library(shinydashboard)
 
 setwd('/home/zhoylman/drought_indicators/spi_app')
@@ -60,7 +61,7 @@ current_usdm_date = as.Date(as.character(current_usdm_date$x), format = "%Y%m%d"
 
 states = st_read("../shp_kml/states.shp")
 
-shinyApp(
+shinyApp( 
          ui <- fluidPage(class = "text-center",
                          verticalLayout(),
                          br(),
@@ -76,6 +77,7 @@ shinyApp(
                                  }"
                          )
                          ),
+                         # downloadButton(outputId = "dl"),
            #mainPanel(
              leafletOutput("mymap", height = 650),
              
@@ -101,7 +103,7 @@ shinyApp(
              plotOutput("testPlot", width = "100%", height = "900px")# %>% withSpinner(color="#0dc5c1", type = 8, proxy.height = "200px") 
              ),
            #),
-         server <- function(input, output) {
+         server <- function(input, output) { 
            
            output$time = renderText({paste("The most recent data available is from ",as.character(watersheds_30$crrnt_t[1]))})
            
@@ -348,8 +350,25 @@ shinyApp(
            
            
            
+           
+           
            observeEvent(input$evHUC,{
              output$mymap <- renderLeaflet(m_huc)
+           #   output$dl <- downloadHandler(
+           #     filename = paste0( Sys.Date()
+           #                        , "_custom_drought_map"
+           #                        , ".png"
+           #     )
+           #     
+           #     , content = function(file) {
+           #       mapshot( x = m_huc
+           #                , file = file
+           #                , cliprect = "viewport" # the clipping rectangle matches the height & width from the viewing port
+           #                , selfcontained = FALSE
+           #                , remove_controls = c("zoomControl")# when this was not specified, the function for produced a PDF of two pages: one of the leaflet map, the other a blank page.
+           #       )
+           #     } # end of content() function
+           #   ) # end of downloadHandler() function
            })
            
            observeEvent(input$evCounty,{
