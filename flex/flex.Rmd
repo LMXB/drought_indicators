@@ -29,6 +29,8 @@ knitr::opts_chunk$set(echo = TRUE)
 Introduction
 ========================================================
 
+##### Please allow ~20-30 seconds for this webpage to load. This initiation process only happens once.
+
 ### **Introduction**
 
 #### **Welcome to the Upper Missouri River Basin (UMRB) drought indicators document.**
