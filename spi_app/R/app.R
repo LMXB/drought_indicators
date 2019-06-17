@@ -94,7 +94,7 @@ shinyApp(
     output$time = renderText({paste("The most recent data available is from ",as.character(watersheds_30$crrnt_t[1]))})
     
     output$mymap = renderLeaflet({
-      base_map()
+      m_raster
     })
     
     #lists of layers for loop leaflet map generation

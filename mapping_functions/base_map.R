@@ -35,7 +35,7 @@ base_map = function(x){
                   , lat1 = 53
                   , lng2 = -91
                   , lat2 = 39)%>%
-    setView(lng = -108, lat = 46.5, zoom = 5) %>%
+    setView(lng = -108, lat = 45.5, zoom = 6) %>%
     addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
     addPolygons(data = current_usdm, group = "USDM", fillColor = ~pal_usdm(DM), weight = 2, opacity = 1, color = "black",
                 fillOpacity = 0.5, options = pathOptions(pane = "USDM"), highlight = 
