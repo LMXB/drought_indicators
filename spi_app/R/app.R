@@ -71,14 +71,14 @@ shinyApp(
   ui <- fluidPage(
                   verticalLayout(),
                   br(),
+                  wellPanel(align = "center",textOutput('time'), style = "padding: 5px;"),
+                  tags$head(tags$style("#time{color: black; font-size: 16px; font-style: bold;}"
+                  )),
                   inputPanel(align = "center",
                     actionButton("evRaster", "Gridded Data"),
                     actionButton("evHUC", "Watersheds"),
                     actionButton("evCounty", "Counties"),
                     style="color: #add8e6; background-color: #337ab7; border-color: #00000"),
-                  wellPanel(align = "center",textOutput('time')),
-                  tags$head(tags$style("#time{color: black; font-size: 24px; font-style: bold;}"
-                  )),
                   leafletOutput("mymap", height = 650),
                   tags$head(tags$style(type="text/css", "
                                   #loadmessage {position: fixed; top: 0px; left: 0px; width: 100%; padding: 5px 0px 5px 0px; text-align: 
