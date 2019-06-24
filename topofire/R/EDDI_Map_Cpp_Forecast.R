@@ -9,33 +9,51 @@ library(dplyr)
 library(stringr)
 
 #define directories
-work.dir = "/mnt/DataDrive2/data/drought_indices/spei/"
+work.dir = "/mnt/DataDrive2/data/drought_indices/eddi/"
 git.dir = '/home/zhoylman/drought_indicators/topofire/R/'
-precip.climatology.dir = "/mnt/DataDrive2/data/drought_indices/maca/precip_2.5km"
-pet.climatology.dir = "/mnt/DataDrive2/data/drought_indices/historical_2p5km/PET"
-pet.current.dir = "/mnt/DataDrive2/data/airtemp_realtime/water_balance/2pt5km"
 cpp.dir = "/home/zhoylman/drought_indicators/topofire/cpp/"
 
-write.dir = paste0(work.dir,"current/")
-archive.dir = paste0(work.dir,"archive/")
+precip.climatology.dir = "/mnt/DataDrive2/data/drought_indices/maca/precip_2.5km"
+precip.forecast.dir = "/mnt/DataDrive2/data/drought_indices/forecast/precip"
+
+pet.climatology.dir = "/mnt/DataDrive2/data/drought_indices/historical_2p5km/PET"
+pet.current.dir = "/mnt/DataDrive2/data/airtemp_realtime/water_balance/2pt5km" #also the forecast dir
+
+#create dirs for writing
+write.dir = paste0(work.dir,"forecast/")
+archive.dir = paste0(work.dir,"forecast_archive/")
 dir.create(write.dir)
 dir.create(archive.dir)
 
 #fits a gamma distrbution to a vector
 #returns the shape and rate parameters
 source(paste0(git.dir, "fdates.R"))
-source(paste0(git.dir, "spei_fun.R"))
+source(paste0(git.dir, "eddi_fun.R"))
 
 #parse precip
-precip.files = list.files(precip.climatology.dir, pattern = ".tif$", full.names = T)
+precip.climatology.files = list.files(precip.climatology.dir, pattern = ".tif$", full.names = T)
+precip.forecast.files = list.files(precip.forecast.dir, pattern = ".tif$", full.names = T)
+precip.files = c(precip.climatology.files, precip.forecast.files)
 
-#parsepet
+#parse pet
 pet.files.historical = list.files(pet.climatology.dir, pattern = ".tif$", full.names = T)
 pet.files.current = list.files(pet.current.dir, pattern = glob2rx("*et0*.tif$*"), full.names = T)
 pet.files.current = pet.files.current[str_detect(pet.files.current,paste(c(seq(2019,2100,1)),collapse = '|'))] #will run till 2100
+pet.files.forecast = list.files(pet.current.dir, pattern = glob2rx("*et0*forecast*.tif$*"), full.names = T)
+
+#change file names of forecast grids to play nice with fdates
+pet.time.current = as.Date(fdates(pet.files.current), format = "%Y%m%d")
+forecast.dates = gsub("[^[:digit:].]", "",  pet.time.current[length(pet.time.current)] + c(1:7))
+
+#delete old forecasts
+do.call(file.remove, list(list.files("/mnt/DataDrive2/data/drought_indices/pet_forecast_fdates/",full.names = T)))
+
+#copy pet forecast to temp folder and rename for fdates
+file.copy(pet.files.forecast, paste0("/mnt/DataDrive2/data/drought_indices/pet_forecast_fdates/pet_forecast_",forecast.dates,".tif"))
+pet.files.forecast = list.files("/mnt/DataDrive2/data/drought_indices/pet_forecast_fdates",full.names = T)
 
 #combine pet
-pet.files = c(pet.files.historical, pet.files.current)
+pet.files = c(pet.files.historical, pet.files.current, pet.files.forecast)
 
 #compute time from files
 pet.time = fdates(pet.files)
@@ -56,10 +74,6 @@ time$day = strftime(time$datetime,"%m-%d")
 time_scale = c(30, 60, 90, 180, 360)
 
 for(t in 1:length(time_scale)){
-  dir.create(paste0(work.dir, "tmp_dir_precip/"))
-  tmp.dir.precip <- paste0(work.dir, "tmp_dir_precip/", time_scale[t], "_days/")
-  dir.create(tmp.dir.precip)
-  
   dir.create(paste0(work.dir, "tmp_dir_pet/"))
   tmp.dir.pet <- paste0(work.dir, "tmp_dir_pet/", time_scale[t], "_days/")
   dir.create(tmp.dir.pet)
@@ -98,23 +112,6 @@ for(t in 1:length(time_scale)){
   cl = makeCluster(20)
   registerDoParallel(cl)
   
-  #sum precip grids
-  run = foreach(i=unique(group_by_vec)) %dopar% {
-    flist = precip.files.match[slice_vec[group_by_vec == i]]
-    datetime_char = time$datetime[slice_vec[group_by_vec == i]]
-    
-    txt.filename <- paste0(tmp.dir.precip, "do_sum_group_", datetime_char[1], "_",
-                           datetime_char[length(datetime_char)],".txt")
-    
-    write.table(flist, file=txt.filename, quote=F, row.names=F, col.names=F, append=F)
-    out.file <- paste0(tmp.dir.precip, "sum_raster_", datetime_char[1], "_",
-                       datetime_char[length(datetime_char)], ".tif")
-    
-    # call C++ sum program here
-    # aruments are: 1. text file which lists geotiffs; 2. name of the output file; 3. NoData value 
-    system(paste0("/opt/drought_anomaly/drought_anomaly_sum ", txt.filename, " ", out.file, " ", -9999  ))
-  }
-  
   #sum pet grids
   run = foreach(i=unique(group_by_vec)) %dopar% {
     flist = pet.files.match[slice_vec[group_by_vec == i]]
@@ -133,46 +130,39 @@ for(t in 1:length(time_scale)){
   }
   
   #import summed rasters
-  summed_precip_rasters = list.files(tmp.dir.precip, pattern = ".tif$", full.names = T)
-  summed_precip_raster_stack = stack(summed_precip_rasters)
-  
-  #import summed rasters
   summed_pet_rasters = list.files(tmp.dir.pet, pattern = ".tif$", full.names = T)
   summed_pet_raster_stack = stack(summed_pet_rasters)
   
-  #reformat data and take differnce
-  summed_diff_vec = foreach(i=unique(group_by_vec)) %dopar% {
+  #reformat data
+  summed_pet_vec = foreach(i=unique(group_by_vec)) %dopar% {
     library(raster)
-    temp = summed_precip_raster_stack[[i]] - summed_pet_raster_stack[[i]]
-    values(temp)
+    values(summed_pet_raster_stack[[i]])
   }
-  integrated_diff = structure(summed_diff_vec, row.names = c(NA, -length(summed_diff_vec[[1]])), class = "data.frame")
+  integrated_pet = structure(summed_pet_vec, row.names = c(NA, -length(summed_pet_vec[[1]])), class = "data.frame")
   
-  #calculate SPEI
-  clusterExport(cl, c("spei_fun"))
-  clusterCall(cl, function() {lapply(c("lmomco"), library, character.only = TRUE)})
-  spei_values = parApply(cl,integrated_diff, 1, FUN = spei_fun)
+  #calculate EDDI
+  clusterExport(cl, c("git.dir"))
+  clusterCall(cl, function() {source(paste0(git.dir,"eddi_fun.R"))})
+  eddi_values = parApply(cl,integrated_pet, 1, FUN = eddi_fun)
   stopCluster(cl)
   
   #create spatial template for current spi values
-  current_spei = summed_precip_raster_stack[[1]]
+  current_eddi = summed_pet_raster_stack[[1]]
   
   #allocate curent spi values to spatial template
-  values(current_spei) = spei_values
-
+  values(current_eddi) = eddi_values
+  
   #write out archive raster
-  writeRaster(current_spei, paste0(archive.dir,"spei_",time_fdates[length(time_fdates)],"_", 
+  writeRaster(current_eddi, paste0(archive.dir,"forecast_eddi_",time_fdates[length(time_fdates)],"_", 
                                    as.character(time_scale[t]),"_day" ,".tif"), format = "GTiff", overwrite = T)
   
   #write out raster as "current"
-  writeRaster(current_spei, paste0(write.dir,"current_spei_", 
+  writeRaster(current_eddi, paste0(write.dir,"forecast_eddi_", 
                                    as.character(time_scale[t]),"_day" ,".tif"), format = "GTiff", overwrite = T)
-  
   toc()
   
   #clean up all temp data
-  do.call(file.remove, list(list.files(tmp.dir.precip, full.names = T)))
   do.call(file.remove, list(list.files(tmp.dir.pet, full.names = T)))  
 
-  print(paste0(as.character(time_scale[t])," day SPEI calcualtion complete."))
+  print(paste0(as.character(time_scale[t])," day EDDI calcualtion complete."))
 }

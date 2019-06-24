@@ -1,3 +1,5 @@
+rm(list = ls())
+
 ## LOAD THE REQUIRED LIBRARYS
 library(raster)
 library(tictoc)
@@ -5,51 +7,27 @@ library(doParallel)
 library(foreach)
 library(rgdal)
 library(parallel)
-library(dplyr)
-library(stringr)
 
 #define directories
-work.dir = "/mnt/DataDrive2/data/drought_indices/spei/"
-git.dir = '/home/zhoylman/drought_indicators/topofire/R/'
-precip.climatology.dir = "/mnt/DataDrive2/data/drought_indices/maca/precip_2.5km"
-pet.climatology.dir = "/mnt/DataDrive2/data/drought_indices/historical_2p5km/PET"
-pet.current.dir = "/mnt/DataDrive2/data/airtemp_realtime/water_balance/2pt5km"
-cpp.dir = "/home/zhoylman/drought_indicators/topofire/cpp/"
+work.dir = "/mnt/ScratchDrive/data/Hoylman/SPEI/"
+git.dir = '/home/zhoylman/drought_indicators/zoran/R/'
+precip.climatology.dir = "/mnt/ScratchDrive/data/Hoylman/gridMET_Climatology/gridMET_precip_raw"
+pet.climatology.dir = "/mnt/ScratchDrive/data/Hoylman/gridMET_Climatology/gridMET_pet_raw"
 
-write.dir = paste0(work.dir,"current/")
-archive.dir = paste0(work.dir,"archive/")
+write.dir = paste0(work.dir,"Raw_gridMET_SPEI_test/")
 dir.create(write.dir)
-dir.create(archive.dir)
 
 #fits a gamma distrbution to a vector
 #returns the shape and rate parameters
 source(paste0(git.dir, "fdates.R"))
 source(paste0(git.dir, "spei_fun.R"))
 
-#parse precip
 precip.files = list.files(precip.climatology.dir, pattern = ".tif$", full.names = T)
-
-#parsepet
-pet.files.historical = list.files(pet.climatology.dir, pattern = ".tif$", full.names = T)
-pet.files.current = list.files(pet.current.dir, pattern = glob2rx("*et0*.tif$*"), full.names = T)
-pet.files.current = pet.files.current[str_detect(pet.files.current,paste(c(seq(2019,2100,1)),collapse = '|'))] #will run till 2100
-
-#combine pet
-pet.files = c(pet.files.historical, pet.files.current)
+pet.files = list.files(pet.climatology.dir, pattern = ".tif$", full.names = T)
 
 #compute time from files
-pet.time = fdates(pet.files)
-precip.time = fdates(precip.files)
-
-#match time series
-pet.files.match = pet.files[pet.time %in% precip.time]
-precip.files.match = precip.files[precip.time %in% pet.time]
-
-#compute new time from files
-pet.time = fdates(pet.files.match)
-precip.time = fdates(precip.files.match)
-time_fdates = fdates(precip.files.match)
-time = data.frame(datetime = as.Date(fdates(pet.files.match), format = "%Y%m%d"))
+time_fdates = fdates(precip.files)
+time = data.frame(datetime = as.Date(fdates(precip.files), format = "%Y%m%d"))
 time$day = strftime(time$datetime,"%m-%d")
 
 #designate time scale
@@ -95,12 +73,12 @@ for(t in 1:length(time_scale)){
   ###   C++ METOHD FOR SUMMING GRIDS  ####
   ########################################
   
-  cl = makeCluster(20)
+  cl = makeCluster(detectCores()-1)
   registerDoParallel(cl)
   
   #sum precip grids
   run = foreach(i=unique(group_by_vec)) %dopar% {
-    flist = precip.files.match[slice_vec[group_by_vec == i]]
+    flist = precip.files[slice_vec[group_by_vec == i]]
     datetime_char = time$datetime[slice_vec[group_by_vec == i]]
     
     txt.filename <- paste0(tmp.dir.precip, "do_sum_group_", datetime_char[1], "_",
@@ -112,12 +90,12 @@ for(t in 1:length(time_scale)){
     
     # call C++ sum program here
     # aruments are: 1. text file which lists geotiffs; 2. name of the output file; 3. NoData value 
-    system(paste0("/opt/drought_anomaly/drought_anomaly_sum ", txt.filename, " ", out.file, " ", -9999  ))
+    system(paste0("/home/zhoylman/drought_indicators/zoran/cpp/drought_anomaly_sum ", txt.filename, " ", out.file, " ", -9999  ))
   }
   
   #sum pet grids
   run = foreach(i=unique(group_by_vec)) %dopar% {
-    flist = pet.files.match[slice_vec[group_by_vec == i]]
+    flist = pet.files[slice_vec[group_by_vec == i]]
     datetime_char = time$datetime[slice_vec[group_by_vec == i]]
     
     txt.filename <- paste0(tmp.dir.pet, "do_sum_group_", datetime_char[1], "_",
@@ -129,7 +107,7 @@ for(t in 1:length(time_scale)){
     
     # call C++ sum program here
     # aruments are: 1. text file which lists geotiffs; 2. name of the output file; 3. NoData value 
-    system(paste0("/opt/drought_anomaly/drought_anomaly_sum ", txt.filename, " ", out.file, " ", -9999  ))
+    system(paste0("/home/zhoylman/drought_indicators/zoran/cpp/drought_anomaly_sum ", txt.filename, " ", out.file, " ", -9999  ))
   }
   
   #import summed rasters
@@ -159,20 +137,19 @@ for(t in 1:length(time_scale)){
   
   #allocate curent spi values to spatial template
   values(current_spei) = spei_values
-
-  #write out archive raster
-  writeRaster(current_spei, paste0(archive.dir,"spei_",time_fdates[length(time_fdates)],"_", 
-                                   as.character(time_scale[t]),"_day" ,".tif"), format = "GTiff", overwrite = T)
   
-  #write out raster as "current"
-  writeRaster(current_spei, paste0(write.dir,"current_spei_", 
+  #compute color ramp for visualization
+  color_ramp = colorRampPalette(c("darkred","red", "white", "blue", "darkblue"))
+  
+  #plot map
+  plot(current_spei, col = color_ramp(100), zlim = c(-3.5,3.5),
+       main = paste0("Current ", as.character(time_scale[t]), " Day SPEI"))
+  
+  #write out raster
+  writeRaster(current_spei, paste0(write.dir,"spei_",time_fdates[length(time_fdates)],"_", 
                                    as.character(time_scale[t]),"_day" ,".tif"), format = "GTiff", overwrite = T)
   
   toc()
-  
-  #clean up all temp data
   do.call(file.remove, list(list.files(tmp.dir.precip, full.names = T)))
-  do.call(file.remove, list(list.files(tmp.dir.pet, full.names = T)))  
-
-  print(paste0(as.character(time_scale[t])," day SPEI calcualtion complete."))
+  do.call(file.remove, list(list.files(tmp.dir.pet, full.names = T)))
 }

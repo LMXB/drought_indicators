@@ -11,13 +11,17 @@ library(stringr)
 #define directories
 work.dir = "/mnt/DataDrive2/data/drought_indices/spei/"
 git.dir = '/home/zhoylman/drought_indicators/topofire/R/'
-precip.climatology.dir = "/mnt/DataDrive2/data/drought_indices/maca/precip_2.5km"
-pet.climatology.dir = "/mnt/DataDrive2/data/drought_indices/historical_2p5km/PET"
-pet.current.dir = "/mnt/DataDrive2/data/airtemp_realtime/water_balance/2pt5km"
 cpp.dir = "/home/zhoylman/drought_indicators/topofire/cpp/"
 
-write.dir = paste0(work.dir,"current/")
-archive.dir = paste0(work.dir,"archive/")
+precip.climatology.dir = "/mnt/DataDrive2/data/drought_indices/maca/precip_2.5km"
+precip.forecast.dir = "/mnt/DataDrive2/data/drought_indices/forecast/precip"
+
+pet.climatology.dir = "/mnt/DataDrive2/data/drought_indices/historical_2p5km/PET"
+pet.current.dir = "/mnt/DataDrive2/data/airtemp_realtime/water_balance/2pt5km" #also the forecast dir
+
+#create dirs for writing
+write.dir = paste0(work.dir,"forecast/")
+archive.dir = paste0(work.dir,"forecast_archive/")
 dir.create(write.dir)
 dir.create(archive.dir)
 
@@ -27,15 +31,29 @@ source(paste0(git.dir, "fdates.R"))
 source(paste0(git.dir, "spei_fun.R"))
 
 #parse precip
-precip.files = list.files(precip.climatology.dir, pattern = ".tif$", full.names = T)
+precip.climatology.files = list.files(precip.climatology.dir, pattern = ".tif$", full.names = T)
+precip.forecast.files = list.files(precip.forecast.dir, pattern = ".tif$", full.names = T)
+precip.files = c(precip.climatology.files, precip.forecast.files)
 
-#parsepet
+#parse pet
 pet.files.historical = list.files(pet.climatology.dir, pattern = ".tif$", full.names = T)
 pet.files.current = list.files(pet.current.dir, pattern = glob2rx("*et0*.tif$*"), full.names = T)
 pet.files.current = pet.files.current[str_detect(pet.files.current,paste(c(seq(2019,2100,1)),collapse = '|'))] #will run till 2100
+pet.files.forecast = list.files(pet.current.dir, pattern = glob2rx("*et0*forecast*.tif$*"), full.names = T)
+
+#change file names of forecast grids to play nice with fdates
+pet.time.current = as.Date(fdates(pet.files.current), format = "%Y%m%d")
+forecast.dates = gsub("[^[:digit:].]", "",  pet.time.current[length(pet.time.current)] + c(1:7))
+
+#delete old forecasts
+do.call(file.remove, list(list.files("/mnt/DataDrive2/data/drought_indices/pet_forecast_fdates/",full.names = T)))
+
+#copy pet forecast to temp folder and rename for fdates
+file.copy(pet.files.forecast, paste0("/mnt/DataDrive2/data/drought_indices/pet_forecast_fdates/pet_forecast_",forecast.dates,".tif"))
+pet.files.forecast = list.files("/mnt/DataDrive2/data/drought_indices/pet_forecast_fdates",full.names = T)
 
 #combine pet
-pet.files = c(pet.files.historical, pet.files.current)
+pet.files = c(pet.files.historical, pet.files.current,pet.files.forecast)
 
 #compute time from files
 pet.time = fdates(pet.files)
@@ -161,11 +179,11 @@ for(t in 1:length(time_scale)){
   values(current_spei) = spei_values
 
   #write out archive raster
-  writeRaster(current_spei, paste0(archive.dir,"spei_",time_fdates[length(time_fdates)],"_", 
+  writeRaster(current_spei, paste0(archive.dir,"forecast_spei_",time_fdates[length(time_fdates)],"_", 
                                    as.character(time_scale[t]),"_day" ,".tif"), format = "GTiff", overwrite = T)
   
   #write out raster as "current"
-  writeRaster(current_spei, paste0(write.dir,"current_spei_", 
+  writeRaster(current_spei, paste0(write.dir,"forecast_spei_", 
                                    as.character(time_scale[t]),"_day" ,".tif"), format = "GTiff", overwrite = T)
   
   toc()

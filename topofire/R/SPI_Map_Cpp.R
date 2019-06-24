@@ -17,8 +17,6 @@ archive.dir = paste0(work.dir,"archive/")
 dir.create(write.dir)
 dir.create(archive.dir)
 
-#fits a gamma distrbution to a vector
-#returns the shape and rate parameters
 source(paste0(git.dir, "gamma_fit.R"))
 source(paste0(git.dir, "fdates.R"))
 source(paste0(git.dir, "spi_fun.R"))
