@@ -1,0 +1,154 @@
+## LOAD THE REQUIRED LIBRARYS
+library(raster)
+library(tictoc)
+library(doParallel)
+library(foreach)
+library(rgdal)
+library(parallel)
+library(dplyr)
+library(stringr)
+
+#define directories
+work.dir = "/mnt/DataDrive2/data/drought_indices/sedi/"
+git.dir = '/home/zhoylman/drought_indicators/topofire/R/'
+cpp.dir = "/home/zhoylman/drought_indicators/topofire/cpp/"
+
+def.climatology.dir = "/mnt/DataDrive2/data/drought_indices/historical_2p5km/DEF"
+def.current.dir = "/mnt/DataDrive2/data/airtemp_realtime/water_balance/2pt5km" #also the forecast dir
+
+#create dirs for writing
+write.dir = paste0(work.dir,"forecast/")
+archive.dir = paste0(work.dir,"forecast_archive/")
+dir.create(write.dir)
+dir.create(archive.dir)
+
+#fits a gamma distrbution to a vector
+#returns the shape and rate parameters
+source(paste0(git.dir, "fdates.R"))
+source(paste0(git.dir, "sedi_fun.R"))
+
+#parse def
+def.files.historical = list.files(def.climatology.dir, pattern = ".tif$", full.names = T)
+def.files.historical = def.files.historical[str_detect(def.files.historical,paste(c(seq(1970,2016,1)),collapse = '|'))] #clips historical data at end of '16
+def.files.current = list.files(def.current.dir, pattern = glob2rx("*def*.tif$*"), full.names = T)
+def.files.current = def.files.current[str_detect(def.files.current,paste(c(seq(2017,2100,1)),collapse = '|'))] #will run till 2100
+def.files.forecast = list.files(def.current.dir, pattern = glob2rx("*def*forecast*.tif$*"), full.names = T)
+
+#change file names of forecast grids to play nice with fdates
+def.time.current = as.Date(fdates(def.files.current), format = "%Y%m%d")
+forecast.dates = gsub("[^[:digit:].]", "",  def.time.current[length(def.time.current)] + c(1:7))
+
+#delete old forecasts
+do.call(file.remove, list(list.files("/mnt/DataDrive2/data/drought_indices/forecast/def_forecast_fdates/",full.names = T)))
+
+#copy def forecast to temp folder and rename for fdates
+file.copy(def.files.forecast, paste0("/mnt/DataDrive2/data/drought_indices/forecast/def_forecast_fdates/def_forecast_",forecast.dates,".tif"))
+def.files.forecast = list.files("/mnt/DataDrive2/data/drought_indices/forecast/def_forecast_fdates",full.names = T)
+
+#combine def
+def.files = c(def.files.historical, def.files.current, def.files.forecast)
+
+#compute new time from files
+def.time = fdates(def.files)
+time_fdates = fdates(def.files)
+time = data.frame(datetime = as.Date(fdates(def.files), format = "%Y%m%d"))
+time$day = strftime(time$datetime,"%m-%d")
+
+#designate time scale
+time_scale = c(30, 60, 90, 180, 360)
+
+for(t in 1:length(time_scale)){
+  
+  dir.create(paste0(work.dir, "tmp_dir_def/"))
+  tmp.dir.def <- paste0(work.dir, "tmp_dir_def/", time_scale[t], "_days/")
+  dir.create(tmp.dir.def)
+  
+  #calcualte run time
+  tic()
+  
+  #compute time breaks (indexes)
+  first_date_breaks = which(time$day == time$day[length(time$datetime)])
+  second_date_breaks = first_date_breaks-(time_scale[t]-1)
+  
+  #if there are negative indexes remove last year (incomplete data range)
+  #change this to remove all indexes from both vectors that are negative
+  if(!all(second_date_breaks < 0)){
+    pos_index = which(second_date_breaks > 0)
+    first_date_breaks = first_date_breaks[c(pos_index)]
+    second_date_breaks = second_date_breaks[c(pos_index)]
+  }
+  
+  #create slice vectors and group by vectors
+  for(j in 1:length(first_date_breaks)){
+    if(j == 1){
+      slice_vec = seq(second_date_breaks[j],first_date_breaks[j], by = 1)
+      group_by_vec = rep(j,(first_date_breaks[j] - second_date_breaks[j]+1))
+    }
+    else{
+      slice_vec = append(slice_vec, seq(second_date_breaks[j],first_date_breaks[j], by = 1))
+      group_by_vec = append(group_by_vec, rep(j,(first_date_breaks[j] - second_date_breaks[j]+1)))
+    }
+  }
+  
+  ########################################
+  ###   C++ METOHD FOR SUMMING GRIDS  ####
+  ########################################
+  
+  cl = makeCluster(20)
+  registerDoParallel(cl)
+  
+  #sum def grids
+  run = foreach(i=unique(group_by_vec)) %dopar% {
+    flist = def.files[slice_vec[group_by_vec == i]]
+    datetime_char = time$datetime[slice_vec[group_by_vec == i]]
+    
+    txt.filename <- paste0(tmp.dir.def, "do_sum_group_", datetime_char[1], "_",
+                           datetime_char[length(datetime_char)],".txt")
+    
+    write.table(flist, file=txt.filename, quote=F, row.names=F, col.names=F, append=F)
+    out.file <- paste0(tmp.dir.def, "sum_raster_", datetime_char[1], "_",
+                       datetime_char[length(datetime_char)], ".tif")
+    
+    # call C++ sum program here
+    # aruments are: 1. text file which lists geotiffs; 2. name of the output file; 3. NoData value 
+    system(paste0("/opt/drought_anomaly/drought_anomaly_sum ", txt.filename, " ", out.file, " ", -9999  ))
+  }
+  
+  #import summed rasters
+  summed_def_rasters = list.files(tmp.dir.def, pattern = ".tif$", full.names = T)
+  summed_def_raster_stack = stack(summed_def_rasters)
+  
+  #reformat data
+  summed_def_vec = foreach(i=unique(group_by_vec)) %dopar% {
+    library(raster)
+    values(summed_def_raster_stack[[i]])
+  }
+  integrated_def = structure(summed_def_vec, row.names = c(NA, -length(summed_def_vec[[1]])), class = "data.frame")
+  
+  #calculate SEDI
+  clusterExport(cl, c("sedi_fun"))
+  clusterCall(cl, function() {lapply(c("lmomco"), library, character.only = TRUE)})
+  sedi_values = parApply(cl,integrated_def, 1, FUN = sedi_fun)
+  stopCluster(cl)
+  
+  #create spatial template for current spi values
+  current_sedi = summed_def_raster_stack[[1]]
+  
+  #allocate curent spi values to spatial template
+  values(current_sedi) = sedi_values
+
+  #write out archive raster
+  writeRaster(current_sedi, paste0(archive.dir,"forecast_sedi_",time_fdates[length(time_fdates)],"_", 
+                                   as.character(time_scale[t]),"_day" ,".tif"), format = "GTiff", overwrite = T)
+  
+  #write out raster as "current"
+  writeRaster(current_sedi, paste0(write.dir,"forecast_sedi_", 
+                                   as.character(time_scale[t]),"_day" ,".tif"), format = "GTiff", overwrite = T)
+  
+  toc()
+  
+  #clean up all temp data
+  do.call(file.remove, list(list.files(tmp.dir.def, full.names = T)))  
+
+  print(paste0(as.character(time_scale[t])," day SEDI calcualtion complete."))
+}

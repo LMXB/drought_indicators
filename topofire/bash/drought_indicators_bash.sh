@@ -20,3 +20,5 @@ Rscript /home/zhoylman/drought_indicators/topofire/R/EDDI_Map_Cpp.R
 Rscript /home/zhoylman/drought_indicators/topofire/R/EDDI_Map_Cpp_Forecast.R
 # calculate SEDI
 Rscript /home/zhoylman/drought_indicators/topofire/R/SEDI_Map_Cpp.R
+# calculate SEDI Forecasts (ingests def forecasts)
+Rscript /home/zhoylman/drought_indicators/topofire/R/SEDI_Map_Cpp_Forecast.R
