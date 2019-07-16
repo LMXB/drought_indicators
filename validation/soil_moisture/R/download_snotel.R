@@ -78,7 +78,7 @@ clusterExport(cl, "extract_columns")
 historical_select = foreach(i = 1:length(snotel$site_num)) %dopar%{
   library(dplyr)
   collumn_name = c("Date","Soil.Moisture.Percent..2in..pct..Start.of.Day.Values", "Soil.Moisture.Percent..8in..pct..Start.of.Day.Values",
-                   "Soil.Moisture.Percent..20in..pct..Start.of.Day.Values", "Snow.Water.Equivalent..in..Start.of.Day.Values")
+                   "Soil.Moisture.Percent..20in..pct..Start.of.Day.Values")
   tryCatch({
     extract_columns(historical[[i]], collumn_name)
   }, error = function(e){

@@ -34,7 +34,7 @@ SELECT *
 FROM api.get_L1(@l0)
 "
 
-soil_moisture <-
+mesonet_soil_moisture <-
   DBI::dbGetQuery(mesonet_db, q) %>%
   tibble::as_tibble() %>%
   dplyr::mutate(datetime =
@@ -52,3 +52,6 @@ soil_moisture <-
                                        description_short,
                                        units),
                    .funs = ~factor(.))
+
+save(mesonet_soil_moisture, file = "/home/zhoylman/drought_indicators_data/mesonet_spei/mesonet_soil_moisture.RData")
+
