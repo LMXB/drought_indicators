@@ -13,7 +13,7 @@ source("/home/zhoylman/drought_indicators/validation/soil_moisture/R/get_mesonet
 source("/home/zhoylman/drought_indicators/spei_app/R/spei_point.R")
 
 #define timescales
-time_scales = c(seq(10,360,10))
+time_scales = c(seq(15,360,15))
 
 time = list()
 site = list()

@@ -16,7 +16,7 @@ snotel$site_num = gsub("[^0-9.]","",as.character(snotel$site_name))
 
 source("/home/zhoylman/drought_indicators/spi_app/R/gamma_fit.R")
 source("/home/zhoylman/drought_indicators/validation/soil_moisture/R/gamma_standard_fun.R")
-source("/home/zhoylman/drought_indicators/validation/soil_moisture/R/cross_cor.R")
+source("/home/zhoylman/drought_indicators/validation/soil_moisture/R/cross_cor_old.R")
 source("/home/zhoylman/drought_indicators/validation/soil_moisture/R/moving_cross_cor.R")
 
 #trouble shooting set up for functions

@@ -4,32 +4,26 @@ moving_cross_cor = function(spei,soil_moisture){
     for(t in 1:length(spei)){
       x1 = spei[[t]]
       
-      # define time format
-      x1$time = round(as.POSIXct(x1$time), unit = "days")
-      soil_moisture$Date = round(as.POSIXct(soil_moisture$Date, format = "%Y-%m-%d"), unit = "days")
+      x1$time = as.POSIXct(x1$time)
+      soil_moisture$Date = as.POSIXct(soil_moisture$Date)
       
-      # filter datasets for consitant obs 
       x_filter <- x1[x1$time %in% soil_moisture$Date,]
       y_filter <- soil_moisture[soil_moisture$Date %in% x1$time,]
       
-      #rename date time collumn
-      colnames(y_filter) = c("time", names(y_filter)[-1])
+      merged = cbind(x_filter, y_filter$Soil.Moisture.Percent..2in..pct..Start.of.Day.Values,
+                     y_filter$Soil.Moisture.Percent..8in..pct..Start.of.Day.Values,
+                     y_filter$Soil.Moisture.Percent..20in..pct..Start.of.Day.Values,
+                     y_filter$Snow.Water.Equivalent..in..Start.of.Day.Values)
       
-      #redefine the time format (looses this data after filtering step)
-      x_filter$time = as.POSIXct(x_filter$time)
-      y_filter$time = as.POSIXct(y_filter$time)
+      depth = c("soil_moisture_2in", "soil_moisture_8in", "soil_moisture_20in")
       
-      #merge based 
-      merged = dplyr::full_join(x_filter, y_filter, by = "time")
-      
-      depth = colnames(merged)[-c(1:2)]
+      colnames(merged)[3:6] = c(depth,"swe")
       
       merged = merged %>%
-        select(time, spei, depth)%>%
-        mutate(mean_soil_moisture = rowMeans(.[depth], na.rm = T))%>%
-        as_tibble()
+        rowwise() %>%
+        mutate(mean_soil_moisture = mean(c(soil_moisture_2in,soil_moisture_8in,soil_moisture_20in), na.rm = T))
       
-      depth = c(depth, "mean_soil_moisture")
+      depth = c("soil_moisture_2in", "soil_moisture_8in", "soil_moisture_20in", "mean_soil_moisture")
       
       if(t == 1){
         correlation_matrix = list()
@@ -54,22 +48,11 @@ moving_cross_cor = function(spei,soil_moisture){
           dplyr::summarize(correlation = cor(spei,standardized))
           
           correlation_full = correlation
-          if(length(correlation_full$month) == 0){
-            correlation_full = data.frame(month = 1:12,
-                                          correlation = rep(NA,12))%>%
-              as_tibble()
-          }
         }
         else{
           correlation = x_select %>%
             dplyr::group_by(month) %>%
             dplyr::summarize(correlation = cor(spei,standardized))
-          
-          if(length(correlation$month) == 0){
-            correlation = data.frame(month = 1:12,
-                                     correlation = rep(NA,12))%>%
-              as_tibble()
-          }
           
           correlation_full = cbind(correlation_full, correlation$correlation)
         }

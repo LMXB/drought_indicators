@@ -48,11 +48,21 @@ for(m in 1:length(station_data$station_key)){
   data_reorganized[[m]] = data_join
 }
 
+mesonet_soil_moisture_list = data_reorganized
+
 #trouble shooting set up for functions
-# site = 1
-# spei = snotel_spei[[site]]
-# soil_moisture = snotel_soil_moisture[[site]]
-# cross_cor(spei,soil_moisture)
+site = 1
+spei = mesonet_spei[[site]]
+soil_moisture = mesonet_soil_moisture_list[[site]]
+cross_cor(spei,soil_moisture)
+moving_cross_cor(spei,soil_moisture)
+
+site = 1
+spei = snotel_spei[[site]]
+soil_moisture = snotel_soil_moisture[[site]]
+cross_cor(spei,soil_moisture)
+moving_cross_cor(spei,soil_moisture)
+
 
 ##################################################################################
 cl = makeCluster(detectCores()-1)
@@ -65,6 +75,12 @@ correlation_matrix = foreach(site = 1:length(snotel_soil_moisture)) %dopar% {
   library(dplyr)
   cross_cor(snotel_spei[[site]], snotel_soil_moisture[[site]])
 }
+
+correlation_matrix_mesonet = foreach(site = 1:length(mesonet_soil_moisture_list)) %dopar% {
+  library(dplyr)
+  cross_cor(mesonet_spei[[site]], mesonet_soil_moisture_list[[site]])
+}
+
 toc()
 stopCluster(cl)
 
@@ -82,39 +98,48 @@ moving_correlation_matrix = foreach(site = 1:length(snotel_soil_moisture)) %dopa
 toc()
 
 
-foreach(i = 1:length(snotel$lat)) %dopar% {
-  tryCatch({
-    png(filename = paste0("/home/zhoylman/drought_indicators/validation/soil_moisture/plots/correlation/Soil_Moisture_SPEI_Correlation_",
-                          i,".png"), width = 6, height = 5, units = "in", res = 300)
-    plot(c(seq(15,360,15)), as.numeric(correlation_matrix[[i]][1,]), type = "l", col = "orange",
-         ylim = c(min(correlation_matrix[[i]]),max(correlation_matrix[[i]])),
-         xlab = "Time scale (Days)", ylab = "Correlation", main = paste0(snotel$site_name[i], " Soil Moisture ~ SPEI Correlation"))
-    lines(c(seq(15,360,15)), as.numeric(correlation_matrix[[i]][2,]), type = "l", col = "red")
-    lines(c(seq(15,360,15)), as.numeric(correlation_matrix[[i]][3,]), type = "l", col = "blue")
-    lines(c(seq(15,360,15)), as.numeric(correlation_matrix[[i]][4,]), type = "l", col = "black")
-    legend(300, max(correlation_matrix[[i]]), legend=c("2 in", "8 in", "20 in", "mean"),
-           col=c("orange", "red", "blue", "black"), lty=c(1,1,1,1), cex=0.8)
-    dev.off()
-  }, error = function(e){
-    plot(1,1, xlab = "Time scale (Days)", ylab = "Correlation", main = paste0(snotel$site_name[i], " Soil Moisture ~ SPEI Correlation"))
-    text(1, 1.2, "Sorry, no data to correlate")
-    dev.off()
-  })
-}
-
 stopCluster(cl)
 find_best = function(x){
   times = c(seq(15,360,15))
-  best_2in = times[which(x[1,]==max(x[1,]))]
-  best_8in = times[which(x[2,]==max(x[2,]))]
-  best_20in = times[which(x[3,]==max(x[3,]))]
-  best_mean = times[which(x[4,]==max(x[4,]))]
+  best_2in = times[which(x[1,]==max(x[1,], na.rm = T))]
+  best_8in = times[which(x[2,]==max(x[2,], na.rm = T))]
+  best_20in = times[which(x[3,]==max(x[3,], na.rm = T))]
+  best_mean = times[which(x[4,]==max(x[4,], na.rm = T))]
+  
+  if(length(best_2in)==0){best_2in = NA}
+  if(length(best_8in)==0){best_8in = NA}
+  if(length(best_20in)==0){best_20in = NA}
+  if(length(best_mean)==0){best_mean = NA}
+  
   best_times = c(best_2in, best_8in, best_20in, best_mean)
+  return(best_times)
+}
+
+find_best_mesonet = function(x){
+  times = c(seq(15,360,15))
+  best_0in = times[which(x[1,]==max(x[1,], na.rm = T))]
+  best_4in = times[which(x[2,]==max(x[2,], na.rm = T))]
+  best_8in = times[which(x[3,]==max(x[3,], na.rm = T))]
+  best_20in = times[which(x[4,]==max(x[4,], na.rm = T))]
+  best_36in = times[which(x[5,]==max(x[5,], na.rm = T))]
+  best_mean = times[which(x[6,]==max(x[6,], na.rm = T))]
+  
+  if(length(best_0in)==0){best_0in = NA}
+  if(length(best_4in)==0){best_4in = NA}
+  if(length(best_8in)==0){best_8in = NA}
+  if(length(best_20in)==0){best_20in = NA}
+  if(length(best_36in)==0){best_36in = NA}
+  if(length(best_mean)==0){best_mean = NA}
+  
+  best_times = c(best_0in, best_4in, best_8in, best_20in, best_36in, best_mean)
   return(best_times)
 }
 
 best_times_matrix = data.frame(matrix(nrow = length(snotel$site_num), ncol = 4))
 colnames(best_times_matrix) = c("2in", "8in", "20in", "mean")
+
+best_times_matrix_mesonet = data.frame(matrix(nrow = length(station_data$station_key), ncol = 6))
+colnames(best_times_matrix_mesonet) = c("0in", "4in", "8in", "20in", "36in", "mean")
 
 for(i in 1:length(snotel$lat)){
   tryCatch({
@@ -125,6 +150,16 @@ for(i in 1:length(snotel$lat)){
   })
 }
 
+for(i in 1:length(station_data$station_key)){
+  tryCatch({
+    best_times_matrix_mesonet[i,] = find_best_mesonet(correlation_matrix_mesonet[[i]])
+  },
+  error = function(e){
+    return(c(NA,NA,NA,NA,NA,NA))
+  })
+}
+
+
 #extract density ploot information
 density_2in = data.frame(x = density(best_times_matrix$`2in`, na.rm = T)[[1]],
                          y = density(best_times_matrix$`2in`, na.rm = T)[[2]])
@@ -134,6 +169,14 @@ density_20in = data.frame(x = density(best_times_matrix$`20in`, na.rm = T)[[1]],
                           y = density(best_times_matrix$`20in`, na.rm = T)[[2]])
 density_mean = data.frame(x = density(best_times_matrix$`mean`, na.rm = T)[[1]],
                           y = density(best_times_matrix$`mean`, na.rm = T)[[2]])
+
+density_mesonet = list()
+
+for(i in 1:6){
+  density_mesonet[[i]] = data.frame(x = density(best_times_matrix_mesonet[,i], na.rm = T)[[1]],
+                                    y = density(best_times_matrix_mesonet[,i], na.rm = T)[[2]])
+}
+
 
 library(ggplot2)
 summary_plot = ggplot() + 
@@ -149,15 +192,15 @@ summary_plot = ggplot() +
   geom_point(data = density_20in[which(density_20in$y == max(density_20in$y)),], aes(x = x, y = y))+
   geom_text(data = density_20in[which(density_20in$y == max(density_20in$y)),], aes(x = x+ 40, y = y, label = paste0(round(x, digits = 0), " Days")))+
   
-  geom_line(data = density_mean, aes(x = x, y = y, color = "mean"))+
+  geom_line(data = density_mean, aes(x = x, y = y, color = "Mean"))+
   geom_point(data = density_mean[which(density_mean$y == max(density_mean$y)),], aes(x = x, y = y))+
   geom_text(data = density_mean[which(density_mean$y == max(density_mean$y)),], aes(x = x+ 40, y = y, label = paste0(round(x, digits = 0), " Days")))+
   
   scale_color_manual("Depth", values = c("2in" = "orange", 
                                          "8in" = "red", 
                                          "20in" = "blue",
-                                         "mean" = "black"),
-                     breaks=c("2in","8in","20in", "mean"))+
+                                         "Mean" = "black"),
+                     breaks=c("2in","8in","20in", "Mean"))+
   theme_bw(base_size = 16) +
   theme(axis.line = element_line(colour = "black"),
         panel.grid.major = element_blank(),
@@ -166,11 +209,58 @@ summary_plot = ggplot() +
         plot.title = element_text(hjust = 0.5))+
   ylab("Density")+
   xlab("Timescale (Days)")+
-  ggtitle("Best Correlation Times (Soil Moisture ~ SPEI)")
+  ggtitle("Best Correlation Times (Soil Moisture ~ SPEI)")+
+  xlim(0,365)
 
 png(filename = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/time_scale_summary_with_mean.png", width = 7, height = 5, units = "in", res = 300)
 summary_plot
 dev.off()
+
+color_names = c("0 in" ,"4 in" ,"8 in", "20 in" ,"36 in", "Mean")
+
+mesonet_summary = ggplot()+
+  geom_line(data = density_mesonet[[1]], aes(x = x, y = y, color = color_names[1]))+
+  geom_line(data = density_mesonet[[2]], aes(x = x, y = y, color = color_names[2]))+
+  geom_line(data = density_mesonet[[3]], aes(x = x, y = y, color = color_names[3]))+
+  geom_line(data = density_mesonet[[4]], aes(x = x, y = y, color = color_names[4]))+
+  geom_line(data = density_mesonet[[5]], aes(x = x, y = y, color = color_names[5]))+
+  geom_line(data = density_mesonet[[6]], aes(x = x, y = y, color = color_names[6]))+
+  
+  theme_bw(base_size = 16)+
+  scale_color_manual(values = c("0 in" = "red", "4 in" =  "orange", "8 in" =  "green",
+                                "20 in" = "blue", "36 in" =  "purple", "Mean" = "black"),
+                     breaks = c("0 in","4 in","8 in","20 in","36 in", "Mean"),
+                     name = "Probe Depth")+
+  xlim(0,365)+
+  theme(axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(0.85, 0.74),
+        plot.title = element_text(hjust = 0.5))+
+  ylab("Density")+
+  xlab("Timescale (Days)")+
+  ggtitle("Best Correlation Times (Soil Moisture ~ SPEI)")
+
+#add labels
+for(i in 1:6){
+  mesonet_summary = mesonet_summary + 
+    geom_point(data = density_mesonet[[i]][which(density_mesonet[[i]]$y == max(density_mesonet[[i]]$y)),], aes(x = x, y = y))+
+    geom_text(data = density_mesonet[[i]][which(density_mesonet[[i]]$y == max(density_mesonet[[i]]$y)),], aes(x = x + 40, y = y, 
+                                                                                                              label = paste0(round(x, digits = 0), " Days")))
+}
+
+png(filename = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/time_scale_summary_with_mean_mesonet.png", width = 7, height = 5, units = "in", res = 300)
+mesonet_summary
+dev.off()
+
+
+
+
+
+
+
+
+
 
 write.csv(best_times_matrix, "/home/zhoylman/drought_indicators/validation/soil_moisture/snotel_data/correlation_times.csv", row.names = F)
 
@@ -189,9 +279,9 @@ best_time_moving = list()
 for(i in 1:length(snotel$lat)){
   tryCatch({
     station_best = data.frame(month = moving_correlation_matrix[[i]][[best[1][[1]]]]$month,
-                              soil_moisture_2in = moving_correlation_matrix[[i]][[best[1][[1]]]]$soil_moisture_2in,
-                              soil_moisture_8in = moving_correlation_matrix[[i]][[best[2][[1]]]]$soil_moisture_8in,
-                              soil_moisture_20in = moving_correlation_matrix[[i]][[best[3][[1]]]]$soil_moisture_20in,
+                              soil_moisture_2in = moving_correlation_matrix[[i]][[best[1][[1]]]]$Soil.Moisture.Percent..2in..pct..Start.of.Day.Values ,
+                              soil_moisture_8in = moving_correlation_matrix[[i]][[best[2][[1]]]]$Soil.Moisture.Percent..8in..pct..Start.of.Day.Values,
+                              soil_moisture_20in = moving_correlation_matrix[[i]][[best[3][[1]]]]$Soil.Moisture.Percent..20in..pct..Start.of.Day.Values,
                               mean_soil_moisture = moving_correlation_matrix[[i]][[best[4][[1]]]]$mean_soil_moisture)
     best_time_moving[[i]] = station_best
   },
@@ -200,6 +290,7 @@ for(i in 1:length(snotel$lat)){
   }) 
 }
 
+#remove incomplete data (stations without all months)
 for(i in 1:length(snotel$lat)){
   tryCatch({
     if(nrow(best_time_moving[[i]])<12){
@@ -216,53 +307,54 @@ time_moving_quantile = as.data.frame(plyr::aaply(plyr::laply(best_time_moving, a
 
 
 #######################################################
+seasonal_plot = list()
 
 seasonal_plot[[1]] = ggplot() +
   geom_ribbon(aes(ymax = time_moving_quantile$`soil_moisture_2in.75%`, 
                   ymin = time_moving_quantile$`soil_moisture_2in.25%`,
-                  x = time_moving_quantile$`month.0%`), alpha = 0.5,fill = "orange")+
-  geom_line(aes(x = time_moving_quantile$`month.0%`, y = time_moving_quantile$`soil_moisture_2in.50%`))+
+                  x = time_moving_quantile$`month.25%`), alpha = 0.5,fill = "orange")+
+  geom_line(aes(x = time_moving_quantile$`month.25%`, y = time_moving_quantile$`soil_moisture_2in.50%`))+
   theme_bw(base_size = 16)+
   theme(plot.title = element_text(hjust = 0.5))+
   xlab("Month")+
   ylab("Correlation")+
-  ggtitle("Soil Moisture (2in) ~ SPEI (30 day)")+
+  ggtitle(paste0("Soil Moisture (2in) ~ SPEI (", times[best[[1]][1]], " Day)"))+
   scale_x_continuous(breaks=c(1:12))
 
 seasonal_plot[[2]] = ggplot() +
   geom_ribbon(aes(ymax = time_moving_quantile$`soil_moisture_8in.75%`, 
                   ymin = time_moving_quantile$`soil_moisture_8in.25%`,
-                  x = time_moving_quantile$`month.0%`), alpha = 0.5,fill = "red")+
-  geom_line(aes(x = time_moving_quantile$`month.0%`, y = time_moving_quantile$`soil_moisture_8in.50%`))+
+                  x = time_moving_quantile$`month.25%`), alpha = 0.5,fill = "red")+
+  geom_line(aes(x = time_moving_quantile$`month.25%`, y = time_moving_quantile$`soil_moisture_8in.50%`))+
   theme_bw(base_size = 16)+
   theme(plot.title = element_text(hjust = 0.5))+
   xlab("Month")+
   ylab("Correlation")+
-  ggtitle("Soil Moisture (8in) ~ SPEI (45 day)")+
+  ggtitle(paste0("Soil Moisture (8in) ~ SPEI (", times[best[[2]][1]], " Day)"))+
   scale_x_continuous(breaks=c(1:12))
 
 seasonal_plot[[3]] = ggplot() +
   geom_ribbon(aes(ymax = time_moving_quantile$`soil_moisture_20in.75%`, 
                   ymin = time_moving_quantile$`soil_moisture_20in.25%`,
-                  x = time_moving_quantile$`month.0%`), alpha = 0.5,fill = "blue")+
-  geom_line(aes(x = time_moving_quantile$`month.0%`, y = time_moving_quantile$`soil_moisture_20in.50%`))+
+                  x = time_moving_quantile$`month.25%`), alpha = 0.5,fill = "blue")+
+  geom_line(aes(x = time_moving_quantile$`month.25%`, y = time_moving_quantile$`soil_moisture_20in.50%`))+
   theme_bw(base_size = 16)+
   theme(plot.title = element_text(hjust = 0.5))+
   xlab("Month")+
   ylab("Correlation")+
-  ggtitle("Soil Moisture (20in) ~ SPEI (75 day)")+
+  ggtitle(paste0("Soil Moisture (20in) ~ SPEI (", times[best[[3]][1]], " Day)"))+
   scale_x_continuous(breaks=c(1:12))
 
 seasonal_plot[[4]] = ggplot() +
   geom_ribbon(aes(ymax = time_moving_quantile$`mean_soil_moisture.75%`, 
                   ymin = time_moving_quantile$`mean_soil_moisture.25%`,
-                  x = time_moving_quantile$`month.0%`), alpha = 0.5,fill = "grey")+
-  geom_line(aes(x = time_moving_quantile$`month.0%`, y = time_moving_quantile$`mean_soil_moisture.50%`))+
+                  x = time_moving_quantile$`month.25%`), alpha = 0.5,fill = "grey")+
+  geom_line(aes(x = time_moving_quantile$`month.25%`, y = time_moving_quantile$`mean_soil_moisture.50%`))+
   theme_bw(base_size = 16)+
   theme(plot.title = element_text(hjust = 0.5))+
   xlab("Month")+
   ylab("Correlation")+
-  ggtitle("Soil Moisture (mean) ~ SPEI (45 day)")+
+  ggtitle(paste0("Soil Moisture (Mean) ~ SPEI (", times[best[[4]][1]], " Day)"))+
   scale_x_continuous(breaks=c(1:12))
 
 png(filename = paste0("/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/seasonality.png"),
@@ -342,5 +434,25 @@ for(i in 1:length(snotel$site_num)){
     dev.off()
   })
   print(i)
+}
+
+foreach(i = 1:length(snotel$lat)) %dopar% {
+  tryCatch({
+    png(filename = paste0("/home/zhoylman/drought_indicators/validation/soil_moisture/plots/correlation/Soil_Moisture_SPEI_Correlation_",
+                          i,".png"), width = 6, height = 5, units = "in", res = 300)
+    plot(c(seq(15,360,15)), as.numeric(correlation_matrix[[i]][1,]), type = "l", col = "orange",
+         ylim = c(min(correlation_matrix[[i]]),max(correlation_matrix[[i]])),
+         xlab = "Time scale (Days)", ylab = "Correlation", main = paste0(snotel$site_name[i], " Soil Moisture ~ SPEI Correlation"))
+    lines(c(seq(15,360,15)), as.numeric(correlation_matrix[[i]][2,]), type = "l", col = "red")
+    lines(c(seq(15,360,15)), as.numeric(correlation_matrix[[i]][3,]), type = "l", col = "blue")
+    lines(c(seq(15,360,15)), as.numeric(correlation_matrix[[i]][4,]), type = "l", col = "black")
+    legend(300, max(correlation_matrix[[i]]), legend=c("2 in", "8 in", "20 in", "mean"),
+           col=c("orange", "red", "blue", "black"), lty=c(1,1,1,1), cex=0.8)
+    dev.off()
+  }, error = function(e){
+    plot(1,1, xlab = "Time scale (Days)", ylab = "Correlation", main = paste0(snotel$site_name[i], " Soil Moisture ~ SPEI Correlation"))
+    text(1, 1.2, "Sorry, no data to correlate")
+    dev.off()
+  })
 }
 

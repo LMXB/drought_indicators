@@ -14,44 +14,40 @@ states = st_read("/home/zhoylman/drought_indicators/shp_kml/states.shp")
 snotel$site_num = gsub("[^0-9.]","",as.character(snotel$site_name))
 
 
-test = mco_get_snotel_data("770:ID:SNTL", variables = c("stationId", "WTEQ::value", "SMS:-2:value"),
-                           start_date = "2010-01-01", end_date = "2011-01-01")
-
-
 #hit the NRCS server for historical
 tic()
 current = list()
 cl = makeCluster(detectCores()-2)
 registerDoParallel(cl)
-
-nrcs_sites = grabNRCS.meta(ntwrks=c("ALL"))
-
-for(i in 1:length(nrcs_sites)){
-  if(i == 1){
-    nrcs_sites_df = as.data.frame(nrcs_sites[[1]]) 
-  }
-  else{
-    nrcs_sites_df = rbind(nrcs_sites_df, as.data.frame(nrcs_sites[[i]]) )
-  }
-}
-
-nrcs_sites_df = nrcs_sites_df %>%
-  dplyr::filter(state == c("MT", "ID", "WY", "SD"))%>%
-  dplyr::filter(ntwk == c("SCAN", "SNTL", "SNTLT", "SNOW"))
-
-usgs_sites = as.data.frame(grabNRCS.meta(ntwrks=c("USGS")))
-
-#NEW
-historical_nrcs = foreach(i = 1:length(nrcs_sites_df$site_id)) %dopar%{
-  library(RNRCS)
-  tryCatch({
-    grabNRCS.data(network = nrcs_sites_df$ntwk[i], nrcs_sites_df$site_id, timescale = "daily", DayBgn = "1900-10-01",
-                  DayEnd = "2100-10-01")
-  }, error = function(e){
-    return(NA)
-  }
-  )
-}
+# 
+# nrcs_sites = grabNRCS.meta(ntwrks=c("ALL"))
+# 
+# for(i in 1:length(nrcs_sites)){
+#   if(i == 1){
+#     nrcs_sites_df = as.data.frame(nrcs_sites[[1]]) 
+#   }
+#   else{
+#     nrcs_sites_df = rbind(nrcs_sites_df, as.data.frame(nrcs_sites[[i]]) )
+#   }
+# }
+# 
+# nrcs_sites_df = nrcs_sites_df %>%
+#   dplyr::filter(state == c("MT", "ID", "WY", "SD"))%>%
+#   dplyr::filter(ntwk == c("SCAN", "SNTL", "SNTLT", "SNOW"))
+# 
+# usgs_sites = as.data.frame(grabNRCS.meta(ntwrks=c("USGS")))
+# 
+# #NEW
+# historical_nrcs = foreach(i = 1:length(nrcs_sites_df$site_id)) %dopar%{
+#   library(RNRCS)
+#   tryCatch({
+#     grabNRCS.data(network = nrcs_sites_df$ntwk[i], nrcs_sites_df$site_id, timescale = "daily", DayBgn = "1900-10-01",
+#                   DayEnd = "2100-10-01")
+#   }, error = function(e){
+#     return(NA)
+#   }
+#   )
+# }
 
 #OLD
 historical = foreach(i = 1:length(snotel$site_num)) %dopar%{
