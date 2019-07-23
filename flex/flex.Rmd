@@ -63,7 +63,7 @@ SNOTEL
 ### **Snow Telemetry (SNOTEL)**
 
 #### **Overview:**
-SNOTEL is an automated system of snowpack and related enviormental sensors. SNOTEL is operated by the Natural Resources Conservation Service (NRCS) of the United States Department of Agriculture in the Western United States. Plots in this modual show total snow water equievelant (SWE) and total liquid precipitation (rain + SWE) measured to date compared to historical averages. 
+SNOTEL is an automated system of snowpack and related enviormental sensors. SNOTEL is operated by the Natural Resources Conservation Service (NRCS) of the United States Department of Agriculture in the Western United States. Plots in this module show total snow water equievelant (SWE) and total liquid precipitation (rain + SWE) measured to date compared to historical averages. 
 
 <br>
 
@@ -77,8 +77,6 @@ library(shiny)
 shinyAppDir("../snotel/precipitaiton_app/", options = list(height = 800))
 shinyAppDir("../snotel/R/", options = list(height = 800))
 ```
-
-
 
 
 SPI
