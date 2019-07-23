@@ -18,8 +18,8 @@ snotel$simple_id = c(1:length(snotel$site_num))
 load("/home/zhoylman/drought_indicators/snotel/climatology/current_precent_SWE.RData")
 
 daily_lookup = data.frame(daily_mean = unlist(daily_lookup[1]),
-                  SWE = unlist(daily_lookup[2]),
-                  percent = unlist(daily_lookup[3]))
+                  SWE = unlist(daily_lookup[3]),
+                  percent = unlist(daily_lookup[5]))
 
 daily_lookup$percent_crop = daily_lookup$percent
 daily_lookup$percent_crop[daily_lookup$percent_crop >200] = 200

@@ -35,6 +35,10 @@ Introduction
 
 #### **Welcome to the Upper Missouri River Basin (UMRB) drought indicators document.**
 
+```{r, echo = F}
+
+```
+
 This document provides an overview of several drought metrics commonly used across the globe. In this document we focus on: 
 
   + 1. Describing general overview and theoretical basis for a metric 
@@ -70,6 +74,7 @@ SNOTEL is an automated system of snowpack and related enviormental sensors. SNOT
 ###
 ```{r echo = F}
 library(shiny)
+shinyAppDir("../snotel/precipitaiton_app/", options = list(height = 800))
 shinyAppDir("../snotel/R/", options = list(height = 800))
 ```
 
