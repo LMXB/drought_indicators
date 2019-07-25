@@ -131,7 +131,7 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
     # mapview::mapshot(m_raster,"/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html")
     # test = leaflet(includeHTML("/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html"))
     #widgetframe::saveWidgetframe(m_raster, "/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html", selfcontained = T)
-    # saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/spi_app/widgets/m_raster_test.html", selfcontained = T)
+    saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html", selfcontained = T)
     
     ################################################################################
     ############################### BUILD HUC MAP ##################################
@@ -157,7 +157,7 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
                 title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
                 position = "bottomleft")
     
-    #widgetframe::saveWidgetframe(m_huc, "/home/zhoylman/drought_indicators/spi_app/widgets/m_huc.html", selfcontained = T)
+    saveWidget(as_widget(m_huc), "/home/zhoylman/drought_indicators/spi_app/widgets/m_huc.html", selfcontained = T)
     
     
     ################################################################################
@@ -183,4 +183,6 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
       addLegend(pal = pal, values = -3.5:3.5,
                 title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
                 position = "bottomleft")
+    
+    saveWidget(as_widget(m_county), "/home/zhoylman/drought_indicators/spi_app/widgets/m_county.html", selfcontained = T)
     

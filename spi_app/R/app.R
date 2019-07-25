@@ -152,7 +152,7 @@ shinyApp(
     # mapview::mapshot(m_raster,"/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html")
     # test = leaflet(includeHTML("/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html"))
     #widgetframe::saveWidgetframe(m_raster, "/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html", selfcontained = T)
-      saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/spi_app/widgets/m_raster_test.html", selfcontained = T)
+      #saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/spi_app/widgets/m_raster_test.html", selfcontained = T)
 
     ################################################################################
     ############################### BUILD HUC MAP ##################################
