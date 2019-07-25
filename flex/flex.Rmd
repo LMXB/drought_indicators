@@ -71,14 +71,14 @@ SNOTEL is an automated system of snowpack and related enviormental sensors. SNOT
 Row {.tabset .tabset-fade data-height=800}
 -------------------------------------
 
-### Accumulated Precipitation
+### **Accumulated Precipitation**
 
 ```{r echo = F}
 library(shiny)
 shinyAppDir("../snotel/precipitaiton_app/", options = list(height = 800))
 ```
 
-### Snow Water Equivalent
+### **Snow Water Equivalent**
 
 ```{r echo = F}
 library(shiny)
