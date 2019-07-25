@@ -23,6 +23,10 @@ library(PearsonDS)
 library(gsl)
 library(lmomco)
 library(mapview)
+library(parallel)
+library(foreach)
+library(doParallel)
+library(htmlwidgets)
 
 
 setwd('/home/zhoylman/drought_indicators/spi_app')
@@ -127,12 +131,13 @@ shinyApp(
     ############################### BUILD RASTER MAP ###############################
     ################################################################################
     # Add multiple layers with a loop ----------------------------------------------
-    m_raster = base_map() 
+    m_raster = base_map()
     for(i in 1:length(watershed_list_names)){
       m_raster = m_raster %>%
         addRasterImage(raster_list[[i]], colors = pal, opacity = 0.8, group = timescale_names[i], project = FALSE)
     }
-    # Add some layer controls 
+
+    # Add some layer controls
       m_raster = m_raster %>%
       addLayersControl(position = "topleft",
                        baseGroups = timescale_names,
@@ -141,7 +146,14 @@ shinyApp(
       addLegend(pal = pal, values = -3.5:3.5,
                 title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
                 position = "bottomleft")
-      
+
+
+
+    # mapview::mapshot(m_raster,"/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html")
+    # test = leaflet(includeHTML("/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html"))
+    #widgetframe::saveWidgetframe(m_raster, "/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html", selfcontained = T)
+      saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/spi_app/widgets/m_raster_test.html", selfcontained = T)
+
     ################################################################################
     ############################### BUILD HUC MAP ##################################
     ################################################################################
@@ -165,6 +177,9 @@ shinyApp(
       addLegend(pal = pal, values = -3.5:3.5,
                 title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
                 position = "bottomleft")
+    
+    #widgetframe::saveWidgetframe(m_huc, "/home/zhoylman/drought_indicators/spi_app/widgets/m_huc.html", selfcontained = T)
+    
     
     ################################################################################
     ############################### BUILD COUNTY MAP ###############################
