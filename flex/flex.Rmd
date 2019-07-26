@@ -1,7 +1,8 @@
 ---
-title: "UMRB Drought Indicators"
+title: "UMRB Drought Indicators Dashboard"
 output: 
   flexdashboard::flex_dashboard:
+    theme: cerulean
     navbar:
       - { title: "MCO GitHub", href: "https://github.com/mt-climate-office", align: right }
     css: styles.css
@@ -20,9 +21,10 @@ knitr::opts_chunk$set(echo = TRUE)
 <style type="text/css">
 
 .chart-title {  /* chart_title  */
-   font-size: 30px;
+   font-size: 35px;
    font-family: Ariel;
 
+}
 </style>
 
 <br>
@@ -32,11 +34,10 @@ Introduction
 
 ### **Introduction**
 
-#### **Welcome to the Upper Missouri River Basin (UMRB) drought indicators document.**
+#### **Welcome to the Upper Missouri River Basin (UMRB) drought indicators dashboard.**
 
-```{r, echo = F}
+<br>
 
-```
 
 This document provides an overview of several drought metrics commonly used across the globe. In this document we focus on: 
 
@@ -48,6 +49,10 @@ This document provides an overview of several drought metrics commonly used acro
   + 6. Describe historical validation of a metric 
   + 7. Show validation of a metric using data collected within the UMRB
   + 8. Provide a simple recommendation of its usage across the UMRB for describing differing forms of drought
+
+<br>
+
+##### **Select a drought indicator from the above tabs to analyze current conditions.**
 
 <center>
 ```{r, echo = F}
@@ -91,7 +96,7 @@ SPI {data-orientation=rows}
 
 <br>
 
-#### **Overview**
+#### **Overview:**
 
 The SPI is a commonly used metric which quantifies precipitation anomalies at various timescales. This metric is often used to estimate a range of hydrological conditions that respond to precipation over differing timescales. For example, SPI is related to soil moisture anomalies when calculated over short time scales (days to weeks) but is more related to groundwater and reservoir storage over longer timescales (months to years). The values of SPI can be interpreted as a number of standard deviations away from the average (mean) cumulative precipitation depth for a given time period. The SPI has unique statistical qualities in that it is directly related to precipitation probaility and it can be used to represent both dry (negative values; represented here with warmer colors) and wet (positive values; represented here with cooler colors) conditions. 
 
@@ -104,8 +109,11 @@ The SPI is a commonly used metric which quantifies precipitation anomalies at va
 <br>  
 
 
-##### Click on a tab to activate the map. 
-##### Click and drag pointer icon (left side of map below +/-) to initiate point specific analysis.
+##### Select a timescale from the left panel on the map. You can also toggle overlays, such as the current US Drought Monitor (USDM) drought designations, weather (from the National Weather Service) and state boundaries.
+
+<br>
+
+##### Tabs above the map allow you to aggregate the data by political or hydrologic boundaries.
 
 ###
 
@@ -203,7 +211,7 @@ https://journals.ametsoc.org/doi/abs/10.1175/JAMC-D-10-05015.1
 ### **UMRB Validation:**
 Validation in progress
 
-#### **UMRB Recommendation:**
+### **UMRB Recommendation:**
 UMRB specific recommendations will be appended to this document as validation is completed
 
 Much of the background information regarding this metric was contributed by NCAR/UCAR Climate Data Guide
@@ -229,9 +237,11 @@ SPEI takes into account both precipitation and potential evapotranspiration to d
 <br>
 
 
-##### Click on a tab to activate the map. 
-##### Click and drag pointer icon (left side of map below +/-) to initiate point specific analysis.
+##### Select a timescale from the left panel on the map. You can also toggle overlays, such as the current US Drought Monitor (USDM) drought designations, weather (from the National Weather Service) and state boundaries.
 
+<br>
+
+##### Tabs above the map allow you to aggregate the data by political or hydrologic boundaries.
 
 ###
 
@@ -339,9 +349,11 @@ EDDI calculates the rank of accumulated PET for a given region. Unlike SPI and S
 <br>
 
 
-##### Click on a tab to activate the map. 
-##### Click and drag pointer icon (left side of map below +/-) to initiate point specific analysis.
+##### Select a timescale from the left panel on the map. You can also toggle overlays, such as the current US Drought Monitor (USDM) drought designations, weather (from the National Weather Service) and state boundaries.
 
+<br>
+
+##### Tabs above the map allow you to aggregate the data by political or hydrologic boundaries.
 
 ###
 
@@ -409,14 +421,14 @@ Row {.tabset .tabset-fade}
 
 **Key Strengths:**
 
-  + NEED TO FILL THIS IN
+  +  
 
 **Key Weaknesses:** 
 
-  + NEED TO FILL THIS IN
+  +  
   
 ### **Historical Validation:**
-Fill this in 
+ 
 
 ### **UMRB Validation:**
 Validation in progress

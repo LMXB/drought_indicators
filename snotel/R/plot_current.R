@@ -116,6 +116,11 @@ for(i in 1:length(snotel$site_num)){
   }
 }
 
+# for(i in 1:length(length(snotel$site_name))){
+#   climatology_WY[[i]] =  dplyr::filter(climatology_WY[[i]], WY < 366)
+# }
+
+
 plot_snotel = function(current_data, climatology_data, names){
   tryCatch({
     plot = ggplot()+
