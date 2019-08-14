@@ -116,6 +116,11 @@ for(i in 1:length(snotel$site_num)){
   }
 }
 
+# for(i in 1:length(length(snotel$site_name))){
+#   climatology_WY[[i]] =  dplyr::filter(climatology_WY[[i]], WY < 366)
+# }
+
+
 plot_snotel = function(current_data, climatology_data, names){
   tryCatch({
     plot = ggplot()+
@@ -128,7 +133,8 @@ plot_snotel = function(current_data, climatology_data, names){
       scale_color_manual(name = "",values = c(
         'Median' = 'black',
         'Current' = 'blue')) +
-      scale_fill_manual(name = 'Percentiles', values = c("green","red","blue")) +
+      scale_fill_manual(name = 'Percentiles', values = c("green","red","blue"),
+                        breaks = c("75th - 95th", "25th - 75th", "5th - 25th")) +
       ylab("Snow Water Equivalent (mm)")+
       xlab("Date")+
       theme_bw(base_size = 16)
@@ -138,6 +144,37 @@ plot_snotel = function(current_data, climatology_data, names){
   error = function(e){
     plot = ggplot()+
       ylab("Snow Water Equivalent (mm)")+
+      xlab("Date")+
+      theme_bw(base_size = 16)+
+      geom_text(label = "Sorry, no data available", aes(x = 1, y = 1), size = 9)
+  })
+  
+}
+
+
+plot_snotel_precip = function(current_data, climatology_data, names){
+  tryCatch({
+    plot = ggplot()+
+      ggtitle(paste0(names, " (", as.Date(current_data$Date[length(current_data$Date)]), ")"))+
+      geom_ribbon(data = climatology_data, aes(x = WY_date, ymin = precip_quantiles_075, ymax = precip_quantiles_095, fill = "75th - 95th"), alpha = 0.25)+
+      geom_ribbon(data = climatology_data, aes(x = WY_date, ymin = precip_quantiles_025, ymax = precip_quantiles_075, fill = "25th - 75th"), alpha = 0.25)+
+      geom_ribbon(data = climatology_data, aes(x = WY_date, ymin = precip_quantiles_005, ymax = precip_quantiles_025, fill = "5th - 25th"), alpha = 0.25)+
+      geom_line(data = climatology_data, aes(x = WY_date, y = median_precip_mm, color = "Median"), size = 0.75)+
+      geom_line(data = current_data, aes(x = current_data$Date, y = current_data$Precip, color = "Current"), size = 1.5)+
+      scale_color_manual(name = "",values = c(
+        'Median' = 'black',
+        'Current' = 'blue')) +
+      scale_fill_manual(name = 'Percentiles', values = c("green","red","blue"),
+                        breaks = c("75th - 95th", "25th - 75th", "5th - 25th")) +
+      ylab("Accumulated Precipitation (mm)")+
+      xlab("Date")+
+      theme_bw(base_size = 16)
+    
+    return(plot)
+  },
+  error = function(e){
+    plot = ggplot()+
+      ylab("Accumulated Precipitation (mm)")+
       xlab("Date")+
       theme_bw(base_size = 16)+
       geom_text(label = "Sorry, no data available", aes(x = 1, y = 1), size = 9)
@@ -156,6 +193,17 @@ error_plot = ggplot()+
 for(i in 1:length(snotel$site_name)){
   filename = paste0(write.dir,"snotel_plot_", i,".png")
   temp_plot = plot_snotel(current_select[[i]], climatology_WY[[i]], snotel$site_name[i])
+  tryCatch({
+    ggsave(filename, plot = temp_plot, units = c("in"), width = 7, height = 4, dpi = 150)
+  },
+  error = function(e){
+    ggsave(filename, plot = error_plot, units = c("in"), width = 7, height = 4, dpi = 150)
+  })
+}
+
+for(i in 1:length(snotel$site_name)){
+  filename = paste0(write.dir,"precip_snotel_plot_", i,".png")
+  temp_plot = plot_snotel_precip(current_select[[i]], climatology_WY[[i]], snotel$site_name[i])
   tryCatch({
     ggsave(filename, plot = temp_plot, units = c("in"), width = 7, height = 4, dpi = 150)
   },
