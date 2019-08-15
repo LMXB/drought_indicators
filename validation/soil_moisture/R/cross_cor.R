@@ -35,7 +35,7 @@ cross_cor = function(spei,soil_moisture){
         correlation_matrix = data.frame(matrix(nrow = length(depth),
                                                ncol = x_size))
         rownames(correlation_matrix) = depth
-        colnames(correlation_matrix) = paste0("spei_",c(seq(15,360,15)))
+        colnames(correlation_matrix) = paste0("spei_",c(seq(5,360,5)))
       }
       
       for(i in 1: length(depth)){
