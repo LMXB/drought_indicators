@@ -8,10 +8,10 @@ library(timeSeries)
 library(stringr)
 
 #load data  
-load("/home/zhoylman/drought_indicators_data/snotel_spei/snotel_spei.RData")
-load("/home/zhoylman/drought_indicators/validation/soil_moisture/snotel_data/snotel_soil_moisture.RData")
-load("/home/zhoylman/drought_indicators_data/mesonet_spei/mesonet_spei.RData")
-load("/home/zhoylman/drought_indicators_data/mesonet_spei/mesonet_soil_moisture.RData")
+load("/home/zhoylman/drought_indicators_data/snotel/snotel_spei.RData")
+load("/home/zhoylman/drought_indicators_data/snotel/snotel_soil_moisture.RData")
+load("/home/zhoylman/drought_indicators_data/mesonet/mesonet_spei.RData")
+load("/home/zhoylman/drought_indicators_data/mesonet/mesonet_soil_moisture.RData")
 
 #load functions
 source("/home/zhoylman/drought_indicators/spi_app/R/gamma_fit.R")
@@ -20,8 +20,14 @@ source("/home/zhoylman/drought_indicators/validation/soil_moisture/R/cross_cor.R
 source("/home/zhoylman/drought_indicators/validation/soil_moisture/R/moving_cross_cor.R")
 source("/home/zhoylman/drought_indicators/validation/soil_moisture/R/get_mesonet_station_info.R")
 
-snotel = st_read("/home/zhoylman/drought_indicators/snotel/shp/Snotel_Sites.shp")
-snotel$site_num = gsub("[^0-9.]","",as.character(snotel$site_name))
+#re organize data
+mesonet_soil_moisture = mesonet_soil_moisture[order(mesonet_soil_moisture$station_key, mesonet_soil_moisture$datetime),]
+
+#find site names with valid soil moisture data
+valid_stations = unique(mesonet_soil_moisture$station_key)
+
+#filter stations info
+station_data = station_data[(station_data$station_key %in% valid_stations),]
 
 # restucture mesonet soil moisture data to be consitant with list format of NRCS
 # get mesonet depths and remove the surface probe (soilvwc00)
@@ -49,6 +55,26 @@ for(m in 1:length(station_data$station_key)){
 }
 
 mesonet_soil_moisture_list = data_reorganized
+
+# restructure snotel data so that each dataframe in the list has the same number of collumns (depths)
+# add collumns of NA for depths that do not have data. 
+all_cols_snotel = unique(unlist(lapply(snotel_soil_moisture, colnames)))
+
+for(i in 1: length(snotel_soil_moisture)){
+  #find missing collumns
+  missing = all_cols_snotel[!(all_cols_snotel %in% colnames(snotel_soil_moisture[[i]]))]
+  
+  #if there are missing collumns do this (add collumns and assign names)
+  if(!(rlang::is_empty(missing))){ 
+    for(l in 1:length(missing)){
+      snotel_soil_moisture[[i]]$missing = NA
+      data.table::setnames(snotel_soil_moisture[[i]], "missing" , as.character(missing[l]))
+    }
+  }
+  
+  #reorginize column order
+  data.table::setcolorder(snotel_soil_moisture[[i]], all_cols_snotel)
+}
 
 #trouble shooting set up for functions
 # site = 1
@@ -86,22 +112,22 @@ stopCluster(cl)
 
 ##################################################################################
 # moving window #
-cl = makeCluster(detectCores()-1)
-registerDoParallel(cl)
-clusterExport(cl, "gamma_fit")
-clusterExport(cl, "gamma_standard_fun")
-tic()
-moving_correlation_matrix = foreach(site = 1:length(snotel_soil_moisture)) %dopar% {
-  library(dplyr)
-  moving_cross_cor(snotel_spei[[site]], snotel_soil_moisture[[site]])
-}
-toc()
-
-
-stopCluster(cl)
+# cl = makeCluster(detectCores()-1)
+# registerDoParallel(cl)
+# clusterExport(cl, "gamma_fit")
+# clusterExport(cl, "gamma_standard_fun")
+# tic()
+# moving_correlation_matrix = foreach(site = 1:length(snotel_soil_moisture)) %dopar% {
+#   library(dplyr)
+#   moving_cross_cor(snotel_spei[[site]], snotel_soil_moisture[[site]])
+# }
+# toc()
+# 
+# 
+# stopCluster(cl)
 
 find_best = function(x){
-  times = c(seq(15,360,15))
+  times = c(seq(5,360,5))
   best_2in = times[which(x[1,]==max(x[1,], na.rm = T))]
   best_8in = times[which(x[2,]==max(x[2,], na.rm = T))]
   best_20in = times[which(x[3,]==max(x[3,], na.rm = T))]
@@ -117,7 +143,7 @@ find_best = function(x){
 }
 
 find_best_mesonet = function(x){
-  times = c(seq(15,360,15))
+  times = c(seq(5,360,5))
   best_0in = times[which(x[1,]==max(x[1,], na.rm = T))]
   best_4in = times[which(x[2,]==max(x[2,], na.rm = T))]
   best_8in = times[which(x[3,]==max(x[3,], na.rm = T))]

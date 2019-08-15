@@ -6,7 +6,6 @@ library(parallel)
 library(dplyr)
 library(data.table)
 library(sf)
-library(mcor)
 library(stringr)
 
 #function to extract numeric ID from snotel/scan/sntlt meta
@@ -15,7 +14,7 @@ numextract <- function(string){
 } 
 
 #define input station meta data
-snotel = read.csv("/home/zhoylman/drought_indicators/validation/soil_moisture/snotel_data/nrcs_meta.csv")
+snotel = read.csv("/home/zhoylman/drought_indicators/validation/soil_moisture/snotel_data/nrcs_soil_moisture.csv")
 snotel$site_num_id = numextract(snotel$site_id)
 
 #hit the NRCS server for historical
@@ -35,8 +34,6 @@ historical_nrcs = foreach(i = 1:length(snotel$site_id)) %dopar%{
   }
   )
 }
-
-#save(historical_nrcs, file = "/home/zhoylman/drought_indicators_data/snotel_raw/raw_nrcs_data.RData")
 
 toc()
 
@@ -69,6 +66,6 @@ snotel_clipped = snotel[c(good_data_index),]
 
 snotel_soil_moisture = historical_select[c(good_data_index)]
 
-save(snotel_soil_moisture, file = "/home/zhoylman/drought_indicators_data/snotel_raw/snotel_soil_moisture.RData")
-write.csv(snotel_clipped, "/home/zhoylman/drought_indicators/validation/soil_moisture/snotel_data/nrcs_soil_moisture.csv")
+save(snotel_soil_moisture, file = "/home/zhoylman/drought_indicators_data/snotel/snotel_soil_moisture.RData")
+#write.csv(snotel_clipped, "/home/zhoylman/drought_indicators/validation/soil_moisture/snotel_data/nrcs_soil_moisture.csv")
   

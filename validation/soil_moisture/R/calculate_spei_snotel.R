@@ -28,9 +28,11 @@ tic()
 
 out = foreach(s = 1:length(snotel$site_num_id)) %dopar% {
   source("/home/zhoylman/drought_indicators/spei_app/R/spei_point.R")
-  for(i in 1:length(time_scales)){
-    time[[i]] = spei_point(snotel$latitude[s],snotel$longitude[s],time_scales[i])
-  } 
+  tryCatch({
+    time = spei_point(snotel$latitude[s],snotel$longitude[s],time_scales)
+  }, error = function(e){
+    return(NA)
+  })
   site[[s]] = time
 }
 

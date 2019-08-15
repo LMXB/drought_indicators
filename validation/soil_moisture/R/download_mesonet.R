@@ -53,5 +53,5 @@ mesonet_soil_moisture <-
                                        units),
                    .funs = ~factor(.))
 
-save(mesonet_soil_moisture, file = "/home/zhoylman/drought_indicators_data/mesonet_spei/mesonet_soil_moisture.RData")
+save(mesonet_soil_moisture, file = "/home/zhoylman/drought_indicators_data/mesonet/mesonet_soil_moisture.RData")
 
