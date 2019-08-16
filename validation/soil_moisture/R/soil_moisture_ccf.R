@@ -76,6 +76,19 @@ for(i in 1: length(snotel_soil_moisture)){
   data.table::setcolorder(snotel_soil_moisture[[i]], all_cols_snotel)
 }
 
+#remove snotel sites not in the contiguous US
+snotel = read.csv("/home/zhoylman/drought_indicators/validation/soil_moisture/snotel_data/nrcs_soil_moisture.csv")
+#define not in operator
+`%!in%` = Negate(`%in%`)
+conus_snotel_index = which(snotel$state %!in% c("AK", "PR", "HI", "VI"))
+
+snotel_conus = snotel %>%
+  dplyr::filter(state %!in% c("AK", "PR", "HI", "VI"))
+
+#remove non continental US values
+snotel_soil_moisture = snotel_soil_moisture[c(conus_snotel_index)]
+snotel_spei = snotel_spei[c(conus_snotel_index)]
+
 #trouble shooting set up for functions
 # site = 1
 # spei = mesonet_spei[[site]]
@@ -129,16 +142,20 @@ stopCluster(cl)
 find_best = function(x){
   times = c(seq(5,360,5))
   best_2in = times[which(x[1,]==max(x[1,], na.rm = T))]
-  best_8in = times[which(x[2,]==max(x[2,], na.rm = T))]
-  best_20in = times[which(x[3,]==max(x[3,], na.rm = T))]
-  best_mean = times[which(x[4,]==max(x[4,], na.rm = T))]
+  best_4in = times[which(x[2,]==max(x[2,], na.rm = T))]
+  best_8in = times[which(x[3,]==max(x[3,], na.rm = T))]
+  best_20in = times[which(x[4,]==max(x[4,], na.rm = T))]
+  best_40in = times[which(x[5,]==max(x[5,], na.rm = T))]
+  best_mean = times[which(x[6,]==max(x[6,], na.rm = T))]
   
   if(length(best_2in)==0){best_2in = NA}
+  if(length(best_4in)==0){best_4in = NA}
   if(length(best_8in)==0){best_8in = NA}
   if(length(best_20in)==0){best_20in = NA}
+  if(length(best_40in)==0){best_40in = NA}
   if(length(best_mean)==0){best_mean = NA}
   
-  best_times = c(best_2in, best_8in, best_20in, best_mean)
+  best_times = c(best_2in, best_4in, best_8in, best_20in, best_40in, best_mean)
   return(best_times)
 }
 
@@ -162,18 +179,18 @@ find_best_mesonet = function(x){
   return(best_times)
 }
 
-best_times_matrix = data.frame(matrix(nrow = length(snotel$site_num), ncol = 4))
-colnames(best_times_matrix) = c("2in", "8in", "20in", "mean")
+best_times_matrix = data.frame(matrix(nrow = length(snotel_soil_moisture), ncol = 6))
+colnames(best_times_matrix) = c("2in","4in", "8in", "20in", "40in", "mean")
 
 best_times_matrix_mesonet = data.frame(matrix(nrow = length(station_data$station_key), ncol = 6))
 colnames(best_times_matrix_mesonet) = c("0in", "4in", "8in", "20in", "36in", "mean")
 
-for(i in 1:length(snotel$lat)){
+for(i in 1:length(snotel_soil_moisture)){
   tryCatch({
     best_times_matrix[i,] = find_best(correlation_matrix[[i]])
   },
   error = function(e){
-    return(c(NA,NA,NA,NA))
+    return(c(NA,NA,NA,NA,NA,NA))
   })
 }
 
@@ -187,17 +204,14 @@ for(i in 1:length(station_data$station_key)){
 }
 
 
-#extract density ploot information
-density_2in = data.frame(x = density(best_times_matrix$`2in`, na.rm = T)[[1]],
-                         y = density(best_times_matrix$`2in`, na.rm = T)[[2]])
-density_8in = data.frame(x = density(best_times_matrix$`8in`, na.rm = T)[[1]],
-                         y = density(best_times_matrix$`8in`, na.rm = T)[[2]])
-density_20in = data.frame(x = density(best_times_matrix$`20in`, na.rm = T)[[1]],
-                          y = density(best_times_matrix$`20in`, na.rm = T)[[2]])
-density_mean = data.frame(x = density(best_times_matrix$`mean`, na.rm = T)[[1]],
-                          y = density(best_times_matrix$`mean`, na.rm = T)[[2]])
-
+density_snotel = list()
 density_mesonet = list()
+
+
+for(i in 1:6){
+  density_snotel[[i]] = data.frame(x = density(best_times_matrix[,i], na.rm = T)[[1]],
+                                    y = density(best_times_matrix[,i], na.rm = T)[[2]])
+}
 
 for(i in 1:6){
   density_mesonet[[i]] = data.frame(x = density(best_times_matrix_mesonet[,i], na.rm = T)[[1]],
@@ -206,57 +220,21 @@ for(i in 1:6){
 
 
 library(ggplot2)
-summary_plot = ggplot() + 
-  geom_line(data = density_2in, aes(x = x, y = y, color = "2in"))+
-  geom_point(data = density_2in[which(density_2in$y == max(density_2in$y)),], aes(x = x, y = y))+
-  geom_text(data = density_2in[which(density_2in$y == max(density_2in$y)),], aes(x = x + 40, y = y, label = paste0(round(x, digits = 0), " Days")))+
-  
-  geom_line(data = density_8in, aes(x = x, y = y, color = "8in"))+
-  geom_point(data = density_8in[which(density_8in$y == max(density_8in$y)),], aes(x = x, y = y))+
-  geom_text(data = density_8in[which(density_8in$y == max(density_8in$y)),], aes(x = x+ 40, y = y, label = paste0(round(x, digits = 0), " Days")))+
-  
-  geom_line(data = density_20in, aes(x = x, y = y, color = "20in"))+
-  geom_point(data = density_20in[which(density_20in$y == max(density_20in$y)),], aes(x = x, y = y))+
-  geom_text(data = density_20in[which(density_20in$y == max(density_20in$y)),], aes(x = x+ 40, y = y, label = paste0(round(x, digits = 0), " Days")))+
-  
-  geom_line(data = density_mean, aes(x = x, y = y, color = "Mean"))+
-  geom_point(data = density_mean[which(density_mean$y == max(density_mean$y)),], aes(x = x, y = y))+
-  geom_text(data = density_mean[which(density_mean$y == max(density_mean$y)),], aes(x = x+ 40, y = y, label = paste0(round(x, digits = 0), " Days")))+
-  
-  scale_color_manual("Depth", values = c("2in" = "orange", 
-                                         "8in" = "red", 
-                                         "20in" = "blue",
-                                         "Mean" = "black"),
-                     breaks=c("2in","8in","20in", "Mean"))+
-  theme_bw(base_size = 16) +
-  theme(axis.line = element_line(colour = "black"),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = c(0.9, 0.8),
-        plot.title = element_text(hjust = 0.5))+
-  ylab("Density")+
-  xlab("Timescale (Days)")+
-  ggtitle("Best Correlation Times (Soil Moisture ~ SPEI)")+
-  xlim(0,365)
+color_names = c("2 in", "4 in" ,"8 in", "20 in" ,"40 in", "Mean")
 
-png(filename = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/time_scale_summary_with_mean.png", width = 7, height = 5, units = "in", res = 300)
-summary_plot
-dev.off()
-
-color_names = c("0 in" ,"4 in" ,"8 in", "20 in" ,"36 in", "Mean")
-
-mesonet_summary = ggplot()+
-  #geom_line(data = density_mesonet[[1]], aes(x = x, y = y, color = color_names[1]))+
-  geom_line(data = density_mesonet[[2]], aes(x = x, y = y, color = color_names[2]))+
-  geom_line(data = density_mesonet[[3]], aes(x = x, y = y, color = color_names[3]))+
-  geom_line(data = density_mesonet[[4]], aes(x = x, y = y, color = color_names[4]))+
-  geom_line(data = density_mesonet[[5]], aes(x = x, y = y, color = color_names[5]))+
-  geom_line(data = density_mesonet[[6]], aes(x = x, y = y, color = color_names[6]))+
+snotel_summary = ggplot()+
+  geom_line(data = density_snotel[[1]], aes(x = x, y = y, color = color_names[1]))+
+  geom_line(data = density_snotel[[2]], aes(x = x, y = y, color = color_names[2]))+
+  geom_line(data = density_snotel[[3]], aes(x = x, y = y, color = color_names[3]))+
+  geom_line(data = density_snotel[[4]], aes(x = x, y = y, color = color_names[4]))+
+  geom_line(data = density_snotel[[5]], aes(x = x, y = y, color = color_names[5]))+
+  geom_line(data = density_snotel[[6]], aes(x = x, y = y, color = color_names[6]))+
   
   theme_bw(base_size = 16)+
-  scale_color_manual(values = c("4 in" =  "orange", "8 in" =  "green",
-                                "20 in" = "blue", "36 in" =  "purple", "Mean" = "black"),
-                     breaks = c("4 in","8 in","20 in","36 in", "Mean"),
+  scale_color_manual(values = c("2 in" =  "yellow", "4 in" = "orange",
+                                "8 in" =  "green", "20 in" = "blue", 
+                                "40 in" =  "purple", "Mean" = "black"),
+                     breaks = c("2 in", "4 in","8 in","20 in","40 in", "Mean"),
                      name = "Probe Depth")+
   xlim(0,365)+
   theme(axis.line = element_line(colour = "black"),
@@ -266,22 +244,123 @@ mesonet_summary = ggplot()+
         plot.title = element_text(hjust = 0.5))+
   ylab("Density")+
   xlab("Timescale (Days)")+
-  ggtitle("Best Correlation Times (Soil Moisture ~ SPEI)")
+  ggtitle("Best Correlation Times (Soil Moisture ~ SPEI) \n (SNOTEL, SCAN, SNOTEL-LT)")
 
 #add labels
-for(i in 2:6){
-  mesonet_summary = mesonet_summary + 
-    geom_point(data = density_mesonet[[i]][which(density_mesonet[[i]]$y == max(density_mesonet[[i]]$y)),], aes(x = x, y = y))+
-    geom_text(data = density_mesonet[[i]][which(density_mesonet[[i]]$y == max(density_mesonet[[i]]$y)),], aes(x = x + 40, y = y, 
-                                                                                                              label = paste0(round(x, digits = 0), " Days")))
+for(i in 1:6){
+  snotel_summary = snotel_summary + 
+    geom_point(data = density_snotel[[i]][which(density_snotel[[i]]$y == max(density_snotel[[i]]$y)),], aes(x = x, y = y))+
+    geom_text(data = data.frame(density_snotel[[i]][which(density_snotel[[i]]$y == max(density_snotel[[i]]$y)),],n = sum(!is.na(best_times_matrix[,i]))), aes(x = x + 50, y = y, 
+                                                                                                              label = paste0(round(x, digits = 0), " Days, n = ", n)))
 }
 
-png(filename = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/time_scale_summary_with_mean_mesonet.png", width = 7, height = 5, units = "in", res = 300)
+png(filename = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/time_scale_summary_with_mean.png", width = 8, height = 6, units = "in", res = 300)
+snotel_summary
+dev.off()
+
+color_names = c("0 in" ,"4 in" ,"8 in", "20 in" ,"36 in", "Mean")
+
+mesonet_summary = ggplot()+
+  geom_line(data = density_mesonet[[1]], aes(x = x, y = y, color = color_names[1]))+
+  geom_line(data = density_mesonet[[2]], aes(x = x, y = y, color = color_names[2]))+
+  geom_line(data = density_mesonet[[3]], aes(x = x, y = y, color = color_names[3]))+
+  geom_line(data = density_mesonet[[4]], aes(x = x, y = y, color = color_names[4]))+
+  geom_line(data = density_mesonet[[5]], aes(x = x, y = y, color = color_names[5]))+
+  geom_line(data = density_mesonet[[6]], aes(x = x, y = y, color = color_names[6]))+
+  
+  theme_bw(base_size = 16)+
+  scale_color_manual(values = c("0 in" = "yellow","4 in" =  "orange", "8 in" =  "green",
+                                "20 in" = "blue", "36 in" =  "purple", "Mean" = "black"),
+                     breaks = c("0 in", "4 in","8 in","20 in","36 in", "Mean"),
+                     name = "Probe Depth")+
+  xlim(0,365)+
+  theme(axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = c(0.85, 0.74),
+        plot.title = element_text(hjust = 0.5))+
+  ylab("Density")+
+  xlab("Timescale (Days)")+
+  ggtitle("Best Correlation Times (Soil Moisture ~ SPEI) \n (MT Mesonet)")
+
+#add labels
+for(i in 1:6){
+  mesonet_summary = mesonet_summary + 
+    geom_point(data = density_mesonet[[i]][which(density_mesonet[[i]]$y == max(density_mesonet[[i]]$y)),], aes(x = x, y = y))+
+    geom_text(data = data.frame(density_mesonet[[i]][which(density_mesonet[[i]]$y == max(density_mesonet[[i]]$y)),],n = sum(!is.na(best_times_matrix_mesonet[,i]))), aes(x = x + 50, y = y, 
+                                                                                                              label = paste0(round(x, digits = 0), " Days, n = ", n)))
+}
+
+png(filename = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/time_scale_summary_with_mean_mesonet.png", width = 8, height = 6, units = "in", res = 300)
 mesonet_summary
 dev.off()
 
+states = sf::st_read("/home/zhoylman/drought_indicators/shp_kml/states.shp")
+
+sites = leaflet::leaflet(options = leaflet::tileOptions(minZoom = 4, maxZoom = 10)) %>%
+  leaflet::addTiles("https://maps.tilehosting.com/data/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
+  leaflet::addProviderTiles("Stamen.TonerLines") %>%
+  leaflet::addProviderTiles("Stamen.TonerLabels") %>%
+  
+  leaflet::addCircleMarkers(snotel_conus$longitude, snotel_conus$latitude, radius = 5, stroke = TRUE, fillOpacity = 0.9,
+                            color = "black", fillColor = "black", popup = htmltools::htmlEscape(snotel_conus$site_id)
+  )%>%
+  leaflet::addCircleMarkers(station_data$longitude, station_data$latitude, radius = 5, stroke = TRUE, fillOpacity = 0.9,
+                            color = "black", fillColor = "blue", popup = htmltools::htmlEscape(station_data$station_key)
+  )%>%
+
+  leaflet::addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
+  leaflet.extras::addDrawToolbar(markerOptions = leaflet.extras::drawMarkerOptions(),
+                                 polylineOptions = FALSE,
+                                 polygonOptions = FALSE,
+                                 circleOptions = FALSE,
+                                 rectangleOptions = FALSE,
+                                 circleMarkerOptions = FALSE,
+                                 editOptions = FALSE,
+                                 singleFeature = TRUE,
+                                 targetGroup='draw')
+
+htmlwidgets::saveWidget(sites, "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/validation_sites.html", selfcontained = T)
+webshot::webshot("/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/validation_sites.html", 
+                 file = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/validation_sites.png",
+        cliprect = "viewport")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #set up parameters for leaflet map
+
+
+
+
+
+
+
 
 master_geospatial = data.frame(name  = snotel$site_name,
                                lat = snotel$lat,

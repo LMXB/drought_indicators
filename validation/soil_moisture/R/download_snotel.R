@@ -17,6 +17,7 @@ numextract <- function(string){
 snotel = read.csv("/home/zhoylman/drought_indicators/validation/soil_moisture/snotel_data/nrcs_soil_moisture.csv")
 snotel$site_num_id = numextract(snotel$site_id)
 
+
 #hit the NRCS server for historical
 tic()
 current = list()
