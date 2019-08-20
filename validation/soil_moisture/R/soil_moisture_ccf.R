@@ -271,7 +271,7 @@ mesonet_summary = ggplot()+
                                 "20 in" = "blue", "36 in" =  "purple", "Mean" = "black"),
                      breaks = c("0 in", "4 in","8 in","20 in","36 in", "Mean"),
                      name = "Probe Depth")+
-  xlim(0,365)+
+  xlim(0,730)+
   theme(axis.line = element_line(colour = "black"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
@@ -285,7 +285,7 @@ mesonet_summary = ggplot()+
 for(i in 1:6){
   mesonet_summary = mesonet_summary + 
     geom_point(data = density_mesonet[[i]][which(density_mesonet[[i]]$y == max(density_mesonet[[i]]$y)),], aes(x = x, y = y))+
-    geom_text(data = data.frame(density_mesonet[[i]][which(density_mesonet[[i]]$y == max(density_mesonet[[i]]$y)),],n = sum(!is.na(best_times_matrix_mesonet[,i]))), aes(x = x + 50, y = y, 
+    geom_text(data = data.frame(density_mesonet[[i]][which(density_mesonet[[i]]$y == max(density_mesonet[[i]]$y)),],n = sum(!is.na(best_times_matrix_mesonet[,i]))), aes(x = x + 100, y = y, 
                                                                                                               label = paste0(round(x, digits = 0), " Days, n = ", n)))
 }
 
