@@ -25,7 +25,7 @@ cross_cor = function(spei,soil_moisture){
       depth = colnames(merged)[-c(1:2)]
       
       merged = merged %>%
-        select(time, spei, depth)%>%
+        dplyr::select(time, spei, depth)%>%
         mutate(mean_soil_moisture = rowMeans(.[depth], na.rm = T))%>%
         as_tibble()
       
@@ -35,24 +35,37 @@ cross_cor = function(spei,soil_moisture){
         correlation_matrix = data.frame(matrix(nrow = length(depth),
                                                ncol = x_size))
         rownames(correlation_matrix) = depth
-        colnames(correlation_matrix) = paste0("spei_",c(seq(5,360,5)))
+        colnames(correlation_matrix) = paste0("spei_",c(seq(5,730,5)))
       }
       
       for(i in 1: length(depth)){
         x_select = merged %>%
           #select the collums I want, depth
-          select(time, spei, depth[i]) %>%
+          dplyr::select(time, spei, depth[i]) %>%
           #filter negative soil moisture data
           dplyr::filter(get(depth[i]) > 0) %>%
+          #filter bad soil moisture data
+          dplyr::filter(get(depth[i]) < 100) %>%
+          #filter Inf and -Inf
+          filter_all(all_vars(is.finite(.))) %>%
           #filter for complete cases
           tidyr::drop_na()%>%
           #compute standardized value
           mutate(standardized = gamma_standard_fun(get(depth[i])))
-        
+          
         #check to see if at least a year of data?
         if(length(x_select$time) > 365){
-          correlation_matrix[i,t] = cor(x_select['spei'], x_select['standardized'])
+          correlation = cor.test(dplyr::pull(x_select['spei']), dplyr::pull(x_select['standardized']), na.rm = T)
+          #check to see if correlation is significant
+          if(correlation$p.value < 0.05){
+            correlation_matrix[i,t] = correlation$estimate
+          }
+          # not significant? NA
+          else{
+            correlation_matrix[i,t] = NA
+          }
         }
+        # not a year worth of data? NA
         else{
           correlation_matrix[i,t] = NA
         }

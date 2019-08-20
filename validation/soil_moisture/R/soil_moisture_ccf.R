@@ -18,7 +18,6 @@ source("/home/zhoylman/drought_indicators/spi_app/R/gamma_fit.R")
 source("/home/zhoylman/drought_indicators/validation/soil_moisture/R/gamma_standard_fun.R")
 source("/home/zhoylman/drought_indicators/validation/soil_moisture/R/cross_cor.R")
 source("/home/zhoylman/drought_indicators/validation/soil_moisture/R/moving_cross_cor.R")
-source("/home/zhoylman/drought_indicators/validation/soil_moisture/R/get_mesonet_station_info.R")
 
 #re organize data
 mesonet_soil_moisture = mesonet_soil_moisture[order(mesonet_soil_moisture$station_key, mesonet_soil_moisture$datetime),]
@@ -27,6 +26,7 @@ mesonet_soil_moisture = mesonet_soil_moisture[order(mesonet_soil_moisture$statio
 valid_stations = unique(mesonet_soil_moisture$station_key)
 
 #filter stations info
+station_data = read.csv("/home/zhoylman/drought_indicators/validation/soil_moisture/mesonet_data/mesonet_station_data.csv")
 station_data = station_data[(station_data$station_key %in% valid_stations),]
 
 # restucture mesonet soil moisture data to be consitant with list format of NRCS
@@ -76,19 +76,6 @@ for(i in 1: length(snotel_soil_moisture)){
   data.table::setcolorder(snotel_soil_moisture[[i]], all_cols_snotel)
 }
 
-#remove snotel sites not in the contiguous US
-snotel = read.csv("/home/zhoylman/drought_indicators/validation/soil_moisture/snotel_data/nrcs_soil_moisture.csv")
-#define not in operator
-`%!in%` = Negate(`%in%`)
-conus_snotel_index = which(snotel$state %!in% c("AK", "PR", "HI", "VI"))
-
-snotel_conus = snotel %>%
-  dplyr::filter(state %!in% c("AK", "PR", "HI", "VI"))
-
-#remove non continental US values
-snotel_soil_moisture = snotel_soil_moisture[c(conus_snotel_index)]
-snotel_spei = snotel_spei[c(conus_snotel_index)]
-
 #trouble shooting set up for functions
 # site = 1
 # spei = mesonet_spei[[site]]
@@ -96,15 +83,15 @@ snotel_spei = snotel_spei[c(conus_snotel_index)]
 # cross_cor(spei,soil_moisture)
 # moving_cross_cor(spei,soil_moisture)
 # 
-# site = 1
-# spei = snotel_spei[[site]]
-# soil_moisture = snotel_soil_moisture[[site]]
-# cross_cor(spei,soil_moisture)
-# moving_cross_cor(spei,soil_moisture)
+site = 10
+spei = snotel_spei[[site]]
+soil_moisture = snotel_soil_moisture[[site]]
+cross_cor(spei,soil_moisture)
+moving_cross_cor(spei,soil_moisture)
 
 
 ##################################################################################
-cl = makeCluster(detectCores()-1)
+cl = makeCluster(20)
 registerDoParallel(cl)
 clusterExport(cl, "gamma_fit")
 clusterExport(cl, "gamma_standard_fun")
@@ -114,6 +101,16 @@ correlation_matrix = foreach(site = 1:length(snotel_soil_moisture)) %dopar% {
   library(dplyr)
   cross_cor(snotel_spei[[site]], snotel_soil_moisture[[site]])
 }
+
+toc()
+# stop cluster inbetween datasets to clear memory
+stopCluster(cl)
+
+
+cl = makeCluster(20)
+registerDoParallel(cl)
+clusterExport(cl, "gamma_fit")
+clusterExport(cl, "gamma_standard_fun")
 
 correlation_matrix_mesonet = foreach(site = 1:length(mesonet_soil_moisture_list)) %dopar% {
   library(dplyr)
@@ -140,7 +137,7 @@ stopCluster(cl)
 # stopCluster(cl)
 
 find_best = function(x){
-  times = c(seq(5,360,5))
+  times = c(seq(5,730,5))
   best_2in = times[which(x[1,]==max(x[1,], na.rm = T))]
   best_4in = times[which(x[2,]==max(x[2,], na.rm = T))]
   best_8in = times[which(x[3,]==max(x[3,], na.rm = T))]
@@ -160,7 +157,7 @@ find_best = function(x){
 }
 
 find_best_mesonet = function(x){
-  times = c(seq(5,360,5))
+  times = c(seq(5,730,5))
   best_0in = times[which(x[1,]==max(x[1,], na.rm = T))]
   best_4in = times[which(x[2,]==max(x[2,], na.rm = T))]
   best_8in = times[which(x[3,]==max(x[3,], na.rm = T))]
@@ -236,7 +233,7 @@ snotel_summary = ggplot()+
                                 "40 in" =  "purple", "Mean" = "black"),
                      breaks = c("2 in", "4 in","8 in","20 in","40 in", "Mean"),
                      name = "Probe Depth")+
-  xlim(0,365)+
+  xlim(0,730)+
   theme(axis.line = element_line(colour = "black"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
@@ -250,11 +247,12 @@ snotel_summary = ggplot()+
 for(i in 1:6){
   snotel_summary = snotel_summary + 
     geom_point(data = density_snotel[[i]][which(density_snotel[[i]]$y == max(density_snotel[[i]]$y)),], aes(x = x, y = y))+
-    geom_text(data = data.frame(density_snotel[[i]][which(density_snotel[[i]]$y == max(density_snotel[[i]]$y)),],n = sum(!is.na(best_times_matrix[,i]))), aes(x = x + 50, y = y, 
+    geom_text(data = data.frame(density_snotel[[i]][which(density_snotel[[i]]$y == max(density_snotel[[i]]$y)),],n = sum(!is.na(best_times_matrix[,i]))), aes(x = x + 100, y = y, 
                                                                                                               label = paste0(round(x, digits = 0), " Days, n = ", n)))
 }
 
-png(filename = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/time_scale_summary_with_mean.png", width = 8, height = 6, units = "in", res = 300)
+png(filename = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/time_scale_summary_with_mean.png", 
+    width = 8, height = 7, units = "in", res = 300)
 snotel_summary
 dev.off()
 
@@ -291,7 +289,8 @@ for(i in 1:6){
                                                                                                               label = paste0(round(x, digits = 0), " Days, n = ", n)))
 }
 
-png(filename = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/time_scale_summary_with_mean_mesonet.png", width = 8, height = 6, units = "in", res = 300)
+png(filename = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/time_scale_summary_with_mean_mesonet.png", 
+    width = 8, height = 7, units = "in", res = 300)
 mesonet_summary
 dev.off()
 

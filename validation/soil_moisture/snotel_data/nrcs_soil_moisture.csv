@@ -1,221 +1,203 @@
-"","X","ntwk","wyear","state","site_name","ts","start","enddate","latitude","longitude","elev_ft","county","huc","site_id","site_num_id"
-"1",1,"SCAN",2018,"AK","Gulkana River",NA,"2018-June","2100-January",62.41,-145.38,1830,"Valdez-cordova","Boulder Lake-Gulkana River (190201020604)","SCAN:2222","2222"
-"2",2,"SCAN",2018,"MO","Carver Farm",NA,"2018-May","2100-January",38.53,-92.13,560,"Cole","Moreau River (103001021207)","SCAN:2223","2223"
-"3",3,"SCAN",2018,"MO","Twin Pines Conservation Area",NA,"2018-May","2100-January",36.99,-91.31,960,"Shannon","Upper Pike Creek (110100080401)","SCAN:2226","2226"
-"4",4,"SCAN",2015,"CA","Ash Valley",NA,"2014-October","2100-January",41.05,-120.69,5097,"Lassen","Ash Valley-Ash Creek (180200021404)","SCAN:2214","2214"
-"5",5,"SCAN",2015,"CA","Monocline Ridge",NA,"2014-October","2100-January",36.54,-120.55,875,"Fresno","Town of Levis (180300090904)","SCAN:2217","2217"
-"6",6,"SCAN",2015,"NV","Buckhorn",NA,"2014-October","2100-January",40.88,-119.95,3925,"Washoe","Buckhorn Reservoir (180800020104)","SCAN:2216","2216"
-"7",7,"SCAN",2014,"AK","Hozatka Lake",NA,"2014-August","2100-January",65.2,-156.63,206,"Yukon-koyukuk","Hozatka Lake (190901091201)","SCAN:2210","2210"
-"8",8,"SCAN",2014,"AK","Naknek River",NA,"2013-October","2100-January",58.67,-156.57,100,"Bristol Bay","Town of King Salmon-Naknek River (190302041502)","SCAN:2209","2209"
-"9",9,"SCAN",2013,"CO","CPER",NA,"2013-September","2100-January",40.82,-104.71,5330,"Weld","Headwaters Owl Creek (101900080301)","SCAN:2197","2197"
-"10",10,"SCAN",2013,"TX","Knox City",NA,"2013-September","2100-January",33.45,-99.87,1448,"Knox","Knox City Cemetery-Brazos River (120601010206)","SCAN:2201","2201"
-"11",11,"SCAN",2013,"TX","Stephenville",NA,"2013-September","2100-January",32.25,-98.2,1311,"Erath","Indian Creek-North Bosque River (120602040103)","SCAN:2203","2203"
-"12",12,"SCAN",2013,"TX","Weslaco",NA,"2013-September","2100-January",26.16,-97.96,57,"Hidalgo","Upper Pilot Channel-Laguna Madre (121102080300)","SCAN:2205","2205"
-"13",13,"SCAN",2012,"AK","Lower Mulchatna",NA,"2012-September","2100-January",59.82,-156.99,320,"Dillingham","190303021706-Mulchatna River (190303021706)","SCAN:1233","1233"
-"14",14,"SCAN",2012,"CA","Death Valley Jct",NA,"2012-June","2100-January",36.33,-116.35,2062,"Inyo","Ash Meadows (180902021504)","SCAN:2190","2190"
-"15",15,"SCAN",2012,"CA","Doe Ridge",NA,"2012-June","2100-January",37.63,-118.83,7340,"Mono","Convict Creek (180901020207)","SCAN:2191","2191"
-"16",16,"SCAN",2012,"CA","Ford Dry Lake",NA,"2011-November","2100-January",33.65,-115.1,394,"Riverside","181001005405 (181001005405)","SCAN:2184","2184"
-"17",17,"SCAN",2012,"MO","Schell-Osage",NA,"2012-July","2100-January",37.99,-94.04,793,"St. Clair","Baker Branch-Osage River (102901050206)","SCAN:2193","2193"
-"18",18,"SCAN",2010,"AL","Dee River Ranch",NA,"2010-April","2100-January",33.11,-88.31,160,"Pickens","Dinsmore-Bogue Chitto (031601060504)","SCAN:2174","2174"
-"19",19,"SCAN",2010,"AL","Morris Farms",NA,"2010-April","2100-January",32.41,-85.91,220,"Macon","Lower Calebee Creek (031501100504)","SCAN:2178","2178"
-"20",20,"SCAN",2010,"AL","Selma",NA,"2010-April","2100-January",32.4,-86.89,140,"Dallas","Beech Creek (031502011205)","SCAN:2176","2176"
-"21",21,"SCAN",2010,"NM","Alcalde",NA,"2010-March","2100-January",36.09,-106.06,5693,"Rio Arriba","Rio Chama-Rio Grande (130201011107)","SCAN:2172","2172"
-"22",22,"SCAN",2010,"NV","Porter Canyon",NA,"2009-October","2100-January",39.47,-117.62,7187,"Lander","Porter Canyon-Porter Creek (160600020102)","SCAN:2170","2170"
-"23",23,"SCAN",2010,"UT","Grouse Creek",NA,"2010-May","2100-January",41.78,-113.82,5835,"Box Elder","Kimbell Creek-Grouse Creek (160203080103)","SCAN:2160","2160"
-"24",24,"SCAN",2010,"UT","Little Red Fox",NA,"2010-January","2100-January",40.18,-110.3,5395,"Duchesne","Rocky Point-Duchesne River (140600030406)","SCAN:2155","2155"
-"25",25,"SCAN",2010,"UT","Park Valley",NA,"2010-January","2100-January",41.77,-113.29,5098,"Box Elder","Cotton Creek (160203081407)","SCAN:2153","2153"
-"26",26,"SCAN",2010,"UT","Spooky",NA,"2010-April","2100-January",37.51,-111.26,5341,"Kane","Dry Fork Coyote Gulch (140700050701)","SCAN:2158","2158"
-"27",27,"SCAN",2009,"CA","Marble Creek",NA,"2009-May","2100-January",37.78,-118.42,6183,"Mono","Rock Creek-Spring Canyon Creek (180901020501)","SCAN:2149","2149"
-"28",28,"SCAN",2009,"UT","Buffalo Jump",NA,"2009-August","2100-January",41.34,-111.19,6682,"Rich","Coyote Creek (160101010403)","SCAN:2151","2151"
-"29",29,"SCAN",2009,"UT","Grantsville",NA,"2009-August","2100-January",40.59,-112.39,4337,"Tooele","South Willow Creek-Frontal Great Salt Lake (160203040503)","SCAN:2152","2152"
-"31",31,"SCAN",2008,"NV","Pine Nut",NA,"2007-October","2100-January",36.57,-115.2,6780,"Clark","Horse Canyon (150100150202)","SCAN:2144","2144"
-"32",32,"SCAN",2007,"MT","Conrad Ag Rc",NA,"2006-October","2100-January",48.3,-111.92,3706,"Pondera","Letz Lake-Dry Fork Marias River (100302030705)","SCAN:2117","2117"
-"33",33,"SCAN",2007,"MT","Sidney",NA,"2006-October","2100-January",47.77,-104.25,2274,"Richland","First Hay Creek (101000042503)","SCAN:2120","2120"
-"34",34,"SCAN",2007,"UT","Alkali Mesa",NA,"2007-September","2100-January",37.67,-109.36,6445,"San Juan","Devil Canyon (140802030601)","SCAN:2138","2138"
-"35",35,"SCAN",2007,"UT","Circleville",NA,"2007-May","2100-January",38.15,-112.25,6120,"Piute","Lost Creek (160300010604)","SCAN:2125","2125"
-"36",36,"SCAN",2007,"UT","Ephraim",NA,"2007-May","2100-January",39.37,-111.58,5531,"Sanpete","Pigeon Creek (160300040303)","SCAN:2126","2126"
-"37",37,"SCAN",2007,"UT","Milford",NA,"2007-May","2100-January",38.34,-113.01,5005,"Beaver","Pole Canyon-Beaver River (160300070406)","SCAN:2129","2129"
-"38",38,"SCAN",2007,"UT","Nephi",NA,"2007-September","2100-January",39.65,-111.87,5245,"Juab","Fourmile Creek (160202010101)","SCAN:2137","2137"
-"39",39,"SCAN",2007,"VI","Upper Bethlehem",NA,"2006-November","2100-January",17.72,-64.8,119,"St. Croix","Southcentral-west St. Croix (210200020203)","SCAN:2123","2123"
-"40",40,"SCAN",2006,"AL","Tuskegee",NA,"2006-May","2100-January",32.43,-85.75,400,"Macon","Middle Calebee Creek (031501100503)","SCAN:2115","2115"
-"41",41,"SCAN",2006,"PR","Mayaguez TARS",NA,"2006-March","2100-January",18.21,-67.14,45,"Mayaguez","Rio Yaguez (210100030301)","SCAN:2112","2112"
-"42",42,"SCAN",2005,"HI","Kemole Gulch",NA,"2005-February","2100-January",19.91,-155.59,4163,"Hawaii","Kemole Gulch (200100001403)","SCAN:2103","2103"
-"43",43,"SCAN",2005,"HI","Pua Akala",NA,"2005-February","2100-January",19.79,-155.33,6394,"Hawaii","Ainahou (200100000405)","SCAN:2098","2098"
-"44",44,"SCAN",2005,"MS","Mayday",NA,"2005-September","2100-January",32.86,-90.52,108,"Yazoo","Wade Bayou (080302060902)","SCAN:2110","2110"
-"45",45,"SCAN",2005,"NM","Willow Wells",NA,"2005-March","2100-January",33.53,-103.63,4537,"Lea","Copper Ranch (120800040101)","SCAN:2108","2108"
-"46",46,"SCAN",2005,"TX","Reese Center",NA,"2005-March","2100-January",33.62,-102.04,3333,"Lubbock","120500011203-Smyer Oil Field (120500011203)","SCAN:2104","2104"
-"47",47,"SCAN",2004,"AR","Uapb Dewitt",NA,"2004-May","2100-January",34.28,-91.35,197,"Arkansas","Prices Branch-Little La Grue Bayou (080203030104)","SCAN:2091","2091"
-"48",48,"SCAN",2004,"AR","Uapb-Marianna",NA,"2004-February","2100-January",34.78,-90.82,217,"Lee","Town of Cypress Corner-Big Cypress Creek (080203040301)","SCAN:2084","2084"
-"49",49,"SCAN",2004,"KS","Phillipsburg",NA,"2004-June","2100-January",39.79,-99.33,1986,"Phillips","Plotner Creek-Deer Creek (102600120103)","SCAN:2093","2093"
-"50",50,"SCAN",2004,"MS","Tnc Fort Bayou",NA,"2003-November","2100-January",30.47,-88.74,43,"Jackson","Old Fort Bayou (031700090604)","SCAN:2082","2082"
-"51",51,"SCAN",2004,"VA","Shenandoah",NA,"2004-April","2100-January",37.92,-79.2,1763,"Augusta","Upper South River (020802020402)","SCAN:2088","2088"
-"52",52,"SCAN",2003,"AL","Bragg Farm",NA,"2003-August","2100-January",34.89,-86.6,798,"Madison","Lower Brier Fork (060300020306)","SCAN:2078","2078"
-"53",53,"SCAN",2003,"PR","Isabela",NA,"2003-August","2100-January",18.47,-67.04,50,"Isabela","210100020507 (210100020507)","SCAN:2052","2052"
-"54",54,"SCAN",2003,"TN","Eastview Farm",NA,"2003-June","2100-January",35.14,-86.19,1054,"Franklin","Beans Creek Lower (060300030602)","SCAN:2077","2077"
-"55",55,"SCAN",2002,"AK","Moose Inc",NA,"2002-May","2100-January",59.68,-151.37,132,"Kenai Cook Inlet","Fritz Creek (190203010805)","SCAN:2062","2062"
-"56",56,"SCAN",2002,"AL","Hodges",NA,"2002-February","2100-January",34.44,-86.17,730,"Marshall","Minky Creek-Town Creek (060300010705)","SCAN:2055","2055"
-"57",57,"SCAN",2002,"IA","Shagbark Hills",NA,"2002-June","2100-January",42.43,-95.77,1400,"Woodbury","Coon Creek (102300031501)","SCAN:2068","2068"
-"58",58,"SCAN",2002,"MO","Powell Gardens",NA,"2002-March","2100-January",38.87,-94.03,960,"Johnson","Headwaters South Fork Blackwater River (103001040102)","SCAN:2061","2061"
-"59",59,"SCAN",2002,"NH","Hubbard Brook",NA,"2002-September","2100-January",43.93,-71.72,1480,"Grafton","Mill Brook-Pemigewasset River (010700010205)","SCAN:2069","2069"
-"60",60,"SCAN",2001,"IA","Ames",NA,"2001-September","2100-January",42.02,-93.73,1073,"Boone","Worrell Creek-Squaw Creek (070801050307)","SCAN:2031","2031"
-"61",61,"SCAN",2001,"MO","Spickard",NA,"2001-September","2100-January",40.25,-93.72,911,"Audrain","Cat Creek-Thompson River (102801021004)","SCAN:2047","2047"
-"62",62,"SCAN",2000,"PA","Rock Springs Pa",NA,"1999-November","2100-January",40.72,-77.93,1220,"Centre","Spruce Creek-Little Juniata River (020503020404)","SCAN:2036","2036"
-"63",63,"SCAN",2000,"VA","N Piedmont Arec",NA,"2000-June","2100-January",38.23,-78.12,520,"Orange","Clear Creek-Pamunkey Creek (020801060501)","SCAN:2039","2039"
-"64",64,"SCAN",2000,"VT","Mount Mansfield",NA,"2000-September","2100-January",44.53,-72.83,2236,"Chittenden","Headwaters Browns River (041504050201)","SCAN:2041","2041"
-"65",65,"SCAN",1999,"FL","Everglades ARS",NA,"1999-February","2100-January",25.5,-80.55,9,"Dade","Upper Princeton Canal (030902061603)","SCAN:2051","2051"
-"66",66,"SCAN",1999,"MS","Goodwin Ck Pasture",NA,"1999-January","2100-January",34.25,-89.87,320,"Panola","Johnson Creek-Long Creek (080302030403)","SCAN:2024","2024"
-"67",67,"SCAN",1999,"MS","Starkville",NA,"1999-September","2100-January",33.63,-88.77,340,"Oktibbeha","Long Branch-Line Creek (031601040507)","SCAN:2064","2064"
-"68",68,"SCAN",1999,"OK","Fort Reno #1",NA,"1998-November","2100-January",35.55,-98.02,1400,"Canadian","Target Creek-North Canadian River (111003010606)","SCAN:2022","2022"
-"69",69,"SCAN",1995,"FL","Sellers Lake #1",NA,"1994-October","2100-January",29.1,-81.63,75,"Lake","Sellers Lake (030801011704)","SCAN:2012","2012"
-"70",70,"SCAN",1994,"GA","Watkinsville #1",NA,"1993-October","2100-January",33.88,-83.43,770,"Oconee","Lower Barber Creek (030701010305)","SCAN:2013","2013"
-"71",71,"SCAN",1994,"MN","Crescent Lake #1",NA,"1993-October","2100-January",45.42,-93.95,980,"Sherburne","Elk Lake-Elk River (070102030503)","SCAN:2002","2002"
-"72",72,"SCAN",1994,"NE","Rogers Farm #1",NA,"1993-October","2100-January",40.85,-96.47,1215,"Lancaster","Camp Creek (102002030905)","SCAN:2001","2001"
-"73",73,"SCAN",1994,"OH","Molly Caren #1",NA,"1993-October","2100-January",39.95,-83.45,1060,"Madison","Richmond Ditch-Deer Creek (050600020102)","SCAN:2014","2014"
-"74",74,"SCAN",1994,"WI","Wabeno #1",NA,"1993-October","2100-January",45.47,-88.58,1580,"Forest","Otter Creek (040301050401)","SCAN:2003","2003"
-"75",75,"SCAN",1992,"MT","Fort Assiniboine #1",NA,"1991-October","2100-January",48.48,-109.8,2710,"Hill","Lower Beaver Creek (100500040103)","SCAN:2019","2019"
-"76",76,"SCAN",1986,"MT","Table Mountain",NA,"1986-September","2100-January",45.8,-111.59,4474,"Gallatin","City of Three Forks-Madison River (100200071505)","SCAN:808","808"
-"78",78,"SNTL",2017,"CA","Fredonyer Peak",NA,"2016-October","2100-January",40.69,-120.61,7208,"Lassen","Lower Dry Lake-Frontal Eagle Lake (180800030304)","SNTL:1277","1277"
-"80",80,"SNTL",2016,"NM","Garita Peak",NA,"2016-September","2100-January",36.01,-106.55,10160,"Rio Arriba","Headwaters San Antonio Creek (130202020201)","SNTL:1173","1173"
-"81",81,"SNTL",2015,"AZ","Hawley Lake",NA,"2015-September","2100-January",33.97,-109.77,8300,"Apache","Trout Creek (150601020106)","SNTL:1271","1271"
-"82",82,"SNTL",2015,"UT","Panguitch Lake RS",NA,"2014-October","2100-January",37.7,-112.65,8350,"Garfield","Ipson Creek (160300010402)","SNTL:1148","1148"
-"84",84,"SNTL",2014,"CA","State Line",NA,"2014-June","2100-January",41.99,-120.72,5680,"Modoc","Weed Valley-North Fork Willow Creek (180102040201)","SNTL:1258","1258"
-"85",85,"SNTL",2014,"NV","Little Valley",NA,"2013-October","2100-January",39.25,-119.88,6493,"Washoe","Franktown Creek-Frontal Washoe Lake (160501020301)","SNTL:1242","1242"
-"86",86,"SNTL",2014,"UT","Sunflower Flat",NA,"2013-October","2100-January",38.05,-111.34,10018,"Garfield","Oak Creek (140700030406)","SNTL:1249","1249"
-"88",88,"SNTL",2013,"UT","Buckboard Flat",NA,"2012-October","2100-January",37.87,-109.45,8924,"San Juan","North Creek-Montezuma Creek (140802030103)","SNTL:1153","1153"
-"89",89,"SNTL",2013,"UT","Hobble Creek",NA,"2012-October","2100-January",40.19,-111.36,7377,"Utah","Upper Diamond Fork (160202020304)","SNTL:1223","1223"
-"90",90,"SNTL",2013,"UT","Mt Baldy",NA,"2012-October","2100-January",39.14,-111.51,9524,"Sanpete","Headwaters Twelvemile Creek (160300040402)","SNTL:1224","1224"
-"91",91,"SNTL",2013,"UT","Thistle Flat",NA,"2012-October","2100-January",39.24,-111.52,8787,"Sanpete","Manti Canyon (160300040501)","SNTL:1226","1226"
-"92",92,"SNTL",2013,"UT","Yankee Reservoir",NA,"2012-October","2100-January",37.75,-112.77,8692,"Iron","Center Creek-Parowan Creek (160300060202)","SNTL:1197","1197"
-"93",93,"SNTL",2012,"NV","Bird Creek",NA,"2011-October","2100-January",39.46,-114.65,7537,"White Pine","Timber Creek-Duck Creek (160600081304)","SNTL:1155","1155"
-"94",94,"SNTL",2012,"NV","Corduroy Flat",NA,"2011-December","2100-January",39,-115.42,8640,"White Pine","Black Canyon Wash (160600121206)","SNTL:1209","1209"
-"95",95,"SNTL",2012,"NV","Jakes Creek",NA,"2011-December","2100-January",41.57,-115.03,7380,"Elko","Upper Jakes Creek (170402130308)","SNTL:1211","1211"
-"96",96,"SNTL",2012,"NV","Midas",NA,"2011-December","2100-January",41.27,-116.8,6630,"Elko","Frazer Creek (160401060402)","SNTL:1206","1206"
-"97",97,"SNTL",2012,"NV","Stag Mountain",NA,"2011-December","2100-January",41.41,-115.45,7640,"Elko","Stag Creek (170501020101)","SNTL:1203","1203"
-"98",98,"SNTL",2012,"NV","Vacarro Springs",NA,"2011-October","2100-January",39.45,-115.98,7890,"Eureka","Torre Creek-Slough Creek-Frontal Diamond Valley (160600051503)","SNTL:1137","1137"
-"100",100,"SNTL",2012,"UT","Gooseberry RS Up",NA,"2011-October","2100-January",38.79,-111.69,8396,"Sevier","Gooseberry Creek (160300030405)","SNTL:1184","1184"
-"104",104,"SNTL",2011,"NV","Wheeler Peak",NA,"2010-October","2100-January",39.01,-114.31,10060,"White Pine","Lehman Creek (160203010801)","SNTL:1147","1147"
-"105",105,"SNTL",2011,"UT","Blacks Fork Jct",NA,"2010-October","2100-January",40.96,-110.58,8869,"Summit","Lower Cottonwood Creek (140401070303)","SNTL:1162","1162"
-"106",106,"SNTL",2011,"UT","Fish Lake Utah",NA,"2010-October","2100-January",38.5,-111.77,8798,"Sevier","Deadman Hollow (140700030108)","SNTL:1149","1149"
-"107",107,"SNTL",2011,"UT","Lost Creek Resv",NA,"2010-October","2100-January",41.22,-111.36,6082,"Morgan","Upper Lost Creek (160201010603)","SNTL:1118","1118"
-"109",109,"SNTL",2010,"NM","Palo",NA,"2010-August","2100-January",36.41,-105.33,9350,"Taos","Headwaters Rio Fernando del Taos (130201010601)","SNTL:1170","1170"
-"110",110,"SNTL",2010,"NV","Toe Jam",NA,"2009-October","2100-January",41.32,-116.34,7690,"Elko","Toe Jam Creek (160401060202)","SNTL:1136","1136"
-"111",111,"SNTL",2010,"UT","Klondike Narrows",NA,"2009-October","2100-January",41.97,-111.6,7250,"Cache","Hells Kitchen Canyon-Logan River (160102030302)","SNTL:1115","1115"
-"112",112,"SNTL",2010,"UT","Tony Grove RS",NA,"2009-October","2100-January",41.89,-111.57,6332,"Cache","Tony Grove Creek (160102030304)","SNTL:1113","1113"
-"113",113,"SNTL",2010,"WY","Larsen Creek",NA,"2010-August","2100-January",42.58,-109.09,9000,"Sublette","Pool Creek-Sweetwater River (101800060101)","SNTL:1134","1134"
-"114",114,"SNTL",2009,"AZ","Baker Butte Smt",NA,"2009-May","2100-January",34.46,-111.38,7700,"Coconino","Toms Creek (150602030103)","SNTL:1140","1140"
-"117",117,"SNTL",2009,"NM","Navajo Whiskey Ck",NA,"2009-May","2100-January",36.18,-108.95,9050,"San Juan","Whiskey Creek (Local Drainage) (140802040206)","SNTL:1138","1138"
-"118",118,"SNTL",2009,"NV","Rainbow Canyon",NA,"2008-October","2100-January",36.25,-115.63,7860,"Clark","Kyle Canyon (150100150301)","SNTL:1110","1110"
-"119",119,"SNTL",2009,"WY","Blackhall Mtn",NA,"2009-August","2100-January",41.06,-106.71,9820,"Carbon","Billie Creek-Encampment River (101800020504)","SNTL:1119","1119"
-"120",120,"SNTL",2008,"AZ","Fort Valley",NA,"2008-June","2100-January",35.27,-111.74,7350,"Coconino","Upper Rio de Flag (150200150102)","SNTL:1121","1121"
-"122",122,"SNTL",2008,"UT","Timberline",NA,"2007-October","2100-January",39.68,-110.43,8736,"Carbon","Grassy Trail Reservoir-Grassy Trail Creek (140600070903)","SNTL:1097","1097"
-"126",126,"SNTL",2007,"WA","Cayuse Pass",NA,"2006-October","2100-January",46.87,-121.53,5240,"Pierce","Headwaters White River (171100140301)","SNTL:1085","1085"
-"127",127,"SNTL",2006,"AK","Tokositna Valley",NA,"2005-October","2100-January",62.63,-150.78,850,"Matanuska-susitna","Upper Tokositna River (190205020903)","SNTL:1089","1089"
-"128",128,"SNTL",2006,"NM","Tres Ritos",NA,"2006-September","2100-January",36.13,-105.53,8600,"Taos","Osha Canyon-Rio Pueblo (130201010903)","SNTL:1083","1083"
-"129",129,"SNTL",2006,"WA","Marten Ridge",NA,"2006-July","2100-January",48.76,-121.7,3520,"Whatcom","Swift Creek (171100051004)","SNTL:999","999"
-"132",132,"SNTL",2005,"CO","Sharkstooth",NA,"2004-October","2100-January",37.5,-108.11,10720,"Montezuma","Bear Creek (140300020206)","SNTL:1060","1060"
-"133",133,"SNTL",2005,"UT","Lightning Ridge",NA,"2004-October","2100-January",41.36,-111.49,8215,"Weber","Left Fork South Fork Ogden River (160201020201)","SNTL:1056","1056"
-"134",134,"SNTL",2004,"CA","Horse Meadow",NA,"2003-October","2100-January",38.84,-119.89,8557,"Alpine","Middle West Fork Carson River (160502010302)","SNTL:1050","1050"
-"140",140,"SNTL",2003,"WA","Sentinel Butte",NA,"2003-August","2100-January",48.86,-118.4,4680,"Ferry","West Deer Creek (170200021705)","SNTL:1043","1043"
-"141",141,"SNTL",2002,"CO","Arapaho Ridge",NA,"2002-August","2100-January",40.35,-106.38,10960,"Grand","Rabbit Ears Creek-Troublesome Creek (140100010604)","SNTL:1030","1030"
-"142",142,"SNTL",2002,"CO","Zirkel",NA,"2002-August","2100-January",40.79,-106.6,9340,"Jackson","Middle North Fork North Platte River (101800010202)","SNTL:1033","1033"
-"143",143,"SNTL",2002,"NM","Vacas Locas",NA,"2001-October","2100-January",36.03,-106.81,9306,"Rio Arriba","Headwaters Rio de Las Vacas (130202020102)","SNTL:1017","1017"
-"144",144,"SNTL",2002,"WY","Sage Creek Basin",NA,"2001-October","2100-January",41.4,-107.26,7850,"Carbon","Little Jack Creek (101800020802)","SNTL:1015","1015"
-"145",145,"SNTL",2001,"ID","Moscow Mountain",NA,"2000-October","2100-January",46.81,-116.85,4700,"Latah","Little Bear Creek (170603061002)","SNTL:989","989"
-"146",146,"SNTL",2001,"NV","Lewis Peak",NA,"2000-October","2100-January",40.36,-116.86,7370,"Lander","Trout Creek (160401070903)","SNTL:1006","1006"
-"147",147,"SNTL",2001,"WA","Beaver Pass",NA,"2000-October","2100-January",48.88,-121.26,3630,"Whatcom","Upper Big Beaver Creek (171100050605)","SNTL:990","990"
-"148",148,"SNTL",2000,"AK","Port Graham",NA,"1999-October","2100-January",59.35,-151.85,300,"Kenai Peninsula","Port Graham-Frontal Cook Inlet (190203011208)","SNTL:987","987"
-"150",150,"SNTL",2000,"UT","Louis Meadow",NA,"1999-October","2100-January",40.83,-111.76,6700,"Salt Lake","City Creek (160202040304)","SNTL:972","972"
-"152",152,"SNTL",1999,"AK","Rocky Point",NA,"1999-September","2100-January",64.53,-163.42,250,"Nome","Golovnin Lagoon-Frontal Golovnin Bay (190501041103)","SNTL:973","973"
-"153",153,"SNTL",1999,"ID","Bogus Basin",NA,"1999-September","2100-January",43.76,-116.1,6340,"Boise","Cottonwood Creek-Shafer Creek (170501220201)","SNTL:978","978"
-"155",155,"SNTL",1999,"WA","Waterhole",NA,"1999-September","2100-January",47.94,-123.43,5010,"Clallam","Lillian Creek (171100200506)","SNTL:974","974"
-"157",157,"SNTL",1998,"CO","Jackwhacker Gulch",NA,"1998-August","2100-January",39.57,-105.8,10960,"Clear Creek","Geneva Creek (101900020201)","SNTL:935","935"
-"158",158,"SNTL",1998,"CO","Rough And Tumble",NA,"1998-August","2100-January",39.03,-106.08,10360,"Park","Headwaters South Fork South Platte River (101900010202)","SNTL:939","939"
-"161",161,"SNTL",1997,"NM","Elk Cabin",NA,"1996-October","2100-January",35.7,-105.81,8210,"Santa Fe","Headwaters Santa Fe River (130202010102)","SNTL:921","921"
-"170",170,"SNTL",1993,"ID","Chocolate Gulch",NA,"1992-October","2100-January",43.77,-114.42,6310,"Blaine","Eagle Creek-Big Wood River (170402190301)","SNTL:895","895"
-"171",171,"SNTL",1992,"AK","Kelly Station",NA,"1991-October","2100-January",67.93,-162.28,310,"Northwest Arctic","190504030802-Noatak River (190504030802)","SNTL:1175","1175"
-"175",175,"SNTL",1990,"CA","Leavitt Lake",NA,"1989-October","2100-January",38.28,-119.61,9604,"Mono","Leavitt Creek-West Walker River (160503020104)","SNTL:574","574"
-"176",176,"SNTL",1990,"ID","Wilson Creek",NA,"1989-October","2100-January",42.01,-115,7120,"Twin Falls","Upper Wilson Creek (170402130202)","SNTL:871","871"
-"178",178,"SNTL",1989,"AK","Summit Creek",NA,"1988-October","2100-January",60.62,-149.53,1400,"Kenai Peninsula","Headwaters Canyon Creek (190203020401)","SNTL:955","955"
-"181",181,"SNTL",1989,"UT","Mill-D North",NA,"1988-October","2100-January",40.66,-111.64,8963,"Salt Lake","Headwaters Big Cottonwood Canyon (160202040201)","SNTL:628","628"
-"182",182,"SNTL",1988,"UT","Lookout Peak",NA,"1988-June","2100-January",40.84,-111.71,8161,"Salt Lake","Parleys Creek (160202040302)","SNTL:596","596"
-"183",183,"SNTL",1988,"WY","Granite Creek",NA,"1987-October","2100-January",43.34,-110.43,6770,"Teton","Muddy Creek (170401030304)","SNTL:497","497"
-"192",192,"SNTL",1986,"UT","Camp Jackson",NA,"1985-October","2100-January",37.81,-109.49,8858,"San Juan","Johnson Creek (140802010301)","SNTL:383","383"
-"193",193,"SNTL",1986,"UT","Little Grassy",NA,"1985-October","2100-January",37.49,-113.85,6065,"Washington","Little Pine Creek (160300061302)","SNTL:583","583"
-"196",196,"SNTL",1985,"UT","Hickerson Park",NA,"1985-September","2100-January",40.91,-109.96,9122,"Daggett","Horseshoe Canyon-Green River (140401060501)","SNTL:522","522"
-"197",197,"SNTL",1985,"WY","East Rim Divide",NA,"1984-October","2100-January",43.13,-110.2,7930,"Sublette","Nowlin Creek (170401030203)","SNTL:460","460"
-"199",199,"SNTL",1985,"WY","Triple Peak",NA,"1984-October","2100-January",42.76,-110.59,8500,"Sublette","Lower Horse Creek (140401010503)","SNTL:831","831"
-"202",202,"SNTL",1984,"NV","Diamond Peak",NA,"1983-October","2100-January",39.56,-115.84,8017,"Eureka","Torre Creek-Slough Creek-Frontal Diamond Valley (160600051503)","SNTL:443","443"
-"204",204,"SNTL",1983,"AK","Kenai Moose Pens",NA,"1982-October","2100-January",60.73,-150.48,300,"Kenai Peninsula","Upper Moose River (190203021601)","SNTL:966","966"
-"205",205,"SNTL",1983,"ID","Elk Butte",NA,"1982-October","2100-January",46.84,-116.12,5690,"Clearwater","Upper Elk Creek (170603080701)","SNTL:466","466"
-"206",206,"SNTL",1983,"ID","Savage Pass",NA,"1982-October","2100-January",46.47,-114.63,6190,"Idaho","Lower Colt Killed Creek (170603030208)","SNTL:735","735"
-"207",207,"SNTL",1983,"UT","Lakefork Basin",NA,"1982-October","2100-January",40.74,-110.62,10885,"Duchesne","Ottoson Creek-Lake Fork Creek (140600030601)","SNTL:513","513"
-"209",209,"SNTL",1982,"NV","Jacks Peak",NA,"1981-October","2100-January",41.51,-116.01,8424,"Elko","Upper Harrington Creek (170501050201)","SNTL:549","549"
-"211",211,"SNTL",1981,"AK","Mt. Ryan",NA,"1980-October","2100-January",65.25,-146.15,2800,"Fairbanks North Star","Headwaters West Fork Chena River (190803060404)","SNTL:948","948"
-"212",212,"SNTL",1981,"CA","Css Lab",NA,"1980-October","2100-January",39.33,-120.37,6894,"Nevada","Rattlesnake Creek-South Yuba River (180201250602)","SNTL:428","428"
-"213",213,"SNTL",1981,"CA","Leavitt Meadows",NA,"1980-October","2100-January",38.3,-119.55,7198,"Mono","Leavitt Creek-West Walker River (160503020104)","SNTL:575","575"
-"214",214,"SNTL",1981,"CA","Tahoe City Cross",NA,"1980-October","2100-January",39.17,-120.15,6797,"Placer","Burton Creek-Frontal Lake Tahoe (160501010101)","SNTL:809","809"
-"215",215,"SNTL",1981,"NV","Big Creek Sum",NA,"1980-October","2100-January",39.29,-117.12,8685,"Lander","Big Creek (160401070303)","SNTL:337","337"
-"216",216,"SNTL",1981,"NV","Fawn Creek",NA,"1980-October","2100-January",41.82,-116.1,7031,"Elko","Fawn Creek-Owyhee River (170501040304)","SNTL:476","476"
-"217",217,"SNTL",1981,"NV","Lamance Creek",NA,"1980-October","2100-January",41.52,-117.63,6395,"Humboldt","Lamance Creek-Big Cottonwood Creek (160401090603)","SNTL:569","569"
-"218",218,"SNTL",1981,"NV","Taylor Canyon",NA,"1980-October","2100-January",41.23,-116.03,6325,"Elko","Upper Taylors Canyon Creek (170501050105)","SNTL:811","811"
-"222",222,"SNTL",1980,"AK","Munson Ridge",NA,"1979-October","2100-January",64.85,-146.21,3100,"Fairbanks North Star","Rock Creek-Chena River (190803060602)","SNTL:950","950"
-"223",223,"SNTL",1980,"CA","Fallen Leaf",NA,"1979-October","2100-January",38.93,-120.05,6242,"El Dorado","Fallen Leaf Lake-Frontal Lake Tahoe (160501010401)","SNTL:473","473"
-"225",225,"SNTL",1980,"CO","Brumley",NA,"1979-October","2100-January",39.09,-106.54,10600,"Lake","North Fork Lake Creek (110200010101)","SNTL:369","369"
-"227",227,"SNTL",1980,"CO","Grizzly Peak",NA,"1979-October","2100-January",39.65,-105.87,11100,"Summit","North Fork Snake River (140100020201)","SNTL:505","505"
-"229",229,"SNTL",1980,"CO","Lizard Head Pass",NA,"1979-October","2100-January",37.8,-107.92,10200,"Dolores","Headwaters Dolores River (140300020201)","SNTL:586","586"
-"231",231,"SNTL",1980,"CO","Park Cone",NA,"1979-October","2100-January",38.82,-106.59,9600,"Gunnison","Taylor Park Reservoir (140200010107)","SNTL:680","680"
-"233",233,"SNTL",1980,"CO","Whiskey Ck",NA,"1979-October","2100-January",37.21,-105.12,10220,"Las Animas","North Fork Purgatoire River (110200100102)","SNTL:857","857"
-"236",236,"SNTL",1980,"ID","Crab Creek",NA,"1979-October","2100-January",44.44,-111.99,6900,"Clark","Upper Camas Creek (170402140108)","SNTL:424","424"
-"238",238,"SNTL",1980,"ID","Hilts Creek",NA,"1979-October","2100-January",44.02,-113.47,8000,"Custer","Upper Wet Creek (170402170401)","SNTL:524","524"
-"239",239,"SNTL",1980,"ID","Jackson Peak",NA,"1979-October","2100-January",44.05,-115.44,7070,"Boise","Fivemile Creek-South Fork Payette River (170501200304)","SNTL:550","550"
-"240",240,"SNTL",1980,"ID","Magic Mountain",NA,"1979-October","2100-January",42.18,-114.29,6880,"Twin Falls","Headwaters Rock Creek (170402120601)","SNTL:610","610"
-"242",242,"SNTL",1980,"ID","Mud Flat",NA,"1979-October","2100-January",42.6,-116.56,5730,"Owyhee","Upper Pole Creek (170501041401)","SNTL:654","654"
-"246",246,"SNTL",1980,"NM","Gallegos Peak",NA,"1979-October","2100-January",36.19,-105.56,9800,"Taos","Headwaters Rio Grande de Rancho (130201010502)","SNTL:491","491"
-"247",247,"SNTL",1980,"NV","Laurel Draw",NA,"1979-October","2100-January",41.78,-116.03,6682,"Elko","Trail Creek (170501040202)","SNTL:573","573"
-"249",249,"SNTL",1980,"OR","Chemult Alternate",NA,"1979-October","2100-January",43.23,-121.81,4850,"Klamath","Deer Creek (180102010201)","SNTL:395","395"
-"255",255,"SNTL",1980,"OR","Mt. Howard",NA,"1979-October","2100-January",45.27,-117.17,7910,"Wallowa","Upper Prairie Creek (170601050102)","SNTL:653","653"
-"257",257,"SNTL",1980,"OR","Rock Springs",NA,"1979-October","2100-January",44.01,-118.84,5290,"Grant","Calamity Creek (170501160204)","SNTL:721","721"
-"260",260,"SNTL",1980,"UT","Ben Lomond Trail",NA,"1980-June","2100-January",41.38,-111.92,5972,"Weber","Cutler Creek-North Fork Ogden River (160201020302)","SNTL:333","333"
-"261",261,"SNTL",1980,"UT","Chepeta",NA,"1980-July","2100-January",40.77,-110.01,10499,"Duchesne","East Fork Whiterocks River (140600031202)","SNTL:396","396"
-"262",262,"SNTL",1980,"UT","Kimberly Mine",NA,"1980-July","2100-January",38.48,-112.39,9101,"Piute","Mill Creek (160300030104)","SNTL:557","557"
-"263",263,"SNTL",1980,"UT","Merchant Valley",NA,"1980-July","2100-January",38.3,-112.44,8705,"Beaver","Merchant Creek (160300070201)","SNTL:621","621"
-"264",264,"SNTL",1980,"UT","Rock Creek",NA,"1980-June","2100-January",40.55,-110.69,7886,"Duchesne","South Fork Rock Creek (140600030304)","SNTL:720","720"
-"267",267,"SNTL",1980,"WA","Harts Pass",NA,"1979-October","2100-January",48.72,-120.66,6490,"Okanogan","Upper Canyon Creek (171100050501)","SNTL:515","515"
-"269",269,"SNTL",1980,"WA","Salmon Meadows",NA,"1979-October","2100-January",48.66,-119.84,4460,"Okanogan","North Fork Salmon Creek (170200062003)","SNTL:728","728"
-"270",270,"SNTL",1980,"WA","Touchet",NA,"1979-October","2100-January",46.12,-117.85,5530,"Columbia","Wolf Creek (170701020303)","SNTL:824","824"
-"280",280,"SNTL",1979,"CA","Heavenly Valley",NA,"1978-October","2100-January",38.92,-119.92,8534,"El Dorado","Trout Creek (160501010302)","SNTL:518","518"
-"281",281,"SNTL",1979,"CA","Lobdell Lake",NA,"1978-October","2100-January",38.44,-119.37,9249,"Mono","Deep Creek (160503020201)","SNTL:587","587"
-"282",282,"SNTL",1979,"CO","Burro Mountain",NA,"1978-October","2100-January",39.88,-107.6,9400,"Rio Blanco","North Elk Creek (140500050302)","SNTL:378","378"
-"283",283,"SNTL",1979,"CO","Copper Mountain",NA,"1978-October","2100-January",39.49,-106.17,10550,"Summit","West Tenmile Creek (140100020302)","SNTL:415","415"
-"286",286,"SNTL",1979,"CO","Porphyry Creek",NA,"1978-October","2100-January",38.49,-106.34,10760,"Gunnison","Porphyry Creek-Tomichi Creek (140200030105)","SNTL:701","701"
-"287",287,"SNTL",1979,"CO","Upper San Juan",NA,"1978-October","2100-January",37.49,-106.84,10200,"Mineral","Wolf Creek (140801010203)","SNTL:840","840"
-"288",288,"SNTL",1979,"ID","Atlanta Summit",NA,"1978-October","2100-January",43.76,-115.24,7580,"Elmore","Bald Mountain Creek-Middle Fork Boise River (170501110204)","SNTL:306","306"
-"289",289,"SNTL",1979,"ID","Franklin Basin",NA,"1978-October","2100-January",42.05,-111.6,8140,"Franklin","Upper Cub River (160102020501)","SNTL:484","484"
-"293",293,"SNTL",1979,"ID","Sunset",NA,"1978-October","2100-January",47.56,-115.82,5540,"Shoshone","Canyon Creek-Upper South Fork Coeur d'Alene River (170103020102)","SNTL:803","803"
-"299",299,"SNTL",1979,"NV","Dorsey Basin",NA,"1978-October","2100-January",40.89,-115.21,7903,"Elko","Lower Secret Creek (160401010604)","SNTL:453","453"
-"300",300,"SNTL",1979,"NV","Seventysix Creek",NA,"1978-October","2100-January",41.74,-115.47,7350,"Elko","Annie Creek-Bruneau River (170501020108)","SNTL:746","746"
-"310",310,"SNTL",1979,"UT","Beaver Divide",NA,"1978-October","2100-January",40.61,-111.1,8280,"Summit","Shingle Creek-Provo River (160202030105)","SNTL:330","330"
-"311",311,"SNTL",1979,"UT","Box Creek",NA,"1979-August","2100-January",38.51,-112.02,9853,"Sevier","Greenwich Creek (160300020106)","SNTL:364","364"
-"312",312,"SNTL",1979,"UT","Bug Lake",NA,"1978-October","2100-January",41.69,-111.42,7987,"Rich","Laketown Canyon (160102010102)","SNTL:374","374"
-"313",313,"SNTL",1979,"UT","Clear Creek #2",NA,"1978-October","2100-January",39.89,-111.25,7837,"Utah","Upper Soldier Creek (160202020102)","SNTL:400","400"
-"314",314,"SNTL",1979,"UT","Dills Camp",NA,"1978-October","2100-January",39.05,-111.47,9228,"Sanpete","Beaver Creek (140700020201)","SNTL:444","444"
-"315",315,"SNTL",1979,"UT","Gooseberry RS",NA,"1979-June","2100-January",38.8,-111.68,7944,"Sevier","Gooseberry Creek (160300030405)","SNTL:495","495"
-"316",316,"SNTL",1979,"UT","Horse Ridge",NA,"1978-October","2100-January",41.31,-111.45,8199,"Morgan","Blue Fork Creek (160201010601)","SNTL:533","533"
-"317",317,"SNTL",1979,"UT","Kolob",NA,"1978-October","2100-January",37.53,-113.05,9263,"Iron","Crystal Creek (150100080102)","SNTL:561","561"
-"318",318,"SNTL",1979,"UT","Long Flat",NA,"1979-September","2100-January",37.51,-113.4,7982,"Washington","Pinto Creek (160300061403)","SNTL:592","592"
-"319",319,"SNTL",1979,"UT","Mosby Mtn.",NA,"1978-October","2100-January",40.61,-109.89,9553,"Uintah","Mosby Sink-Dry Fork (140600100702)","SNTL:643","643"
-"320",320,"SNTL",1979,"UT","Red Pine Ridge",NA,"1978-October","2100-January",39.45,-111.27,8988,"Emery","Lowry Water (140600090202)","SNTL:714","714"
-"321",321,"SNTL",1979,"UT","Steel Creek Park",NA,"1978-October","2100-January",40.91,-110.5,10158,"Summit","West Fork Smiths Fork (140401070203)","SNTL:790","790"
-"322",322,"SNTL",1979,"UT","Tony Grove Lake",NA,"1978-October","2100-January",41.9,-111.63,8474,"Cache","Tony Grove Creek (160102030304)","SNTL:823","823"
-"323",323,"SNTL",1979,"UT","Vernon Creek",NA,"1978-October","2100-January",39.94,-112.41,7401,"Tooele","Vernon Creek (160203040102)","SNTL:844","844"
-"326",326,"SNTL",1979,"WA","Trough",NA,"1978-October","2100-January",47.23,-120.29,5480,"Chelan","Colockum Creek (170200100402)","SNTL:832","832"
-"330",330,"SNTL",1979,"WY","Sucker Creek",NA,"1978-October","2100-January",44.72,-107.4,8880,"Sheridan","West Fork Big Goose Creek (100901010203)","SNTL:798","798"
-"332",332,"SNTL",1978,"UT","Clear Creek #1",NA,"1978-January","2100-January",39.87,-111.28,8975,"Utah","Upper Soldier Creek (160202020102)","SNTL:399","399"
-"341",341,"SNTL",1972,"MT","Clover Meadow",NA,"1971-October","2100-January",45.02,-111.85,8600,"Madison","Ruby Creek (100200070803)","SNTL:403","403"
-"342",342,"SNTL",1971,"AZ","White Horse Lake",NA,"1970-November","2100-January",35.14,-112.15,7180,"Coconino","Upper Hell Canyon (150602020204)","SNTL:861","861"
-"354",354,"SNTL",1967,"MT","White Mill",NA,"1966-October","2100-January",45.05,-109.91,8700,"Park","Hoodoo Creek (100700060202)","SNTL:862","862"
-"355",355,"SNTL",1966,"MT","Black Pine",NA,"1965-October","2100-January",46.41,-113.43,7210,"Granite","Marshall Creek (170102020203)","SNTL:349","349"
-"357",357,"SNTL",1964,"WY","Kelley R.S.",NA,"1963-October","2100-January",42.27,-110.8,8180,"Lincoln","Upper Dry Muddy Creek (140401070501)","SNTL:554","554"
-"358",358,"SNTL",1963,"WY","Big Sandy Opening",NA,"1963-March","2100-January",42.65,-109.26,9080,"Sublette","Black Joe Creek-Big Sandy River (140401040101)","SNTL:342","342"
-"363",363,"SNTL",1961,"WY","Togwotee Pass",NA,"1960-October","2100-January",43.75,-110.06,9580,"Teton","Upper Horse Creek (100800010201)","SNTL:822","822"
-"373",373,"SNTLT",2013,"NV","Smith Creek",NA,"2013-June","2100-January",40.45,-115.51,7588,"Elko","Gennette Creek-Smith Creek (160401030403)","SNTLT:1235","1235"
+"","X.1","X","ntwk","wyear","state","site_name","ts","start","enddate","latitude","longitude","elev_ft","county","huc","site_id","site_num_id"
+"1",2,2,"SCAN",2018,"MO","Carver Farm",NA,"2018-May","2100-January",38.53,-92.13,560,"Cole","Moreau River (103001021207)","SCAN:2223",2223
+"2",3,3,"SCAN",2018,"MO","Twin Pines Conservation Area",NA,"2018-May","2100-January",36.99,-91.31,960,"Shannon","Upper Pike Creek (110100080401)","SCAN:2226",2226
+"3",4,4,"SCAN",2015,"CA","Ash Valley",NA,"2014-October","2100-January",41.05,-120.69,5097,"Lassen","Ash Valley-Ash Creek (180200021404)","SCAN:2214",2214
+"4",5,5,"SCAN",2015,"CA","Monocline Ridge",NA,"2014-October","2100-January",36.54,-120.55,875,"Fresno","Town of Levis (180300090904)","SCAN:2217",2217
+"5",6,6,"SCAN",2015,"NV","Buckhorn",NA,"2014-October","2100-January",40.88,-119.95,3925,"Washoe","Buckhorn Reservoir (180800020104)","SCAN:2216",2216
+"6",9,9,"SCAN",2013,"CO","CPER",NA,"2013-September","2100-January",40.82,-104.71,5330,"Weld","Headwaters Owl Creek (101900080301)","SCAN:2197",2197
+"7",10,10,"SCAN",2013,"TX","Knox City",NA,"2013-September","2100-January",33.45,-99.87,1448,"Knox","Knox City Cemetery-Brazos River (120601010206)","SCAN:2201",2201
+"8",11,11,"SCAN",2013,"TX","Stephenville",NA,"2013-September","2100-January",32.25,-98.2,1311,"Erath","Indian Creek-North Bosque River (120602040103)","SCAN:2203",2203
+"9",12,12,"SCAN",2013,"TX","Weslaco",NA,"2013-September","2100-January",26.16,-97.96,57,"Hidalgo","Upper Pilot Channel-Laguna Madre (121102080300)","SCAN:2205",2205
+"10",14,14,"SCAN",2012,"CA","Death Valley Jct",NA,"2012-June","2100-January",36.33,-116.35,2062,"Inyo","Ash Meadows (180902021504)","SCAN:2190",2190
+"11",15,15,"SCAN",2012,"CA","Doe Ridge",NA,"2012-June","2100-January",37.63,-118.83,7340,"Mono","Convict Creek (180901020207)","SCAN:2191",2191
+"12",16,16,"SCAN",2012,"CA","Ford Dry Lake",NA,"2011-November","2100-January",33.65,-115.1,394,"Riverside","181001005405 (181001005405)","SCAN:2184",2184
+"13",17,17,"SCAN",2012,"MO","Schell-Osage",NA,"2012-July","2100-January",37.99,-94.04,793,"St. Clair","Baker Branch-Osage River (102901050206)","SCAN:2193",2193
+"14",18,18,"SCAN",2010,"AL","Dee River Ranch",NA,"2010-April","2100-January",33.11,-88.31,160,"Pickens","Dinsmore-Bogue Chitto (031601060504)","SCAN:2174",2174
+"15",19,19,"SCAN",2010,"AL","Morris Farms",NA,"2010-April","2100-January",32.41,-85.91,220,"Macon","Lower Calebee Creek (031501100504)","SCAN:2178",2178
+"16",20,20,"SCAN",2010,"AL","Selma",NA,"2010-April","2100-January",32.4,-86.89,140,"Dallas","Beech Creek (031502011205)","SCAN:2176",2176
+"17",21,21,"SCAN",2010,"NM","Alcalde",NA,"2010-March","2100-January",36.09,-106.06,5693,"Rio Arriba","Rio Chama-Rio Grande (130201011107)","SCAN:2172",2172
+"18",22,22,"SCAN",2010,"NV","Porter Canyon",NA,"2009-October","2100-January",39.47,-117.62,7187,"Lander","Porter Canyon-Porter Creek (160600020102)","SCAN:2170",2170
+"19",23,23,"SCAN",2010,"UT","Grouse Creek",NA,"2010-May","2100-January",41.78,-113.82,5835,"Box Elder","Kimbell Creek-Grouse Creek (160203080103)","SCAN:2160",2160
+"20",24,24,"SCAN",2010,"UT","Little Red Fox",NA,"2010-January","2100-January",40.18,-110.3,5395,"Duchesne","Rocky Point-Duchesne River (140600030406)","SCAN:2155",2155
+"21",25,25,"SCAN",2010,"UT","Park Valley",NA,"2010-January","2100-January",41.77,-113.29,5098,"Box Elder","Cotton Creek (160203081407)","SCAN:2153",2153
+"22",26,26,"SCAN",2010,"UT","Spooky",NA,"2010-April","2100-January",37.51,-111.26,5341,"Kane","Dry Fork Coyote Gulch (140700050701)","SCAN:2158",2158
+"23",27,27,"SCAN",2009,"CA","Marble Creek",NA,"2009-May","2100-January",37.78,-118.42,6183,"Mono","Rock Creek-Spring Canyon Creek (180901020501)","SCAN:2149",2149
+"24",28,28,"SCAN",2009,"UT","Buffalo Jump",NA,"2009-August","2100-January",41.34,-111.19,6682,"Rich","Coyote Creek (160101010403)","SCAN:2151",2151
+"25",29,29,"SCAN",2009,"UT","Grantsville",NA,"2009-August","2100-January",40.59,-112.39,4337,"Tooele","South Willow Creek-Frontal Great Salt Lake (160203040503)","SCAN:2152",2152
+"26",31,31,"SCAN",2008,"NV","Pine Nut",NA,"2007-October","2100-January",36.57,-115.2,6780,"Clark","Horse Canyon (150100150202)","SCAN:2144",2144
+"27",32,32,"SCAN",2007,"MT","Conrad Ag Rc",NA,"2006-October","2100-January",48.3,-111.92,3706,"Pondera","Letz Lake-Dry Fork Marias River (100302030705)","SCAN:2117",2117
+"28",33,33,"SCAN",2007,"MT","Sidney",NA,"2006-October","2100-January",47.77,-104.25,2274,"Richland","First Hay Creek (101000042503)","SCAN:2120",2120
+"29",34,34,"SCAN",2007,"UT","Alkali Mesa",NA,"2007-September","2100-January",37.67,-109.36,6445,"San Juan","Devil Canyon (140802030601)","SCAN:2138",2138
+"30",35,35,"SCAN",2007,"UT","Circleville",NA,"2007-May","2100-January",38.15,-112.25,6120,"Piute","Lost Creek (160300010604)","SCAN:2125",2125
+"31",36,36,"SCAN",2007,"UT","Ephraim",NA,"2007-May","2100-January",39.37,-111.58,5531,"Sanpete","Pigeon Creek (160300040303)","SCAN:2126",2126
+"32",37,37,"SCAN",2007,"UT","Milford",NA,"2007-May","2100-January",38.34,-113.01,5005,"Beaver","Pole Canyon-Beaver River (160300070406)","SCAN:2129",2129
+"33",38,38,"SCAN",2007,"UT","Nephi",NA,"2007-September","2100-January",39.65,-111.87,5245,"Juab","Fourmile Creek (160202010101)","SCAN:2137",2137
+"34",40,40,"SCAN",2006,"AL","Tuskegee",NA,"2006-May","2100-January",32.43,-85.75,400,"Macon","Middle Calebee Creek (031501100503)","SCAN:2115",2115
+"35",44,44,"SCAN",2005,"MS","Mayday",NA,"2005-September","2100-January",32.86,-90.52,108,"Yazoo","Wade Bayou (080302060902)","SCAN:2110",2110
+"36",45,45,"SCAN",2005,"NM","Willow Wells",NA,"2005-March","2100-January",33.53,-103.63,4537,"Lea","Copper Ranch (120800040101)","SCAN:2108",2108
+"37",46,46,"SCAN",2005,"TX","Reese Center",NA,"2005-March","2100-January",33.62,-102.04,3333,"Lubbock","120500011203-Smyer Oil Field (120500011203)","SCAN:2104",2104
+"38",47,47,"SCAN",2004,"AR","Uapb Dewitt",NA,"2004-May","2100-January",34.28,-91.35,197,"Arkansas","Prices Branch-Little La Grue Bayou (080203030104)","SCAN:2091",2091
+"39",48,48,"SCAN",2004,"AR","Uapb-Marianna",NA,"2004-February","2100-January",34.78,-90.82,217,"Lee","Town of Cypress Corner-Big Cypress Creek (080203040301)","SCAN:2084",2084
+"40",49,49,"SCAN",2004,"KS","Phillipsburg",NA,"2004-June","2100-January",39.79,-99.33,1986,"Phillips","Plotner Creek-Deer Creek (102600120103)","SCAN:2093",2093
+"41",50,50,"SCAN",2004,"MS","Tnc Fort Bayou",NA,"2003-November","2100-January",30.47,-88.74,43,"Jackson","Old Fort Bayou (031700090604)","SCAN:2082",2082
+"42",51,51,"SCAN",2004,"VA","Shenandoah",NA,"2004-April","2100-January",37.92,-79.2,1763,"Augusta","Upper South River (020802020402)","SCAN:2088",2088
+"43",52,52,"SCAN",2003,"AL","Bragg Farm",NA,"2003-August","2100-January",34.89,-86.6,798,"Madison","Lower Brier Fork (060300020306)","SCAN:2078",2078
+"44",54,54,"SCAN",2003,"TN","Eastview Farm",NA,"2003-June","2100-January",35.14,-86.19,1054,"Franklin","Beans Creek Lower (060300030602)","SCAN:2077",2077
+"45",56,56,"SCAN",2002,"AL","Hodges",NA,"2002-February","2100-January",34.44,-86.17,730,"Marshall","Minky Creek-Town Creek (060300010705)","SCAN:2055",2055
+"46",57,57,"SCAN",2002,"IA","Shagbark Hills",NA,"2002-June","2100-January",42.43,-95.77,1400,"Woodbury","Coon Creek (102300031501)","SCAN:2068",2068
+"47",58,58,"SCAN",2002,"MO","Powell Gardens",NA,"2002-March","2100-January",38.87,-94.03,960,"Johnson","Headwaters South Fork Blackwater River (103001040102)","SCAN:2061",2061
+"48",59,59,"SCAN",2002,"NH","Hubbard Brook",NA,"2002-September","2100-January",43.93,-71.72,1480,"Grafton","Mill Brook-Pemigewasset River (010700010205)","SCAN:2069",2069
+"49",60,60,"SCAN",2001,"IA","Ames",NA,"2001-September","2100-January",42.02,-93.73,1073,"Boone","Worrell Creek-Squaw Creek (070801050307)","SCAN:2031",2031
+"50",61,61,"SCAN",2001,"MO","Spickard",NA,"2001-September","2100-January",40.25,-93.72,911,"Audrain","Cat Creek-Thompson River (102801021004)","SCAN:2047",2047
+"51",62,62,"SCAN",2000,"PA","Rock Springs Pa",NA,"1999-November","2100-January",40.72,-77.93,1220,"Centre","Spruce Creek-Little Juniata River (020503020404)","SCAN:2036",2036
+"52",63,63,"SCAN",2000,"VA","N Piedmont Arec",NA,"2000-June","2100-January",38.23,-78.12,520,"Orange","Clear Creek-Pamunkey Creek (020801060501)","SCAN:2039",2039
+"53",64,64,"SCAN",2000,"VT","Mount Mansfield",NA,"2000-September","2100-January",44.53,-72.83,2236,"Chittenden","Headwaters Browns River (041504050201)","SCAN:2041",2041
+"54",65,65,"SCAN",1999,"FL","Everglades ARS",NA,"1999-February","2100-January",25.5,-80.55,9,"Dade","Upper Princeton Canal (030902061603)","SCAN:2051",2051
+"55",66,66,"SCAN",1999,"MS","Goodwin Ck Pasture",NA,"1999-January","2100-January",34.25,-89.87,320,"Panola","Johnson Creek-Long Creek (080302030403)","SCAN:2024",2024
+"56",67,67,"SCAN",1999,"MS","Starkville",NA,"1999-September","2100-January",33.63,-88.77,340,"Oktibbeha","Long Branch-Line Creek (031601040507)","SCAN:2064",2064
+"57",68,68,"SCAN",1999,"OK","Fort Reno #1",NA,"1998-November","2100-January",35.55,-98.02,1400,"Canadian","Target Creek-North Canadian River (111003010606)","SCAN:2022",2022
+"58",69,69,"SCAN",1995,"FL","Sellers Lake #1",NA,"1994-October","2100-January",29.1,-81.63,75,"Lake","Sellers Lake (030801011704)","SCAN:2012",2012
+"59",70,70,"SCAN",1994,"GA","Watkinsville #1",NA,"1993-October","2100-January",33.88,-83.43,770,"Oconee","Lower Barber Creek (030701010305)","SCAN:2013",2013
+"60",71,71,"SCAN",1994,"MN","Crescent Lake #1",NA,"1993-October","2100-January",45.42,-93.95,980,"Sherburne","Elk Lake-Elk River (070102030503)","SCAN:2002",2002
+"61",72,72,"SCAN",1994,"NE","Rogers Farm #1",NA,"1993-October","2100-January",40.85,-96.47,1215,"Lancaster","Camp Creek (102002030905)","SCAN:2001",2001
+"62",73,73,"SCAN",1994,"OH","Molly Caren #1",NA,"1993-October","2100-January",39.95,-83.45,1060,"Madison","Richmond Ditch-Deer Creek (050600020102)","SCAN:2014",2014
+"63",74,74,"SCAN",1994,"WI","Wabeno #1",NA,"1993-October","2100-January",45.47,-88.58,1580,"Forest","Otter Creek (040301050401)","SCAN:2003",2003
+"64",75,75,"SCAN",1992,"MT","Fort Assiniboine #1",NA,"1991-October","2100-January",48.48,-109.8,2710,"Hill","Lower Beaver Creek (100500040103)","SCAN:2019",2019
+"65",76,76,"SCAN",1986,"MT","Table Mountain",NA,"1986-September","2100-January",45.8,-111.59,4474,"Gallatin","City of Three Forks-Madison River (100200071505)","SCAN:808",808
+"66",78,78,"SNTL",2017,"CA","Fredonyer Peak",NA,"2016-October","2100-January",40.69,-120.61,7208,"Lassen","Lower Dry Lake-Frontal Eagle Lake (180800030304)","SNTL:1277",1277
+"67",80,80,"SNTL",2016,"NM","Garita Peak",NA,"2016-September","2100-January",36.01,-106.55,10160,"Rio Arriba","Headwaters San Antonio Creek (130202020201)","SNTL:1173",1173
+"68",81,81,"SNTL",2015,"AZ","Hawley Lake",NA,"2015-September","2100-January",33.97,-109.77,8300,"Apache","Trout Creek (150601020106)","SNTL:1271",1271
+"69",82,82,"SNTL",2015,"UT","Panguitch Lake RS",NA,"2014-October","2100-January",37.7,-112.65,8350,"Garfield","Ipson Creek (160300010402)","SNTL:1148",1148
+"70",84,84,"SNTL",2014,"CA","State Line",NA,"2014-June","2100-January",41.99,-120.72,5680,"Modoc","Weed Valley-North Fork Willow Creek (180102040201)","SNTL:1258",1258
+"71",85,85,"SNTL",2014,"NV","Little Valley",NA,"2013-October","2100-January",39.25,-119.88,6493,"Washoe","Franktown Creek-Frontal Washoe Lake (160501020301)","SNTL:1242",1242
+"72",86,86,"SNTL",2014,"UT","Sunflower Flat",NA,"2013-October","2100-January",38.05,-111.34,10018,"Garfield","Oak Creek (140700030406)","SNTL:1249",1249
+"73",88,88,"SNTL",2013,"UT","Buckboard Flat",NA,"2012-October","2100-January",37.87,-109.45,8924,"San Juan","North Creek-Montezuma Creek (140802030103)","SNTL:1153",1153
+"74",89,89,"SNTL",2013,"UT","Hobble Creek",NA,"2012-October","2100-January",40.19,-111.36,7377,"Utah","Upper Diamond Fork (160202020304)","SNTL:1223",1223
+"75",90,90,"SNTL",2013,"UT","Mt Baldy",NA,"2012-October","2100-January",39.14,-111.51,9524,"Sanpete","Headwaters Twelvemile Creek (160300040402)","SNTL:1224",1224
+"76",91,91,"SNTL",2013,"UT","Thistle Flat",NA,"2012-October","2100-January",39.24,-111.52,8787,"Sanpete","Manti Canyon (160300040501)","SNTL:1226",1226
+"77",92,92,"SNTL",2013,"UT","Yankee Reservoir",NA,"2012-October","2100-January",37.75,-112.77,8692,"Iron","Center Creek-Parowan Creek (160300060202)","SNTL:1197",1197
+"78",93,93,"SNTL",2012,"NV","Bird Creek",NA,"2011-October","2100-January",39.46,-114.65,7537,"White Pine","Timber Creek-Duck Creek (160600081304)","SNTL:1155",1155
+"79",94,94,"SNTL",2012,"NV","Corduroy Flat",NA,"2011-December","2100-January",39,-115.42,8640,"White Pine","Black Canyon Wash (160600121206)","SNTL:1209",1209
+"80",95,95,"SNTL",2012,"NV","Jakes Creek",NA,"2011-December","2100-January",41.57,-115.03,7380,"Elko","Upper Jakes Creek (170402130308)","SNTL:1211",1211
+"81",96,96,"SNTL",2012,"NV","Midas",NA,"2011-December","2100-January",41.27,-116.8,6630,"Elko","Frazer Creek (160401060402)","SNTL:1206",1206
+"82",97,97,"SNTL",2012,"NV","Stag Mountain",NA,"2011-December","2100-January",41.41,-115.45,7640,"Elko","Stag Creek (170501020101)","SNTL:1203",1203
+"83",98,98,"SNTL",2012,"NV","Vacarro Springs",NA,"2011-October","2100-January",39.45,-115.98,7890,"Eureka","Torre Creek-Slough Creek-Frontal Diamond Valley (160600051503)","SNTL:1137",1137
+"84",100,100,"SNTL",2012,"UT","Gooseberry RS Up",NA,"2011-October","2100-January",38.79,-111.69,8396,"Sevier","Gooseberry Creek (160300030405)","SNTL:1184",1184
+"85",104,104,"SNTL",2011,"NV","Wheeler Peak",NA,"2010-October","2100-January",39.01,-114.31,10060,"White Pine","Lehman Creek (160203010801)","SNTL:1147",1147
+"86",105,105,"SNTL",2011,"UT","Blacks Fork Jct",NA,"2010-October","2100-January",40.96,-110.58,8869,"Summit","Lower Cottonwood Creek (140401070303)","SNTL:1162",1162
+"87",106,106,"SNTL",2011,"UT","Fish Lake Utah",NA,"2010-October","2100-January",38.5,-111.77,8798,"Sevier","Deadman Hollow (140700030108)","SNTL:1149",1149
+"88",107,107,"SNTL",2011,"UT","Lost Creek Resv",NA,"2010-October","2100-January",41.22,-111.36,6082,"Morgan","Upper Lost Creek (160201010603)","SNTL:1118",1118
+"89",109,109,"SNTL",2010,"NM","Palo",NA,"2010-August","2100-January",36.41,-105.33,9350,"Taos","Headwaters Rio Fernando del Taos (130201010601)","SNTL:1170",1170
+"90",110,110,"SNTL",2010,"NV","Toe Jam",NA,"2009-October","2100-January",41.32,-116.34,7690,"Elko","Toe Jam Creek (160401060202)","SNTL:1136",1136
+"91",111,111,"SNTL",2010,"UT","Klondike Narrows",NA,"2009-October","2100-January",41.97,-111.6,7250,"Cache","Hells Kitchen Canyon-Logan River (160102030302)","SNTL:1115",1115
+"92",112,112,"SNTL",2010,"UT","Tony Grove RS",NA,"2009-October","2100-January",41.89,-111.57,6332,"Cache","Tony Grove Creek (160102030304)","SNTL:1113",1113
+"93",113,113,"SNTL",2010,"WY","Larsen Creek",NA,"2010-August","2100-January",42.58,-109.09,9000,"Sublette","Pool Creek-Sweetwater River (101800060101)","SNTL:1134",1134
+"94",114,114,"SNTL",2009,"AZ","Baker Butte Smt",NA,"2009-May","2100-January",34.46,-111.38,7700,"Coconino","Toms Creek (150602030103)","SNTL:1140",1140
+"95",117,117,"SNTL",2009,"NM","Navajo Whiskey Ck",NA,"2009-May","2100-January",36.18,-108.95,9050,"San Juan","Whiskey Creek (Local Drainage) (140802040206)","SNTL:1138",1138
+"96",118,118,"SNTL",2009,"NV","Rainbow Canyon",NA,"2008-October","2100-January",36.25,-115.63,7860,"Clark","Kyle Canyon (150100150301)","SNTL:1110",1110
+"97",119,119,"SNTL",2009,"WY","Blackhall Mtn",NA,"2009-August","2100-January",41.06,-106.71,9820,"Carbon","Billie Creek-Encampment River (101800020504)","SNTL:1119",1119
+"98",120,120,"SNTL",2008,"AZ","Fort Valley",NA,"2008-June","2100-January",35.27,-111.74,7350,"Coconino","Upper Rio de Flag (150200150102)","SNTL:1121",1121
+"99",122,122,"SNTL",2008,"UT","Timberline",NA,"2007-October","2100-January",39.68,-110.43,8736,"Carbon","Grassy Trail Reservoir-Grassy Trail Creek (140600070903)","SNTL:1097",1097
+"100",126,126,"SNTL",2007,"WA","Cayuse Pass",NA,"2006-October","2100-January",46.87,-121.53,5240,"Pierce","Headwaters White River (171100140301)","SNTL:1085",1085
+"101",128,128,"SNTL",2006,"NM","Tres Ritos",NA,"2006-September","2100-January",36.13,-105.53,8600,"Taos","Osha Canyon-Rio Pueblo (130201010903)","SNTL:1083",1083
+"102",129,129,"SNTL",2006,"WA","Marten Ridge",NA,"2006-July","2100-January",48.76,-121.7,3520,"Whatcom","Swift Creek (171100051004)","SNTL:999",999
+"103",132,132,"SNTL",2005,"CO","Sharkstooth",NA,"2004-October","2100-January",37.5,-108.11,10720,"Montezuma","Bear Creek (140300020206)","SNTL:1060",1060
+"104",133,133,"SNTL",2005,"UT","Lightning Ridge",NA,"2004-October","2100-January",41.36,-111.49,8215,"Weber","Left Fork South Fork Ogden River (160201020201)","SNTL:1056",1056
+"105",134,134,"SNTL",2004,"CA","Horse Meadow",NA,"2003-October","2100-January",38.84,-119.89,8557,"Alpine","Middle West Fork Carson River (160502010302)","SNTL:1050",1050
+"106",140,140,"SNTL",2003,"WA","Sentinel Butte",NA,"2003-August","2100-January",48.86,-118.4,4680,"Ferry","West Deer Creek (170200021705)","SNTL:1043",1043
+"107",141,141,"SNTL",2002,"CO","Arapaho Ridge",NA,"2002-August","2100-January",40.35,-106.38,10960,"Grand","Rabbit Ears Creek-Troublesome Creek (140100010604)","SNTL:1030",1030
+"108",142,142,"SNTL",2002,"CO","Zirkel",NA,"2002-August","2100-January",40.79,-106.6,9340,"Jackson","Middle North Fork North Platte River (101800010202)","SNTL:1033",1033
+"109",143,143,"SNTL",2002,"NM","Vacas Locas",NA,"2001-October","2100-January",36.03,-106.81,9306,"Rio Arriba","Headwaters Rio de Las Vacas (130202020102)","SNTL:1017",1017
+"110",144,144,"SNTL",2002,"WY","Sage Creek Basin",NA,"2001-October","2100-January",41.4,-107.26,7850,"Carbon","Little Jack Creek (101800020802)","SNTL:1015",1015
+"111",145,145,"SNTL",2001,"ID","Moscow Mountain",NA,"2000-October","2100-January",46.81,-116.85,4700,"Latah","Little Bear Creek (170603061002)","SNTL:989",989
+"112",146,146,"SNTL",2001,"NV","Lewis Peak",NA,"2000-October","2100-January",40.36,-116.86,7370,"Lander","Trout Creek (160401070903)","SNTL:1006",1006
+"113",147,147,"SNTL",2001,"WA","Beaver Pass",NA,"2000-October","2100-January",48.88,-121.26,3630,"Whatcom","Upper Big Beaver Creek (171100050605)","SNTL:990",990
+"114",150,150,"SNTL",2000,"UT","Louis Meadow",NA,"1999-October","2100-January",40.83,-111.76,6700,"Salt Lake","City Creek (160202040304)","SNTL:972",972
+"115",153,153,"SNTL",1999,"ID","Bogus Basin",NA,"1999-September","2100-January",43.76,-116.1,6340,"Boise","Cottonwood Creek-Shafer Creek (170501220201)","SNTL:978",978
+"116",155,155,"SNTL",1999,"WA","Waterhole",NA,"1999-September","2100-January",47.94,-123.43,5010,"Clallam","Lillian Creek (171100200506)","SNTL:974",974
+"117",157,157,"SNTL",1998,"CO","Jackwhacker Gulch",NA,"1998-August","2100-January",39.57,-105.8,10960,"Clear Creek","Geneva Creek (101900020201)","SNTL:935",935
+"118",158,158,"SNTL",1998,"CO","Rough And Tumble",NA,"1998-August","2100-January",39.03,-106.08,10360,"Park","Headwaters South Fork South Platte River (101900010202)","SNTL:939",939
+"119",161,161,"SNTL",1997,"NM","Elk Cabin",NA,"1996-October","2100-January",35.7,-105.81,8210,"Santa Fe","Headwaters Santa Fe River (130202010102)","SNTL:921",921
+"120",170,170,"SNTL",1993,"ID","Chocolate Gulch",NA,"1992-October","2100-January",43.77,-114.42,6310,"Blaine","Eagle Creek-Big Wood River (170402190301)","SNTL:895",895
+"121",175,175,"SNTL",1990,"CA","Leavitt Lake",NA,"1989-October","2100-January",38.28,-119.61,9604,"Mono","Leavitt Creek-West Walker River (160503020104)","SNTL:574",574
+"122",176,176,"SNTL",1990,"ID","Wilson Creek",NA,"1989-October","2100-January",42.01,-115,7120,"Twin Falls","Upper Wilson Creek (170402130202)","SNTL:871",871
+"123",181,181,"SNTL",1989,"UT","Mill-D North",NA,"1988-October","2100-January",40.66,-111.64,8963,"Salt Lake","Headwaters Big Cottonwood Canyon (160202040201)","SNTL:628",628
+"124",182,182,"SNTL",1988,"UT","Lookout Peak",NA,"1988-June","2100-January",40.84,-111.71,8161,"Salt Lake","Parleys Creek (160202040302)","SNTL:596",596
+"125",183,183,"SNTL",1988,"WY","Granite Creek",NA,"1987-October","2100-January",43.34,-110.43,6770,"Teton","Muddy Creek (170401030304)","SNTL:497",497
+"126",192,192,"SNTL",1986,"UT","Camp Jackson",NA,"1985-October","2100-January",37.81,-109.49,8858,"San Juan","Johnson Creek (140802010301)","SNTL:383",383
+"127",193,193,"SNTL",1986,"UT","Little Grassy",NA,"1985-October","2100-January",37.49,-113.85,6065,"Washington","Little Pine Creek (160300061302)","SNTL:583",583
+"128",196,196,"SNTL",1985,"UT","Hickerson Park",NA,"1985-September","2100-January",40.91,-109.96,9122,"Daggett","Horseshoe Canyon-Green River (140401060501)","SNTL:522",522
+"129",197,197,"SNTL",1985,"WY","East Rim Divide",NA,"1984-October","2100-January",43.13,-110.2,7930,"Sublette","Nowlin Creek (170401030203)","SNTL:460",460
+"130",199,199,"SNTL",1985,"WY","Triple Peak",NA,"1984-October","2100-January",42.76,-110.59,8500,"Sublette","Lower Horse Creek (140401010503)","SNTL:831",831
+"131",202,202,"SNTL",1984,"NV","Diamond Peak",NA,"1983-October","2100-January",39.56,-115.84,8017,"Eureka","Torre Creek-Slough Creek-Frontal Diamond Valley (160600051503)","SNTL:443",443
+"132",205,205,"SNTL",1983,"ID","Elk Butte",NA,"1982-October","2100-January",46.84,-116.12,5690,"Clearwater","Upper Elk Creek (170603080701)","SNTL:466",466
+"133",206,206,"SNTL",1983,"ID","Savage Pass",NA,"1982-October","2100-January",46.47,-114.63,6190,"Idaho","Lower Colt Killed Creek (170603030208)","SNTL:735",735
+"134",207,207,"SNTL",1983,"UT","Lakefork Basin",NA,"1982-October","2100-January",40.74,-110.62,10885,"Duchesne","Ottoson Creek-Lake Fork Creek (140600030601)","SNTL:513",513
+"135",209,209,"SNTL",1982,"NV","Jacks Peak",NA,"1981-October","2100-January",41.51,-116.01,8424,"Elko","Upper Harrington Creek (170501050201)","SNTL:549",549
+"136",212,212,"SNTL",1981,"CA","Css Lab",NA,"1980-October","2100-January",39.33,-120.37,6894,"Nevada","Rattlesnake Creek-South Yuba River (180201250602)","SNTL:428",428
+"137",213,213,"SNTL",1981,"CA","Leavitt Meadows",NA,"1980-October","2100-January",38.3,-119.55,7198,"Mono","Leavitt Creek-West Walker River (160503020104)","SNTL:575",575
+"138",214,214,"SNTL",1981,"CA","Tahoe City Cross",NA,"1980-October","2100-January",39.17,-120.15,6797,"Placer","Burton Creek-Frontal Lake Tahoe (160501010101)","SNTL:809",809
+"139",215,215,"SNTL",1981,"NV","Big Creek Sum",NA,"1980-October","2100-January",39.29,-117.12,8685,"Lander","Big Creek (160401070303)","SNTL:337",337
+"140",216,216,"SNTL",1981,"NV","Fawn Creek",NA,"1980-October","2100-January",41.82,-116.1,7031,"Elko","Fawn Creek-Owyhee River (170501040304)","SNTL:476",476
+"141",217,217,"SNTL",1981,"NV","Lamance Creek",NA,"1980-October","2100-January",41.52,-117.63,6395,"Humboldt","Lamance Creek-Big Cottonwood Creek (160401090603)","SNTL:569",569
+"142",218,218,"SNTL",1981,"NV","Taylor Canyon",NA,"1980-October","2100-January",41.23,-116.03,6325,"Elko","Upper Taylors Canyon Creek (170501050105)","SNTL:811",811
+"143",223,223,"SNTL",1980,"CA","Fallen Leaf",NA,"1979-October","2100-January",38.93,-120.05,6242,"El Dorado","Fallen Leaf Lake-Frontal Lake Tahoe (160501010401)","SNTL:473",473
+"144",225,225,"SNTL",1980,"CO","Brumley",NA,"1979-October","2100-January",39.09,-106.54,10600,"Lake","North Fork Lake Creek (110200010101)","SNTL:369",369
+"145",227,227,"SNTL",1980,"CO","Grizzly Peak",NA,"1979-October","2100-January",39.65,-105.87,11100,"Summit","North Fork Snake River (140100020201)","SNTL:505",505
+"146",229,229,"SNTL",1980,"CO","Lizard Head Pass",NA,"1979-October","2100-January",37.8,-107.92,10200,"Dolores","Headwaters Dolores River (140300020201)","SNTL:586",586
+"147",231,231,"SNTL",1980,"CO","Park Cone",NA,"1979-October","2100-January",38.82,-106.59,9600,"Gunnison","Taylor Park Reservoir (140200010107)","SNTL:680",680
+"148",233,233,"SNTL",1980,"CO","Whiskey Ck",NA,"1979-October","2100-January",37.21,-105.12,10220,"Las Animas","North Fork Purgatoire River (110200100102)","SNTL:857",857
+"149",236,236,"SNTL",1980,"ID","Crab Creek",NA,"1979-October","2100-January",44.44,-111.99,6900,"Clark","Upper Camas Creek (170402140108)","SNTL:424",424
+"150",238,238,"SNTL",1980,"ID","Hilts Creek",NA,"1979-October","2100-January",44.02,-113.47,8000,"Custer","Upper Wet Creek (170402170401)","SNTL:524",524
+"151",239,239,"SNTL",1980,"ID","Jackson Peak",NA,"1979-October","2100-January",44.05,-115.44,7070,"Boise","Fivemile Creek-South Fork Payette River (170501200304)","SNTL:550",550
+"152",240,240,"SNTL",1980,"ID","Magic Mountain",NA,"1979-October","2100-January",42.18,-114.29,6880,"Twin Falls","Headwaters Rock Creek (170402120601)","SNTL:610",610
+"153",242,242,"SNTL",1980,"ID","Mud Flat",NA,"1979-October","2100-January",42.6,-116.56,5730,"Owyhee","Upper Pole Creek (170501041401)","SNTL:654",654
+"154",246,246,"SNTL",1980,"NM","Gallegos Peak",NA,"1979-October","2100-January",36.19,-105.56,9800,"Taos","Headwaters Rio Grande de Rancho (130201010502)","SNTL:491",491
+"155",247,247,"SNTL",1980,"NV","Laurel Draw",NA,"1979-October","2100-January",41.78,-116.03,6682,"Elko","Trail Creek (170501040202)","SNTL:573",573
+"156",249,249,"SNTL",1980,"OR","Chemult Alternate",NA,"1979-October","2100-January",43.23,-121.81,4850,"Klamath","Deer Creek (180102010201)","SNTL:395",395
+"157",255,255,"SNTL",1980,"OR","Mt. Howard",NA,"1979-October","2100-January",45.27,-117.17,7910,"Wallowa","Upper Prairie Creek (170601050102)","SNTL:653",653
+"158",257,257,"SNTL",1980,"OR","Rock Springs",NA,"1979-October","2100-January",44.01,-118.84,5290,"Grant","Calamity Creek (170501160204)","SNTL:721",721
+"159",260,260,"SNTL",1980,"UT","Ben Lomond Trail",NA,"1980-June","2100-January",41.38,-111.92,5972,"Weber","Cutler Creek-North Fork Ogden River (160201020302)","SNTL:333",333
+"160",261,261,"SNTL",1980,"UT","Chepeta",NA,"1980-July","2100-January",40.77,-110.01,10499,"Duchesne","East Fork Whiterocks River (140600031202)","SNTL:396",396
+"161",262,262,"SNTL",1980,"UT","Kimberly Mine",NA,"1980-July","2100-January",38.48,-112.39,9101,"Piute","Mill Creek (160300030104)","SNTL:557",557
+"162",263,263,"SNTL",1980,"UT","Merchant Valley",NA,"1980-July","2100-January",38.3,-112.44,8705,"Beaver","Merchant Creek (160300070201)","SNTL:621",621
+"163",264,264,"SNTL",1980,"UT","Rock Creek",NA,"1980-June","2100-January",40.55,-110.69,7886,"Duchesne","South Fork Rock Creek (140600030304)","SNTL:720",720
+"164",267,267,"SNTL",1980,"WA","Harts Pass",NA,"1979-October","2100-January",48.72,-120.66,6490,"Okanogan","Upper Canyon Creek (171100050501)","SNTL:515",515
+"165",269,269,"SNTL",1980,"WA","Salmon Meadows",NA,"1979-October","2100-January",48.66,-119.84,4460,"Okanogan","North Fork Salmon Creek (170200062003)","SNTL:728",728
+"166",270,270,"SNTL",1980,"WA","Touchet",NA,"1979-October","2100-January",46.12,-117.85,5530,"Columbia","Wolf Creek (170701020303)","SNTL:824",824
+"167",280,280,"SNTL",1979,"CA","Heavenly Valley",NA,"1978-October","2100-January",38.92,-119.92,8534,"El Dorado","Trout Creek (160501010302)","SNTL:518",518
+"168",281,281,"SNTL",1979,"CA","Lobdell Lake",NA,"1978-October","2100-January",38.44,-119.37,9249,"Mono","Deep Creek (160503020201)","SNTL:587",587
+"169",282,282,"SNTL",1979,"CO","Burro Mountain",NA,"1978-October","2100-January",39.88,-107.6,9400,"Rio Blanco","North Elk Creek (140500050302)","SNTL:378",378
+"170",283,283,"SNTL",1979,"CO","Copper Mountain",NA,"1978-October","2100-January",39.49,-106.17,10550,"Summit","West Tenmile Creek (140100020302)","SNTL:415",415
+"171",286,286,"SNTL",1979,"CO","Porphyry Creek",NA,"1978-October","2100-January",38.49,-106.34,10760,"Gunnison","Porphyry Creek-Tomichi Creek (140200030105)","SNTL:701",701
+"172",287,287,"SNTL",1979,"CO","Upper San Juan",NA,"1978-October","2100-January",37.49,-106.84,10200,"Mineral","Wolf Creek (140801010203)","SNTL:840",840
+"173",288,288,"SNTL",1979,"ID","Atlanta Summit",NA,"1978-October","2100-January",43.76,-115.24,7580,"Elmore","Bald Mountain Creek-Middle Fork Boise River (170501110204)","SNTL:306",306
+"174",289,289,"SNTL",1979,"ID","Franklin Basin",NA,"1978-October","2100-January",42.05,-111.6,8140,"Franklin","Upper Cub River (160102020501)","SNTL:484",484
+"175",293,293,"SNTL",1979,"ID","Sunset",NA,"1978-October","2100-January",47.56,-115.82,5540,"Shoshone","Canyon Creek-Upper South Fork Coeur d'Alene River (170103020102)","SNTL:803",803
+"176",299,299,"SNTL",1979,"NV","Dorsey Basin",NA,"1978-October","2100-January",40.89,-115.21,7903,"Elko","Lower Secret Creek (160401010604)","SNTL:453",453
+"177",300,300,"SNTL",1979,"NV","Seventysix Creek",NA,"1978-October","2100-January",41.74,-115.47,7350,"Elko","Annie Creek-Bruneau River (170501020108)","SNTL:746",746
+"178",310,310,"SNTL",1979,"UT","Beaver Divide",NA,"1978-October","2100-January",40.61,-111.1,8280,"Summit","Shingle Creek-Provo River (160202030105)","SNTL:330",330
+"179",311,311,"SNTL",1979,"UT","Box Creek",NA,"1979-August","2100-January",38.51,-112.02,9853,"Sevier","Greenwich Creek (160300020106)","SNTL:364",364
+"180",312,312,"SNTL",1979,"UT","Bug Lake",NA,"1978-October","2100-January",41.69,-111.42,7987,"Rich","Laketown Canyon (160102010102)","SNTL:374",374
+"181",313,313,"SNTL",1979,"UT","Clear Creek #2",NA,"1978-October","2100-January",39.89,-111.25,7837,"Utah","Upper Soldier Creek (160202020102)","SNTL:400",400
+"182",314,314,"SNTL",1979,"UT","Dills Camp",NA,"1978-October","2100-January",39.05,-111.47,9228,"Sanpete","Beaver Creek (140700020201)","SNTL:444",444
+"183",315,315,"SNTL",1979,"UT","Gooseberry RS",NA,"1979-June","2100-January",38.8,-111.68,7944,"Sevier","Gooseberry Creek (160300030405)","SNTL:495",495
+"184",316,316,"SNTL",1979,"UT","Horse Ridge",NA,"1978-October","2100-January",41.31,-111.45,8199,"Morgan","Blue Fork Creek (160201010601)","SNTL:533",533
+"185",317,317,"SNTL",1979,"UT","Kolob",NA,"1978-October","2100-January",37.53,-113.05,9263,"Iron","Crystal Creek (150100080102)","SNTL:561",561
+"186",318,318,"SNTL",1979,"UT","Long Flat",NA,"1979-September","2100-January",37.51,-113.4,7982,"Washington","Pinto Creek (160300061403)","SNTL:592",592
+"187",319,319,"SNTL",1979,"UT","Mosby Mtn.",NA,"1978-October","2100-January",40.61,-109.89,9553,"Uintah","Mosby Sink-Dry Fork (140600100702)","SNTL:643",643
+"188",320,320,"SNTL",1979,"UT","Red Pine Ridge",NA,"1978-October","2100-January",39.45,-111.27,8988,"Emery","Lowry Water (140600090202)","SNTL:714",714
+"189",321,321,"SNTL",1979,"UT","Steel Creek Park",NA,"1978-October","2100-January",40.91,-110.5,10158,"Summit","West Fork Smiths Fork (140401070203)","SNTL:790",790
+"190",322,322,"SNTL",1979,"UT","Tony Grove Lake",NA,"1978-October","2100-January",41.9,-111.63,8474,"Cache","Tony Grove Creek (160102030304)","SNTL:823",823
+"191",323,323,"SNTL",1979,"UT","Vernon Creek",NA,"1978-October","2100-January",39.94,-112.41,7401,"Tooele","Vernon Creek (160203040102)","SNTL:844",844
+"192",326,326,"SNTL",1979,"WA","Trough",NA,"1978-October","2100-January",47.23,-120.29,5480,"Chelan","Colockum Creek (170200100402)","SNTL:832",832
+"193",330,330,"SNTL",1979,"WY","Sucker Creek",NA,"1978-October","2100-January",44.72,-107.4,8880,"Sheridan","West Fork Big Goose Creek (100901010203)","SNTL:798",798
+"194",332,332,"SNTL",1978,"UT","Clear Creek #1",NA,"1978-January","2100-January",39.87,-111.28,8975,"Utah","Upper Soldier Creek (160202020102)","SNTL:399",399
+"195",341,341,"SNTL",1972,"MT","Clover Meadow",NA,"1971-October","2100-January",45.02,-111.85,8600,"Madison","Ruby Creek (100200070803)","SNTL:403",403
+"196",342,342,"SNTL",1971,"AZ","White Horse Lake",NA,"1970-November","2100-January",35.14,-112.15,7180,"Coconino","Upper Hell Canyon (150602020204)","SNTL:861",861
+"197",354,354,"SNTL",1967,"MT","White Mill",NA,"1966-October","2100-January",45.05,-109.91,8700,"Park","Hoodoo Creek (100700060202)","SNTL:862",862
+"198",355,355,"SNTL",1966,"MT","Black Pine",NA,"1965-October","2100-January",46.41,-113.43,7210,"Granite","Marshall Creek (170102020203)","SNTL:349",349
+"199",357,357,"SNTL",1964,"WY","Kelley R.S.",NA,"1963-October","2100-January",42.27,-110.8,8180,"Lincoln","Upper Dry Muddy Creek (140401070501)","SNTL:554",554
+"200",358,358,"SNTL",1963,"WY","Big Sandy Opening",NA,"1963-March","2100-January",42.65,-109.26,9080,"Sublette","Black Joe Creek-Big Sandy River (140401040101)","SNTL:342",342
+"201",363,363,"SNTL",1961,"WY","Togwotee Pass",NA,"1960-October","2100-January",43.75,-110.06,9580,"Teton","Upper Horse Creek (100800010201)","SNTL:822",822
+"202",373,373,"SNTLT",2013,"NV","Smith Creek",NA,"2013-June","2100-January",40.45,-115.51,7588,"Elko","Gennette Creek-Smith Creek (160401030403)","SNTLT:1235",1235
