@@ -28,6 +28,20 @@ valid_stations = unique(mesonet_soil_moisture$station_key)
 #filter stations info
 station_data = read.csv("/home/zhoylman/drought_indicators/validation/soil_moisture/mesonet_data/mesonet_station_data.csv")
 station_data = station_data[(station_data$station_key %in% valid_stations),]
+station_data$X = NULL
+station_data$network = "Mesonet"
+
+snotel = read.csv("/home/zhoylman/drought_indicators/validation/soil_moisture/snotel_data/nrcs_soil_moisture.csv")
+
+snotel_cropped = snotel %>%
+  dplyr::select(site_name, latitude, longitude) %>%
+  rename(station_key = site_name)
+
+snotel_cropped$network = "NRCS"
+
+master_list = rbind(station_data,snotel_cropped)
+
+write.csv(master_list,"/home/zhoylman/drought_indicators/validation/soil_moisture/site_locations.csv", row.names=FALSE)
 
 # restucture mesonet soil moisture data to be consitant with list format of NRCS
 # get mesonet depths and remove the surface probe (soilvwc00)
@@ -156,6 +170,26 @@ find_best = function(x){
   return(best_times)
 }
 
+find_best_cor = function(x){
+  times = c(seq(5,730,5))
+  best_2in = x[which(x[1,]==max(x[1,], na.rm = T))][1,1]
+  best_4in = x[which(x[2,]==max(x[2,], na.rm = T))][2,1]
+  best_8in = x[which(x[3,]==max(x[3,], na.rm = T))][3,1]
+  best_20in = x[which(x[4,]==max(x[4,], na.rm = T))][4,1]
+  best_40in = x[which(x[5,]==max(x[5,], na.rm = T))][5,1]
+  best_mean = x[which(x[6,]==max(x[6,], na.rm = T))][6,1]
+  
+  if(length(best_2in)==0){best_2in = NA}
+  if(length(best_4in)==0){best_4in = NA}
+  if(length(best_8in)==0){best_8in = NA}
+  if(length(best_20in)==0){best_20in = NA}
+  if(length(best_40in)==0){best_40in = NA}
+  if(length(best_mean)==0){best_mean = NA}
+  
+  best_times = c(best_2in, best_4in, best_8in, best_20in, best_40in, best_mean)
+  return(best_times)
+}
+
 find_best_mesonet = function(x){
   times = c(seq(5,730,5))
   best_0in = times[which(x[1,]==max(x[1,], na.rm = T))]
@@ -176,11 +210,38 @@ find_best_mesonet = function(x){
   return(best_times)
 }
 
+find_best_mesonet_cor = function(x){
+  times = c(seq(5,730,5))
+  best_0in = x[which(x[1,]==max(x[1,], na.rm = T))][1,1]
+  best_4in = x[which(x[2,]==max(x[2,], na.rm = T))][2,1]
+  best_8in = x[which(x[3,]==max(x[3,], na.rm = T))][3,1]
+  best_20in = x[which(x[4,]==max(x[4,], na.rm = T))][4,1]
+  best_36in = x[which(x[5,]==max(x[5,], na.rm = T))][5,1]
+  best_mean = x[which(x[6,]==max(x[6,], na.rm = T))][6,1]
+  
+  if(length(best_0in)==0){best_0in = NA}
+  if(length(best_4in)==0){best_4in = NA}
+  if(length(best_8in)==0){best_8in = NA}
+  if(length(best_20in)==0){best_20in = NA}
+  if(length(best_36in)==0){best_36in = NA}
+  if(length(best_mean)==0){best_mean = NA}
+  
+  best_times = c(best_0in, best_4in, best_8in, best_20in, best_36in, best_mean)
+  return(best_times)
+}
+
 best_times_matrix = data.frame(matrix(nrow = length(snotel_soil_moisture), ncol = 6))
 colnames(best_times_matrix) = c("2in","4in", "8in", "20in", "40in", "mean")
 
+best_cor_matrix = data.frame(matrix(nrow = length(snotel_soil_moisture), ncol = 6))
+colnames(best_cor_matrix) = c("2in","4in", "8in", "20in", "40in", "mean")
+
 best_times_matrix_mesonet = data.frame(matrix(nrow = length(station_data$station_key), ncol = 6))
 colnames(best_times_matrix_mesonet) = c("0in", "4in", "8in", "20in", "36in", "mean")
+
+best_cor_matrix_mesonet = data.frame(matrix(nrow = length(station_data$station_key), ncol = 6))
+colnames(best_cor_matrix_mesonet) = c("0in", "4in", "8in", "20in", "36in", "mean")
+
 
 for(i in 1:length(snotel_soil_moisture)){
   tryCatch({
@@ -191,9 +252,27 @@ for(i in 1:length(snotel_soil_moisture)){
   })
 }
 
+for(i in 1:length(snotel_soil_moisture)){
+  tryCatch({
+    best_cor_matrix[i,] = find_best_cor(correlation_matrix[[i]])
+  },
+  error = function(e){
+    return(c(NA,NA,NA,NA,NA,NA))
+  })
+}
+
 for(i in 1:length(station_data$station_key)){
   tryCatch({
     best_times_matrix_mesonet[i,] = find_best_mesonet(correlation_matrix_mesonet[[i]])
+  },
+  error = function(e){
+    return(c(NA,NA,NA,NA,NA,NA))
+  })
+}
+
+for(i in 1:length(station_data$station_key)){
+  tryCatch({
+    best_cor_matrix_mesonet[i,] = find_best_mesonet_cor(correlation_matrix_mesonet[[i]])
   },
   error = function(e){
     return(c(NA,NA,NA,NA,NA,NA))
@@ -247,8 +326,8 @@ snotel_summary = ggplot()+
 for(i in 1:6){
   snotel_summary = snotel_summary + 
     geom_point(data = density_snotel[[i]][which(density_snotel[[i]]$y == max(density_snotel[[i]]$y)),], aes(x = x, y = y))+
-    geom_text(data = data.frame(density_snotel[[i]][which(density_snotel[[i]]$y == max(density_snotel[[i]]$y)),],n = sum(!is.na(best_times_matrix[,i]))), aes(x = x + 100, y = y, 
-                                                                                                              label = paste0(round(x, digits = 0), " Days, n = ", n)))
+    geom_text(data = data.frame(density_snotel[[i]][which(density_snotel[[i]]$y == max(density_snotel[[i]]$y)),],n = sum(!is.na(best_times_matrix[,i])), r = round(mean(best_cor_matrix[,i], na.rm = T), 2)), aes(x = x + 150, y = y, 
+                                                                                                              label = paste0(round(x, digits = 0), " Days, n = ", n, ", mean r = ", r)))
 }
 
 png(filename = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/time_scale_summary_with_mean.png", 
@@ -259,7 +338,7 @@ dev.off()
 color_names = c("0 in" ,"4 in" ,"8 in", "20 in" ,"36 in", "Mean")
 
 mesonet_summary = ggplot()+
-  geom_line(data = density_mesonet[[1]], aes(x = x, y = y, color = color_names[1]))+
+  #geom_line(data = density_mesonet[[1]], aes(x = x, y = y, color = color_names[1]))+
   geom_line(data = density_mesonet[[2]], aes(x = x, y = y, color = color_names[2]))+
   geom_line(data = density_mesonet[[3]], aes(x = x, y = y, color = color_names[3]))+
   geom_line(data = density_mesonet[[4]], aes(x = x, y = y, color = color_names[4]))+
@@ -269,7 +348,7 @@ mesonet_summary = ggplot()+
   theme_bw(base_size = 16)+
   scale_color_manual(values = c("0 in" = "yellow","4 in" =  "orange", "8 in" =  "green",
                                 "20 in" = "blue", "36 in" =  "purple", "Mean" = "black"),
-                     breaks = c("0 in", "4 in","8 in","20 in","36 in", "Mean"),
+                     breaks = c("4 in","8 in","20 in","36 in", "Mean"),
                      name = "Probe Depth")+
   xlim(0,730)+
   theme(axis.line = element_line(colour = "black"),
@@ -282,11 +361,11 @@ mesonet_summary = ggplot()+
   ggtitle("Best Correlation Times (Soil Moisture ~ SPEI) \n (MT Mesonet)")
 
 #add labels
-for(i in 1:6){
+for(i in 2:6){
   mesonet_summary = mesonet_summary + 
     geom_point(data = density_mesonet[[i]][which(density_mesonet[[i]]$y == max(density_mesonet[[i]]$y)),], aes(x = x, y = y))+
-    geom_text(data = data.frame(density_mesonet[[i]][which(density_mesonet[[i]]$y == max(density_mesonet[[i]]$y)),],n = sum(!is.na(best_times_matrix_mesonet[,i]))), aes(x = x + 100, y = y, 
-                                                                                                              label = paste0(round(x, digits = 0), " Days, n = ", n)))
+    geom_text(data = data.frame(density_mesonet[[i]][which(density_mesonet[[i]]$y == max(density_mesonet[[i]]$y)),],n = sum(!is.na(best_times_matrix_mesonet[,i])), r = round(mean(best_cor_matrix_mesonet[,i], na.rm = T), 2)), aes(x = x + 150, y = y,
+                                                                                                              label = paste0(round(x, digits = 0), " Days, n = ", n, ", mean r = ", r)))
 }
 
 png(filename = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/time_scale_summary_with_mean_mesonet.png", 
@@ -301,12 +380,10 @@ sites = leaflet::leaflet(options = leaflet::tileOptions(minZoom = 4, maxZoom = 1
   leaflet::addProviderTiles("Stamen.TonerLines") %>%
   leaflet::addProviderTiles("Stamen.TonerLabels") %>%
   
-  leaflet::addCircleMarkers(snotel_conus$longitude, snotel_conus$latitude, radius = 5, stroke = TRUE, fillOpacity = 0.9,
-                            color = "black", fillColor = "black", popup = htmltools::htmlEscape(snotel_conus$site_id)
+  leaflet::addCircleMarkers(master_list$longitude, master_list$latitude, radius = 8, stroke = TRUE, fillOpacity = 0.9,
+                            color = "black", fillColor = "blue", popup = htmltools::htmlEscape(master_list)
   )%>%
-  leaflet::addCircleMarkers(station_data$longitude, station_data$latitude, radius = 5, stroke = TRUE, fillOpacity = 0.9,
-                            color = "black", fillColor = "blue", popup = htmltools::htmlEscape(station_data$station_key)
-  )%>%
+  
 
   leaflet::addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
   leaflet.extras::addDrawToolbar(markerOptions = leaflet.extras::drawMarkerOptions(),
