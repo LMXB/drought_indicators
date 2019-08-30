@@ -1,16 +1,16 @@
-cross_cor = function(spei,soil_moisture){ 
+cross_cor = function(drought_index,soil_moisture){ 
   tryCatch({
-    x_size = length(spei)
-    for(t in 1:length(spei)){
-      x1 = spei[[t]]
+    x_size = length(drought_index)
+    for(t in 1:length(drought_index)){
+      index_timescale_select = drought_index[[t]]
       
       # define time format
-      x1$time = round(as.POSIXct(x1$time), unit = "days")
+      index_timescale_select$time = round(as.POSIXct(index_timescale_select$time), unit = "days")
       soil_moisture$Date = round(as.POSIXct(soil_moisture$Date, format = "%Y-%m-%d"), unit = "days")
       
       # filter datasets for consitant obs 
-      x_filter <- x1[x1$time %in% soil_moisture$Date,]
-      y_filter <- soil_moisture[soil_moisture$Date %in% x1$time,]
+      x_filter <- index_timescale_select[index_timescale_select$time %in% soil_moisture$Date,]
+      y_filter <- soil_moisture[soil_moisture$Date %in% index_timescale_select$time,]
       
       #rename date time collumn
       colnames(y_filter) = c("time", names(y_filter)[-1])
@@ -19,13 +19,15 @@ cross_cor = function(spei,soil_moisture){
       x_filter$time = as.POSIXct(x_filter$time)
       y_filter$time = as.POSIXct(y_filter$time)
       
-      #merge based 
+      #merge based on time
       merged = dplyr::full_join(x_filter, y_filter, by = "time")
       
+      #extract names for indexing (drought index names and depths change across networks/indicies)
+      drought_metric_name = colnames(merged)[2]
       depth = colnames(merged)[-c(1:2)]
       
       merged = merged %>%
-        dplyr::select(time, spei, depth)%>%
+        dplyr::select(time, drought_metric_name, depth)%>%
         mutate(mean_soil_moisture = rowMeans(.[depth], na.rm = T))%>%
         as_tibble()
       
@@ -35,13 +37,13 @@ cross_cor = function(spei,soil_moisture){
         correlation_matrix = data.frame(matrix(nrow = length(depth),
                                                ncol = x_size))
         rownames(correlation_matrix) = depth
-        colnames(correlation_matrix) = paste0("spei_",c(seq(5,730,5)))
+        colnames(correlation_matrix) = paste0(drought_metric_name,"_",c(seq(5,730,5)))
       }
       
       for(i in 1: length(depth)){
         x_select = merged %>%
           #select the collums I want, depth
-          dplyr::select(time, spei, depth[i]) %>%
+          dplyr::select(time, drought_metric_name, depth[i]) %>%
           #filter negative soil moisture data
           dplyr::filter(get(depth[i]) > 0) %>%
           #filter bad soil moisture data
@@ -55,7 +57,7 @@ cross_cor = function(spei,soil_moisture){
           
         #check to see if at least a year of data?
         if(length(x_select$time) > 365){
-          correlation = cor.test(dplyr::pull(x_select['spei']), dplyr::pull(x_select['standardized']), na.rm = T)
+          correlation = cor.test(dplyr::pull(x_select[drought_metric_name]), dplyr::pull(x_select['standardized']), na.rm = T)
           #check to see if correlation is significant
           if(correlation$p.value < 0.05){
             correlation_matrix[i,t] = correlation$estimate

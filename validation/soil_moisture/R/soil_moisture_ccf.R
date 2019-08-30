@@ -7,11 +7,14 @@ library(tictoc)
 library(timeSeries)
 library(stringr)
 
-#load data  
-load("/home/zhoylman/drought_indicators_data/snotel/snotel_spei.RData")
+#load snotel soil moisture data  (drought metric data loaded below)
 load("/home/zhoylman/drought_indicators_data/snotel/snotel_soil_moisture.RData")
-load("/home/zhoylman/drought_indicators_data/mesonet/mesonet_spei.RData")
+
+#load mesonet data
 load("/home/zhoylman/drought_indicators_data/mesonet/mesonet_soil_moisture.RData")
+load("/home/zhoylman/drought_indicators_data/mesonet/mesonet_spi.RData")
+load("/home/zhoylman/drought_indicators_data/mesonet/mesonet_spei.RData")
+load("/home/zhoylman/drought_indicators_data/mesonet/mesonet_eddi.RData")
 
 #load functions
 source("/home/zhoylman/drought_indicators/spi_app/R/gamma_fit.R")
@@ -97,12 +100,11 @@ for(i in 1: length(snotel_soil_moisture)){
 # cross_cor(spei,soil_moisture)
 # moving_cross_cor(spei,soil_moisture)
 # 
-site = 10
-spei = snotel_spei[[site]]
-soil_moisture = snotel_soil_moisture[[site]]
-cross_cor(spei,soil_moisture)
-moving_cross_cor(spei,soil_moisture)
-
+# site = 10
+# drought_index = snotel_eddi[[site]]
+# soil_moisture = snotel_soil_moisture[[site]]
+# cross_cor(drought_index,soil_moisture)
+# moving_cross_cor(spei,soil_moisture)
 
 ##################################################################################
 cl = makeCluster(20)
@@ -111,15 +113,55 @@ clusterExport(cl, "gamma_fit")
 clusterExport(cl, "gamma_standard_fun")
 
 tic()
-correlation_matrix = foreach(site = 1:length(snotel_soil_moisture)) %dopar% {
+
+load("/home/zhoylman/drought_indicators_data/snotel/snotel_spi.RData")
+
+correlation_matrix_spi = foreach(site = 1:length(snotel_soil_moisture)) %dopar% {
+  library(dplyr)
+  cross_cor(snotel_spi[[site]], snotel_soil_moisture[[site]])
+}
+
+rm(snotel_spi);gc()
+stopCluster(cl)
+
+
+cl = makeCluster(20)
+registerDoParallel(cl)
+clusterExport(cl, "gamma_fit")
+clusterExport(cl, "gamma_standard_fun")
+
+load("/home/zhoylman/drought_indicators_data/snotel/snotel_spei.RData")
+
+correlation_matrix_spei = foreach(site = 1:length(snotel_soil_moisture)) %dopar% {
   library(dplyr)
   cross_cor(snotel_spei[[site]], snotel_soil_moisture[[site]])
 }
+
+rm(snotel_spei);gc()
+stopCluster(cl)
+
+cl = makeCluster(20)
+registerDoParallel(cl)
+clusterExport(cl, "gamma_fit")
+clusterExport(cl, "gamma_standard_fun")
+
+load("/home/zhoylman/drought_indicators_data/snotel/snotel_eddi.RData")
+
+correlation_matrix_eddi = foreach(site = 1:length(snotel_soil_moisture)) %dopar% {
+  library(dplyr)
+  cross_cor(snotel_eddi[[site]], snotel_soil_moisture[[site]])
+}
+
+rm(snotel_eddi);gc()
+stopCluster(cl)
 
 toc()
 # stop cluster inbetween datasets to clear memory
 stopCluster(cl)
 
+save(correlation_matrix_spi, file = "/home/zhoylman/drought_indicators_data/correlation_matrix/correlation_matrix_spi.RData")
+save(correlation_matrix_spei, file = "/home/zhoylman/drought_indicators_data/correlation_matrix/correlation_matrix_spei.RData")
+save(correlation_matrix_eddi, file = "/home/zhoylman/drought_indicators_data/correlation_matrix/correlation_matrix_eddi.RData")
 
 cl = makeCluster(20)
 registerDoParallel(cl)
@@ -170,6 +212,28 @@ find_best = function(x){
   return(best_times)
 }
 
+
+find_best_eddi = function(x){
+  times = c(seq(5,730,5))
+  best_2in = times[which(x[1,]==min(x[1,], na.rm = T))]
+  best_4in = times[which(x[2,]==min(x[2,], na.rm = T))]
+  best_8in = times[which(x[3,]==min(x[3,], na.rm = T))]
+  best_20in = times[which(x[4,]==min(x[4,], na.rm = T))]
+  best_40in = times[which(x[5,]==min(x[5,], na.rm = T))]
+  best_mean = times[which(x[6,]==min(x[6,], na.rm = T))]
+  
+  if(length(best_2in)==0){best_2in = NA}
+  if(length(best_4in)==0){best_4in = NA}
+  if(length(best_8in)==0){best_8in = NA}
+  if(length(best_20in)==0){best_20in = NA}
+  if(length(best_40in)==0){best_40in = NA}
+  if(length(best_mean)==0){best_mean = NA}
+  
+  best_times = c(best_2in, best_4in, best_8in, best_20in, best_40in, best_mean)
+  return(best_times)
+}
+
+
 find_best_cor = function(x){
   times = c(seq(5,730,5))
   best_2in = x[which(x[1,]==max(x[1,], na.rm = T))][1,1]
@@ -178,6 +242,27 @@ find_best_cor = function(x){
   best_20in = x[which(x[4,]==max(x[4,], na.rm = T))][4,1]
   best_40in = x[which(x[5,]==max(x[5,], na.rm = T))][5,1]
   best_mean = x[which(x[6,]==max(x[6,], na.rm = T))][6,1]
+  
+  if(length(best_2in)==0){best_2in = NA}
+  if(length(best_4in)==0){best_4in = NA}
+  if(length(best_8in)==0){best_8in = NA}
+  if(length(best_20in)==0){best_20in = NA}
+  if(length(best_40in)==0){best_40in = NA}
+  if(length(best_mean)==0){best_mean = NA}
+  
+  best_times = c(best_2in, best_4in, best_8in, best_20in, best_40in, best_mean)
+  return(best_times)
+}
+
+
+find_best_cor_eddi = function(x){
+  times = c(seq(5,730,5))
+  best_2in = x[which(x[1,]==min(x[1,], na.rm = T))][1,1]
+  best_4in = x[which(x[2,]==min(x[2,], na.rm = T))][2,1]
+  best_8in = x[which(x[3,]==min(x[3,], na.rm = T))][3,1]
+  best_20in = x[which(x[4,]==min(x[4,], na.rm = T))][4,1]
+  best_40in = x[which(x[5,]==min(x[5,], na.rm = T))][5,1]
+  best_mean = x[which(x[6,]==min(x[6,], na.rm = T))][6,1]
   
   if(length(best_2in)==0){best_2in = NA}
   if(length(best_4in)==0){best_4in = NA}
@@ -230,27 +315,69 @@ find_best_mesonet_cor = function(x){
   return(best_times)
 }
 
-best_times_matrix = data.frame(matrix(nrow = length(snotel_soil_moisture), ncol = 6))
-colnames(best_times_matrix) = c("2in","4in", "8in", "20in", "40in", "mean")
+best_times_list = list()
+best_cor_list = list()
+best_times_mesonet_list = list()
+best_cor_mesonet_list = list()
 
-best_cor_matrix = data.frame(matrix(nrow = length(snotel_soil_moisture), ncol = 6))
-colnames(best_cor_matrix) = c("2in","4in", "8in", "20in", "40in", "mean")
+for(i in 1:3){
+  best_times_list[[i]] = data.frame(matrix(nrow = length(snotel_soil_moisture), ncol = 6))
+  colnames(best_times_list[[i]]) = c("2in","4in", "8in", "20in", "40in", "mean")
+  
+  best_cor_list[[i]] = data.frame(matrix(nrow = length(snotel_soil_moisture), ncol = 6))
+  colnames(best_cor_list[[i]]) = c("2in","4in", "8in", "20in", "40in", "mean")
+  
+  best_times_mesonet_list[[i]] = data.frame(matrix(nrow = length(station_data$station_key), ncol = 6))
+  colnames(best_times_mesonet_list[[i]]) = c("0in", "4in", "8in", "20in", "36in", "mean")
+  
+  best_cor_mesonet_list[[i]] = data.frame(matrix(nrow = length(station_data$station_key), ncol = 6))
+  colnames(best_cor_mesonet_list[[i]]) = c("0in", "4in", "8in", "20in", "36in", "mean")
+}
 
-best_times_matrix_mesonet = data.frame(matrix(nrow = length(station_data$station_key), ncol = 6))
-colnames(best_times_matrix_mesonet) = c("0in", "4in", "8in", "20in", "36in", "mean")
-
-best_cor_matrix_mesonet = data.frame(matrix(nrow = length(station_data$station_key), ncol = 6))
-colnames(best_cor_matrix_mesonet) = c("0in", "4in", "8in", "20in", "36in", "mean")
+names(best_times_list) = c("spi","spei","eddi")
+names(best_cor_list) = c("spi","spei","eddi")
+names(best_times_mesonet_list) = c("spi","spei","eddi")
+names(best_cor_mesonet_list) = c("spi","spei","eddi")
 
 
 for(i in 1:length(snotel_soil_moisture)){
   tryCatch({
-    best_times_matrix[i,] = find_best(correlation_matrix[[i]])
+    best_times_list$spi[i,] = find_best(correlation_matrix_spi[[i]])
+    best_times_list$spei[i,] = find_best(correlation_matrix_spei[[i]])
+    best_times_list$eddi[i,] = find_best_eddi(correlation_matrix_eddi[[i]])
+    
+    best_cor_list$spi[i,] = find_best_cor(correlation_matrix_spi[[i]])
+    best_cor_list$spei[i,] = find_best_cor(correlation_matrix_spei[[i]])
+    best_cor_list$eddi[i,] = find_best_cor_eddi(correlation_matrix_eddi[[i]])
   },
   error = function(e){
     return(c(NA,NA,NA,NA,NA,NA))
   })
 }
+
+depths = c("2in","4in", "8in", "20in", "40in", "Mean")
+
+grDevices::png(filename = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/multiple_indicators_snotel.png",
+               width = 8, height = 11, units = "in",
+               bg = "white", res = 300)
+
+par(mfrow = c(3,2))
+for(i in c(6,1:5)){
+  plot(density(best_times_list$spi[,i], na.rm = T), xlim = c(0,730), 
+       ylim = c(0, max(density(best_times_list$spi[,i], na.rm = T)$y)+
+                  (max(density(best_times_list$spi[,i], na.rm = T)$y)*0.5)),
+       col = "blue", main = paste0("Soil Moisture Depth = ", depths[i]), 
+       xlab = "Timescale (Days)", cex = 5) 
+  
+  lines(density(best_times_list$spei[,i], na.rm = T), col = "black")
+  lines(density(best_times_list$eddi[,i], na.rm = T), col = "red") 
+  mtext(paste0("SPI: r = ", round(mean(best_cor_list$spi[,i], na.rm = t),2), "                                                    "), side=3, col = "blue")
+  mtext(paste0("SPEI: r = ", round(mean(best_cor_list$spei[,i], na.rm = t),2)), side=3, col = "black")
+  mtext(paste0("                                                        EDDI: r = ",
+              round(mean(best_cor_list$eddi[,i], na.rm = t),2)), side=3, col = "red")
+}
+
+dev.off()
 
 for(i in 1:length(snotel_soil_moisture)){
   tryCatch({
