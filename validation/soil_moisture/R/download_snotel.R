@@ -6,54 +6,29 @@ library(parallel)
 library(dplyr)
 library(data.table)
 library(sf)
-library(mcor)
+library(stringr)
 
-#define input shp files
-snotel = st_read("/home/zhoylman/drought_indicators/snotel/shp/Snotel_Sites.shp")
-states = st_read("/home/zhoylman/drought_indicators/shp_kml/states.shp")
-snotel$site_num = gsub("[^0-9.]","",as.character(snotel$site_name))
+#function to extract numeric ID from snotel/scan/sntlt meta
+numextract <- function(string){ 
+  str_extract(string, "\\-*\\d+\\.*\\d*")
+} 
+
+#define input station meta data
+snotel = read.csv("/home/zhoylman/drought_indicators/validation/soil_moisture/snotel_data/nrcs_soil_moisture.csv")
+snotel$site_num_id = numextract(snotel$site_id)
 
 
 #hit the NRCS server for historical
 tic()
 current = list()
-cl = makeCluster(detectCores()-2)
+cl = makeCluster(detectCores()-1)
 registerDoParallel(cl)
-# 
-# nrcs_sites = grabNRCS.meta(ntwrks=c("ALL"))
-# 
-# for(i in 1:length(nrcs_sites)){
-#   if(i == 1){
-#     nrcs_sites_df = as.data.frame(nrcs_sites[[1]]) 
-#   }
-#   else{
-#     nrcs_sites_df = rbind(nrcs_sites_df, as.data.frame(nrcs_sites[[i]]) )
-#   }
-# }
-# 
-# nrcs_sites_df = nrcs_sites_df %>%
-#   dplyr::filter(state == c("MT", "ID", "WY", "SD"))%>%
-#   dplyr::filter(ntwk == c("SCAN", "SNTL", "SNTLT", "SNOW"))
-# 
-# usgs_sites = as.data.frame(grabNRCS.meta(ntwrks=c("USGS")))
-# 
-# #NEW
-# historical_nrcs = foreach(i = 1:length(nrcs_sites_df$site_id)) %dopar%{
-#   library(RNRCS)
-#   tryCatch({
-#     grabNRCS.data(network = nrcs_sites_df$ntwk[i], nrcs_sites_df$site_id, timescale = "daily", DayBgn = "1900-10-01",
-#                   DayEnd = "2100-10-01")
-#   }, error = function(e){
-#     return(NA)
-#   }
-#   )
-# }
 
-#OLD
-historical = foreach(i = 1:length(snotel$site_num)) %dopar%{
+#NEW
+historical_nrcs = foreach(i = 1:length(snotel$site_id)) %dopar%{
   library(RNRCS)
   tryCatch({
-    grabNRCS.data("SNTL", as.numeric(snotel$site_num[i]), timescale = "daily", DayBgn = "1900-10-01",
+    grabNRCS.data(network = snotel$ntwk[i], snotel$site_num_id[i], timescale = "daily", DayBgn = "1900-10-01",
                   DayEnd = "2100-10-01")
   }, error = function(e){
     return(NA)
@@ -65,7 +40,7 @@ toc()
 
 extract_columns <- function(data, collumn_name) {
   extracted_data <- data %>%
-    select_(.dots = collumn_name)
+    select_(.dots %like% collumn_name)
   return(extracted_data)
 }
 
@@ -73,11 +48,11 @@ clusterExport(cl, "extract_columns")
 
 historical_select = foreach(i = 1:length(snotel$site_num)) %dopar%{
   library(dplyr)
-  collumn_name = c("Date","Soil.Moisture.Percent..2in..pct..Start.of.Day.Values", "Soil.Moisture.Percent..8in..pct..Start.of.Day.Values",
-                   "Soil.Moisture.Percent..20in..pct..Start.of.Day.Values")
+  library(data.table)
+  collumn_name = c("Date","Moisture")
   tryCatch({
-    extract_columns(historical[[i]], collumn_name)
-  }, error = function(e){
+    historical_nrcs[[i]][colnames(historical_nrcs[[i]]) %like% "Date" | colnames(historical_nrcs[[i]]) %like% "Moisture"]
+    }, error = function(e){
     return(NA)
   }
   )
@@ -85,7 +60,13 @@ historical_select = foreach(i = 1:length(snotel$site_num)) %dopar%{
 
 stopCluster(cl)
 
-  #rename
-snotel_soil_moisture = historical_select
+good_data_index = which(lengths(historical_select) > 1)
 
-save(snotel_soil_moisture, file = "/home/zhoylman/drought_indicators/validation/soil_moisture/snotel_data/snotel_soil_moisture.RData")
+# clip meta data
+snotel_clipped = snotel[c(good_data_index),]
+
+snotel_soil_moisture = historical_select[c(good_data_index)]
+
+save(snotel_soil_moisture, file = "/home/zhoylman/drought_indicators_data/snotel/snotel_soil_moisture.RData")
+#write.csv(snotel_clipped, "/home/zhoylman/drought_indicators/validation/soil_moisture/snotel_data/nrcs_soil_moisture.csv")
+  

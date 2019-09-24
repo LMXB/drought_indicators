@@ -6,6 +6,7 @@ library(lubridate)
 spei_point = function(lat_in, lon_in, time_scale){
   lat_of_interest = lat_in
   lon_of_interest = lon_in
+  time_scale = time_scale
   
   ### DEFINE THE URL to net cdf
   urltotal_precip<-"http://thredds.northwestknowledge.net:8080/thredds/dodsC/agg_met_pr_1979_CurrentYear_CONUS.nc"
@@ -59,63 +60,74 @@ spei_point = function(lat_in, lon_in, time_scale){
                          year = dataset[[1]]$year,
                          month = dataset[[1]]$month)
   
-  #Start SPEI calculation
-  for(i in rev((length(diff_data$time)-364):length(diff_data$time))){
-    #calcualte index vectors of interest based on time
-    first_date_breaks = which(diff_data$day == diff_data$day[i])
-    second_date_breaks = first_date_breaks-(time_scale-1)
-    
-    #if there are negative indexes remove last year (incomplete data range)
-    #change this to remove all indexes from both vectors that are negative
-    if(!all(second_date_breaks < 0)){
-      pos_index = which(second_date_breaks > 0)
-      first_date_breaks = first_date_breaks[c(pos_index)]
-      second_date_breaks = second_date_breaks[c(pos_index)]
-    }
-    
-    #create slice vectors and group by vectors
-    for(j in 1:length(first_date_breaks)){
-      if(j == 1){
-        slice_vec = seq(second_date_breaks[j],first_date_breaks[j], by = 1)
-        group_by_vec = rep(j,(first_date_breaks[j] - second_date_breaks[j]+1))
+  output.list = list()
+  
+  #Start SPEI calculation for multiple timescales
+  for(t in 1:length(time_scale)){
+    for(i in rev((length(diff_data$time)-364):length(diff_data$time))){
+      #calcualte index vectors of interest based on time
+      first_date_breaks = which(diff_data$day == diff_data$day[i])
+      second_date_breaks = first_date_breaks-(time_scale[t]-1)
+      
+      #if there are negative indexes remove last year (incomplete data range)
+      #change this to remove all indexes from both vectors that are negative
+      if(!all(second_date_breaks < 0)){
+        pos_index = which(second_date_breaks > 0)
+        first_date_breaks = first_date_breaks[c(pos_index)]
+        second_date_breaks = second_date_breaks[c(pos_index)]
+      }
+      
+      #create slice vectors and group by vectors
+      for(j in 1:length(first_date_breaks)){
+        if(j == 1){
+          slice_vec = seq(second_date_breaks[j],first_date_breaks[j], by = 1)
+          group_by_vec = rep(j,(first_date_breaks[j] - second_date_breaks[j]+1))
+        }
+        else{
+          slice_vec = append(slice_vec, seq(second_date_breaks[j],first_date_breaks[j], by = 1))
+          group_by_vec = append(group_by_vec, rep(j,(first_date_breaks[j] - second_date_breaks[j]+1)))
+        }
+      }
+      
+      #slice data for appropriate periods
+      data_time_filter = diff_data %>%
+        slice(slice_vec) %>%
+        tibble::add_column(group_by_vec = group_by_vec)%>%
+        group_by(group_by_vec)%>%
+        dplyr::summarise(sum = sum(data))
+      
+      #compute date time for day/year of interest
+      date_time = as.POSIXct(paste(diff_data$day[first_date_breaks], diff_data$year[first_date_breaks], sep = "-"), format = "%j-%Y")
+      
+      #Unbiased Sample Probability-Weighted Moments (following Beguer ́ıa et al 2014)
+      pwm = pwm.ub(data_time_filter$sum)
+      #Probability-Weighted Moments to L-moments
+      lmoments_x = pwm2lmom(pwm)
+      #fit generalized logistic
+      fit.parglo = parglo(lmoments_x)
+      #compute probabilistic cdf 
+      fit.cdf = cdfglo(data_time_filter$sum, fit.parglo)
+      
+      #equaprobaility transformation for cdf quantiles
+      if(i == length(diff_data$time)){
+        output.df = data.frame(time = date_time,
+                               spei = qnorm(fit.cdf, mean = 0, sd = 1))
       }
       else{
-        slice_vec = append(slice_vec, seq(second_date_breaks[j],first_date_breaks[j], by = 1))
-        group_by_vec = append(group_by_vec, rep(j,(first_date_breaks[j] - second_date_breaks[j]+1)))
+        output.df = rbind(output.df, data.frame(time = date_time,
+                                                spei = qnorm(fit.cdf, mean = 0, sd = 1)))
       }
+      
     }
-    
-    #slice data for appropriate periods
-    data_time_filter = diff_data %>%
-      slice(slice_vec) %>%
-      tibble::add_column(group_by_vec = group_by_vec)%>%
-      group_by(group_by_vec)%>%
-      dplyr::summarise(sum = sum(data))
-    
-    #compute date time for day/year of interest
-    date_time = as.POSIXct(paste(diff_data$day[first_date_breaks], diff_data$year[first_date_breaks], sep = "-"), format = "%j-%Y")
-    
-    #Unbiased Sample Probability-Weighted Moments (following Beguer ́ıa et al 2014)
-    pwm = pwm.ub(data_time_filter$sum)
-    #Probability-Weighted Moments to L-moments
-    lmoments_x = pwm2lmom(pwm)
-    #fit generalized logistic
-    fit.parglo = parglo(lmoments_x)
-    #compute probabilistic cdf 
-    fit.cdf = cdfglo(data_time_filter$sum, fit.parglo)
-    
-    #equaprobaility transformation for cdf quantiles
-    if(i == length(diff_data$time)){
-      output.df = data.frame(time = date_time,
-                             spei = qnorm(fit.cdf, mean = 0, sd = 1))
-    }
-    else{
-      output.df = rbind(output.df, data.frame(time = date_time,
-                                              spei = qnorm(fit.cdf, mean = 0, sd = 1)))
-    }
-    
+    output.df = output.df[order(output.df$time),]
+    output.list[[t]] = output.df
   }
-  
-  output.df = output.df[order(output.df$time),]
-  return(output.df)
+  #if there is only one timescale to calculate return a data frame
+  if(length(time_scale) == 1){
+    return(output.df)
+  }
+  # otherwise return a list
+  else{
+    return(output.list)
+  }
 }
