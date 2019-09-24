@@ -48,7 +48,7 @@ base_map = function(x){
     leaflet::addLayersControl(position = "topleft",
                      overlayGroups = c("USDM", "States", "Weather"),
                      options = leaflet::layersControlOptions(collapsed = FALSE)) %>%
-    leaflet::addDrawToolbar(markerOptions = drawMarkerOptions(),
+    leaflet.extras::addDrawToolbar(markerOptions = drawMarkerOptions(),
                    polylineOptions = FALSE,
                    polygonOptions = FALSE,
                    circleOptions = FALSE,

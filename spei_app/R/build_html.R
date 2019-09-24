@@ -110,7 +110,7 @@ for(i in 1:length(watershed_list_names)){
 m_raster = base_map() 
 for(i in 1:length(watershed_list_names)){
   m_raster = m_raster %>%
-    addRasterImage(raster_list[[i]], colors = pal, opacity = 0.8, group = timescale_names[i], project = FALSE)
+    addRasterImage(raster_list[[i]], colors = pal, opacity = 0.8, group = timescale_names[i], project = TRUE)
 }
 # Add some layer controls 
 m_raster = m_raster %>%
