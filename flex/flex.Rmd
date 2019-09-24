@@ -123,6 +123,7 @@ Row {.tabset .tabset-fade data-height=750}
 
 ### **Gridded Data**
 
+
 ```{r echo=F}
 
 library(shiny)
@@ -132,10 +133,14 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  
+
 }
 
 shinyApp(ui, server, options = list(height = 700))
+
+
+
+#htmltools::includeHTML("/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html")
 
 ```
 

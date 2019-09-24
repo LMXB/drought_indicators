@@ -66,24 +66,23 @@ pal_bins <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#0
 
 pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3.5:3.5, na.color = "transparent")
 
-################################################################################################
-############################################## SHINY APP #######################################
-################################################################################################
-
-
-  # set up the server side of the app
-
-    #add text to show when the most current data was available
-    output$time = renderText({paste("The most recent data available is from ",as.character(watersheds_30$crrnt_t[1]))})
-    
-    output$mymap = renderLeaflet({
-      m_raster
-    })
-    
     #lists of layers for loop leaflet map generation
     watershed_list = list(watersheds_30, watersheds_60, watersheds_90, watersheds_180, watersheds_365, watersheds_water_year, watersheds_year_to_date)
     county_list = list(county_30, county_60, county_90, county_180, county_365, county_water_year, county_year_to_date)
     raster_list = list(current_spi_30, current_spi_60,current_spi_90, current_spi_180, current_spi_365, current_spi_water_year, current_spi_year_to_date)
+    
+    for(i in 1:length(watershed_list)){
+      #set upper bound for color ramp
+      values(raster_list[[i]])[values(raster_list[[i]]) > 3.5] = 3.5
+      values(raster_list[[i]])[values(raster_list[[i]]) < -3.5] = -3.5
+      
+      county_list[[i]]$average[county_list[[i]]$average > 3.5] = 3.5
+      county_list[[i]]$average[county_list[[i]]$average < -3.5] = -3.5
+      
+      watershed_list[[i]]$average[watershed_list[[i]]$average > 3.5] = 3.5
+      watershed_list[[i]]$average[watershed_list[[i]]$average < -3.5] = -3.5
+    }
+    
     
     watershed_list_names = c("30 Day HUC8", "60 Day HUC8", "90 Day HUC8", "180 Day HUC8", "365 Day HUC8", "Water Year", "Year to Date")
     timescale_names = c("30 Day", "60 Day", "90 Day", "180 Day", "365 Day", "Water Year", "Year to Date")
@@ -128,9 +127,8 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
     
     
     
-    # mapview::mapshot(m_raster,"/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html")
-    # test = leaflet(includeHTML("/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html"))
-    #widgetframe::saveWidgetframe(m_raster, "/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html", selfcontained = T)
+    save(m_raster, file = "/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.RData")
+    
     saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html", selfcontained = T)
     
     ################################################################################
@@ -156,6 +154,9 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
       addLegend(pal = pal, values = -3.5:3.5,
                 title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
                 position = "bottomleft")
+    
+    save(m_huc, file = "/home/zhoylman/drought_indicators/spi_app/widgets/m_huc.RData")
+    
     
     saveWidget(as_widget(m_huc), "/home/zhoylman/drought_indicators/spi_app/widgets/m_huc.html", selfcontained = T)
     
@@ -183,6 +184,9 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
       addLegend(pal = pal, values = -3.5:3.5,
                 title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
                 position = "bottomleft")
+    
+    save(m_county, file = "/home/zhoylman/drought_indicators/spi_app/widgets/m_county.RData")
+    
     
     saveWidget(as_widget(m_county), "/home/zhoylman/drought_indicators/spi_app/widgets/m_county.html", selfcontained = T)
     

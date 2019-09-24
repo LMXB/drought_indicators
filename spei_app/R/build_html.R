@@ -28,6 +28,8 @@ library(foreach)
 library(doParallel)
 library(htmlwidgets)
 
+setwd('/home/zhoylman/drought_indicators/spei_app')
+
 #load custom functions
 source("../mapping_functions/base_map.R")
 source("../spei_app/R/spei_calc_plot.R")
@@ -67,6 +69,18 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
 watershed_list = list(watersheds_30, watersheds_60, watersheds_90, watersheds_180, watersheds_365, watersheds_water_year, watersheds_year_to_date)
 county_list = list(county_30, county_60, county_90, county_180, county_365, county_water_year, county_year_to_date)
 raster_list = list(current_spei_30, current_spei_60,current_spei_90, current_spei_180, current_spei_365, current_spei_water_year, current_spei_year_to_date)
+
+for(i in 1:length(watershed_list)){
+  #set upper bound for color ramp
+  values(raster_list[[i]])[values(raster_list[[i]]) > 3.5] = 3.5
+  values(raster_list[[i]])[values(raster_list[[i]]) < -3.5] = -3.5
+  
+  county_list[[i]]$average[county_list[[i]]$average > 3.5] = 3.5
+  county_list[[i]]$average[county_list[[i]]$average < -3.5] = -3.5
+  
+  watershed_list[[i]]$average[watershed_list[[i]]$average > 3.5] = 3.5
+  watershed_list[[i]]$average[watershed_list[[i]]$average < -3.5] = -3.5
+}
 
 watershed_list_names = c("30 Day HUC8", "60 Day HUC8", "90 Day HUC8", "180 Day HUC8", "365 Day HUC8", "Water Year", "Year to Date")
 timescale_names = c("30 Day", "60 Day", "90 Day", "180 Day", "365 Day", "Water Year", "Year to Date")
@@ -108,6 +122,8 @@ m_raster = m_raster %>%
             title = paste0("Current SPEI<br>", as.character(watersheds_30$crrnt_t[1])),
             position = "bottomleft")
 
+save(m_raster, file = "/home/zhoylman/drought_indicators/spei_app/widgets/m_raster.RData")
+
 saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/spei_app/widgets/m_raster.html", selfcontained = T)
 
 
@@ -135,6 +151,8 @@ m_huc = m_huc %>%
             title = paste0("Current SPEI<br>", as.character(watersheds_30$crrnt_t[1])),
             position = "bottomleft")
 
+save(m_huc, file = "/home/zhoylman/drought_indicators/spei_app/widgets/m_huc.RData")
+
 saveWidget(as_widget(m_huc), "/home/zhoylman/drought_indicators/spei_app/widgets/m_huc.html", selfcontained = T)
 
 ################################################################################
@@ -160,5 +178,7 @@ m_county = m_county %>%
   addLegend(pal = pal, values = -3.5:3.5,
             title = paste0("Current SPEI<br>", as.character(watersheds_30$crrnt_t[1])),
             position = "bottomleft")
+
+save(m_county, file = "/home/zhoylman/drought_indicators/spei_app/widgets/m_county.RData")
 
 saveWidget(as_widget(m_county), "/home/zhoylman/drought_indicators/spei_app/widgets/m_county.html", selfcontained = T)

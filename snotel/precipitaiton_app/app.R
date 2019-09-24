@@ -105,24 +105,3 @@ shinyApp(
 
 
 
-
-###using NRCS plots
-
-# })
-# observe({
-#   click = input$map_marker_click
-#   id = click$id
-#   
-#   output$Plot <- renderText({
-#     first = "https://wcc.sc.egov.usda.gov/nwcc/plot?sitenum="
-#     site = as.character(id)
-#     mid = '&report=WYGRAPH&timeseries=Daily&interval=WATERYEAR='
-#     year = as.character(year(Sys.time()))
-#     end = '&temp_unit=8&format=plot&autoscale=false&legendpos=right'
-#     url = paste0(first,site,mid,year,end)
-#     
-#     c('<center><img src="',url,'"></center>')
-#   })
-# })
-# })
-
