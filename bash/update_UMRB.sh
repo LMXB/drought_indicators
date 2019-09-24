@@ -14,5 +14,8 @@ Rscript /home/zhoylman/drought_indicators/spi_app/R/build_html.R
 Rscript /home/zhoylman/drought_indicators/spei_app/R/build_html.R
 Rscript /home/zhoylman/drought_indicators/eddi_app/R/build_html.R
 
+# Convert Rmd to HTML with Rmarkdown render
+Rscript /home/zhoylman/drought_indicators/flex_new/R/knit_rmd.R
+
 # Copy files to shiny server  
 cp -r "/home/zhoylman/drought_indicators" "/srv/shiny-server/"
