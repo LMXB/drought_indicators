@@ -388,7 +388,7 @@ sites = leaflet::leaflet(master_times,options = leaflet::tileOptions(minZoom = 4
   leaflet::addProviderTiles("Stamen.TonerLabels") %>%
   leaflet::addCircleMarkers(~longitude, ~latitude, 
                             radius = 8, stroke = TRUE, fillOpacity = 0.9,
-                            color = "black", fillColor = "black", group = "Locations"
+                            color = "blue", fillColor = "white", group = "Locations"
   )%>%
   leaflet::addCircleMarkers(~longitude, ~latitude, 
                             radius = 8, stroke = TRUE, fillOpacity = 0.9,
@@ -427,3 +427,33 @@ sites = leaflet::leaflet(master_times,options = leaflet::tileOptions(minZoom = 4
 
 htmlwidgets::saveWidget(sites, "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/validation_sites_best_times.html", selfcontained = T)
 
+webshot::webshot("/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/validation_sites_best_times.html", 
+                 file = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/validation_sites.png",
+                 cliprect = "viewport", vwidth = 2000,vheight = 1000)
+
+
+
+
+names_short = c("SPI","SPEI","EDDI","SEDI")
+
+correlation_time_plots = list()
+for(i in 1:4){
+  data = data.frame(time = best_times_combined[[i]]$mean,
+                    cor = best_cor_combined[[i]]$mean)
+  correlation_time_plots[[i]] = ggplot(data = data, aes(x = time, y = cor))+
+    geom_point()+
+    geom_smooth()+
+    theme_bw(base_size = 14)+
+    ggtitle(names_short[i])+
+    xlab("Best Timescale")+
+    ylab("Best Correlation")+
+    theme(plot.title = element_text(hjust = 0.5))
+}
+  
+plot_time_cor_grid = cowplot::plot_grid(correlation_time_plots[[1]],correlation_time_plots[[2]],
+                                        correlation_time_plots[[3]],correlation_time_plots[[4]], nrow = 2)
+
+plot_time_cor_grid
+
+ggsave("/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/time_corelation_comparison.png",
+       plot_time_cor_grid, width = 10, height = 9, units = "in", dpi = 600)
