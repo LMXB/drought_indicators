@@ -941,10 +941,10 @@ cor(data_spei$spei, data_soil_moisture$standardized)
 
 library(ggplot2)
 plot = ggplot()+
-  geom_line(data = data_soil_moisture, aes(x = Date, y = standardized), color = "black")+
+  geom_line(data = data_soil_moisture, aes(x = Date, y = soilwc08), color = "black")+
   #geom_line(data = data_spei, aes(x = time, y = spei), color = "red")+
   theme_bw(base_size = 16)+
-  ylab("Standardized Soil Moisture (σ)")+
+  ylab(bquote('Soil Moisture'~(m^3/m^3), ")"))+
   xlab("")
   #scale_y_continuous(sec.axis = sec_axis(~ ., name = "75 day SPEI (σ)"))+ 
   # theme( axis.line.y.right = element_line(color = "red"), 
@@ -954,5 +954,5 @@ plot = ggplot()+
 
 plot
 
-ggsave(plot, file = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/soil_moisture_simple.png",
+ggsave(plot, file = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/soil_moisture_raw.png",
        height = 4, width = 6, dpi = 600)

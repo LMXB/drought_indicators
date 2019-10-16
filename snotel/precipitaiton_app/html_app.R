@@ -7,6 +7,7 @@ library(htmltools)
 library(lubridate)
 library(htmlwidgets)
 library(leaflet.esri)
+library(webshot)
 
 source("/home/zhoylman/drought_indicators/mapping_functions/base_map.R")
 
@@ -42,11 +43,11 @@ pal <- colorNumeric(c("red", "yellow", "green", "blue", "purple"), domain = c(mi
 #custom legend fix
 css_fix <- "div.info.legend.leaflet-control br {clear: both;}"
 
-plots = list.files("/home/zhoylman/drought_indicators/snotel/plots", full.names = T)
+plots = list.files("/home/zhoylman/drought_indicators/snotel/plots", full.names = T, pattern = "precip")
 plots_pngs = png::readPNG(plots[1])
 
 base_map() %>%
-addCircleMarkers(snotel$lon, snotel$lat, snotel$simple_id, popup = htmlEscape(snotel$site_name), radius = 10, stroke = TRUE, fillOpacity = 0.9,
+addCircleMarkers(snotel$lon, snotel$lat, snotel$simple_id, popup = popupImage(plots), radius = 10, stroke = TRUE, fillOpacity = 0.9,
                color = "black", fillColor = pal(daily_lookup$percent_crop)
 )%>%
 addLegend("bottomleft", pal = pal, values = daily_lookup$percent_crop,

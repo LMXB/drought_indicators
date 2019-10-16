@@ -445,8 +445,8 @@ for(i in 1:4){
     geom_smooth()+
     theme_bw(base_size = 14)+
     ggtitle(names_short[i])+
-    xlab("Time")+
-    ylab("Correlation")+
+    xlab("Best Timescale")+
+    ylab("Best Correlation")+
     theme(plot.title = element_text(hjust = 0.5))
 }
   
