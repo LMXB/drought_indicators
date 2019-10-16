@@ -85,7 +85,8 @@ climatology_WY = climatology
 #compute index and sequences for water year and clean up data
 for(i in 1:length(snotel$site_num)){
   if(length(climatology_WY[[i]]$yday) == 366){
-    climatology_WY[[i]] = climatology_WY[[i]] %>%
+    if(length(current_select[[i]])>1){
+      climatology_WY[[i]] = climatology_WY[[i]] %>%
       dplyr::mutate(WY = c(seq(91,366,1), seq(1,90,1)))%>%
       dplyr::mutate(WY_date = as.POSIXct(as.Date(WY, origin = as.Date(current_select[[i]]$Date[1])), format = "%Y-%m-%d"))%>%
       dplyr::mutate(median_swe_mm = median_swe *25.4)%>%
@@ -98,21 +99,24 @@ for(i in 1:length(snotel$site_num)){
       dplyr::mutate(precip_quantiles_025 = precip_quantiles_025 *25.4)%>%
       dplyr::mutate(precip_quantiles_075 = precip_quantiles_075 *25.4)%>%
       dplyr::mutate(precip_quantiles_095 = precip_quantiles_095 *25.4)
+    }
   }
-  if(length(climatology_WY[[i]]$yday) == 365){
-    climatology_WY[[i]] = climatology_WY[[i]] %>%
-      dplyr::mutate(WY = c(seq(91,365,1), seq(1,90,1)))%>%
-      dplyr::mutate(WY_date = as.POSIXct(as.Date(WY, origin = as.Date(current_select[[i]]$Date[1])), format = "%Y-%m-%d"))%>%
-      dplyr::mutate(median_swe_mm = median_swe *25.4)%>%
-      dplyr::mutate(swe_quantiles_005 = swe_quantiles_005 *25.4)%>%
-      dplyr::mutate(swe_quantiles_025 = swe_quantiles_025 *25.4)%>%
-      dplyr::mutate(swe_quantiles_075 = swe_quantiles_075 *25.4)%>%
-      dplyr::mutate(swe_quantiles_095 = swe_quantiles_095 *25.4)%>%
-      dplyr::mutate(median_precip_mm = median_precip *25.4)%>%
-      dplyr::mutate(precip_quantiles_005 = precip_quantiles_005 *25.4)%>%
-      dplyr::mutate(precip_quantiles_025 = precip_quantiles_025 *25.4)%>%
-      dplyr::mutate(precip_quantiles_075 = precip_quantiles_075 *25.4)%>%
-      dplyr::mutate(precip_quantiles_095 = precip_quantiles_095 *25.4)
+    if(length(climatology_WY[[i]]$yday) == 365){
+      if(length(current_select[[i]])>1){
+        climatology_WY[[i]] = climatology_WY[[i]] %>%
+          dplyr::mutate(WY = c(seq(91,365,1), seq(1,90,1)))%>%
+          dplyr::mutate(WY_date = as.POSIXct(as.Date(WY, origin = as.Date(current_select[[i]]$Date[1])), format = "%Y-%m-%d"))%>%
+          dplyr::mutate(median_swe_mm = median_swe *25.4)%>%
+          dplyr::mutate(swe_quantiles_005 = swe_quantiles_005 *25.4)%>%
+          dplyr::mutate(swe_quantiles_025 = swe_quantiles_025 *25.4)%>%
+          dplyr::mutate(swe_quantiles_075 = swe_quantiles_075 *25.4)%>%
+          dplyr::mutate(swe_quantiles_095 = swe_quantiles_095 *25.4)%>%
+          dplyr::mutate(median_precip_mm = median_precip *25.4)%>%
+          dplyr::mutate(precip_quantiles_005 = precip_quantiles_005 *25.4)%>%
+          dplyr::mutate(precip_quantiles_025 = precip_quantiles_025 *25.4)%>%
+          dplyr::mutate(precip_quantiles_075 = precip_quantiles_075 *25.4)%>%
+          dplyr::mutate(precip_quantiles_095 = precip_quantiles_095 *25.4)
+    }
   }
 }
 

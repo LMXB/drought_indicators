@@ -48,38 +48,6 @@ current_select = foreach(i = 1:length(snotel$site_num)) %dopar%{
   }
   )
 }
-
-# 
-# historical = foreach(i = 1:length(snotel$site_num)) %dopar%{
-#   library(RNRCS)
-#   tryCatch({
-#     grabNRCS.data("SNTL", as.numeric(snotel$site_num[i]), timescale = "daily", DayBgn = "1981-10-01",
-#                   DayEnd = "2011-10-01")
-#   }, error = function(e){
-#     return(NA)
-#   }
-#   )
-# }
-# 
-# 
-# historical_select = foreach(i = 1:length(snotel$site_num)) %dopar%{
-#   library(dplyr)
-#   collumn_name = c("Snow.Water.Equivalent..in..Start.of.Day.Values", "Precipitation.Accumulation..in..Start.of.Day.Values",
-#                    "Date")
-#   tryCatch({
-#     extract_columns(historical[[i]], collumn_name)
-#   }, error = function(e){
-#     return(NA)
-#   }
-#   )
-# }
-# 
-# 
-# for(i in 1:length(snotel$site_name)){
-#   if(length(historical_select[[i]]) == 3){
-#     historical_select[[i]]$yday = yday(historical_select[[i]]$Date)
-#   }
-# }
 stopCluster(cl)
 
 toc()
@@ -93,17 +61,6 @@ for(i in 1:length(current_select)){
 
 rownames(current_select_df) = snotel$site_name
 colnames(current_select_df) = c("SWE", "Precip")
-
-
-#calcualte yday percentiles for cdf
-# for(i in 1:length(snotel$site_name)){
-#   if(length(historical_select[[i]])==3){
-#     historical_select[[i]] = historical_select[[i]]%>%
-#       filter(yday == yday(as.Date(Sys.time())))
-#     colnames(historical_select[[i]]) = c("SWE", "Date", "yday")
-#   }
-# }
-
 
 #load in climatology data
 load("/home/zhoylman/drought_indicators/snotel/climatology/snotel_climatology.RData")
@@ -131,6 +88,9 @@ for(i in 1:length(snotel$site_num)){
 daily_lookup$current_swe = current_select_df$SWE
 daily_lookup$current_precip = current_select_df$Precip
 
+#make 0's 0.01
+daily_lookup$daily_mean_swe[daily_lookup$daily_mean_swe == 0] = 0.01
+daily_lookup$daily_mean_precip[daily_lookup$daily_mean_precip == 0] = 0.1
 
 #compute pervent average
 daily_lookup$percent_swe = (as.numeric(daily_lookup$current_swe)/as.numeric(daily_lookup$daily_mean_swe))*100
