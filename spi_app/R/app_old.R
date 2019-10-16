@@ -584,7 +584,7 @@ shinyApp(
                  theme(legend.position="none",
                        axis.text.x = element_text(angle = 60, vjust = 0.5))+
                  scale_x_datetime(breaks = date_breaks("2 month"), labels=date_format("%b / %Y"), 
-                                  limits= c(data$time[length(data$time)-24]-(86400*12.6), data$time[length(data$time)]+(86400*12.6))) #add perfect amount of time for clean plotting
+                                  limits= c(data$time[length(data$time)-48]-(86400*12.6), data$time[length(data$time)]+(86400*12.6))) #add perfect amount of time for clean plotting
                return(precip_plot)
              }
              
