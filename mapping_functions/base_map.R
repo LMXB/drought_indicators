@@ -33,7 +33,7 @@ base_map = function(x){
     leaflet::addProviderTiles("Stamen.TonerLines") %>%
     leaflet::addProviderTiles("Stamen.TonerLabels") %>%
     leaflet::setMaxBounds( lng1 = -122
-                  , lat1 = 53
+                  , lat1 = 55
                   , lng2 = -91
                   , lat2 = 39)%>%
     leaflet::setView(lng = -108, lat = 45.5, zoom = 6) %>%

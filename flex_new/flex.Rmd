@@ -17,6 +17,20 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-149859729-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-149859729-1');
+</script>
+</head> 
+
+
+
 <style type="text/css">
 
 .chart-title {  /* chart_title  */
@@ -80,15 +94,15 @@ Row {.tabset .tabset-fade data-height=800}
 ### **Accumulated Precipitation**
 
 ```{r echo = F}
-library(shiny)
-#shinyAppDir("../snotel/precipitaiton_app/", options = list(height = 800))
+load("/home/zhoylman/drought_indicators/snotel/widgets/precip_snotel.RData")
+precip_map
 ```
 
 ### **Snow Water Equivalent**
 
 ```{r echo = F}
-library(shiny)
-#shinyAppDir("../snotel/R/", options = list(height = 800))
+load("/home/zhoylman/drought_indicators/snotel/widgets/swe_snotel.RData")
+swe_map
 ```
 
 SPI {data-orientation=rows}

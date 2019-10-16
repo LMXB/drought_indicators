@@ -13,6 +13,7 @@ Rscript /home/zhoylman/drought_indicators/snotel/R/plot_current.R >/home/zhoylma
 Rscript /home/zhoylman/drought_indicators/spi_app/R/build_html.R
 Rscript /home/zhoylman/drought_indicators/spei_app/R/build_html.R
 Rscript /home/zhoylman/drought_indicators/eddi_app/R/build_html.R
+Rscript /home/zhoylman/drought_indicators/snotel/R/build_html.R
 
 # Convert Rmd to HTML with Rmarkdown render
 Rscript /home/zhoylman/drought_indicators/flex_new/R/knit_rmd.R >/home/zhoylman/cron-log/cron-log-knitt 2>&1
