@@ -1,5 +1,6 @@
 #define base map information as a function used for all leaflet maps
 #load base map dependent data
+setwd("/home/zhoylman/drought_indicators/mapping_functions/")
 states = st_read("../shp_kml/states.shp")
 current_usdm = st_read("../USDM_current/current_usdm.shp")
 current_usdm_date = read.csv("../USDM_current/usdm_time.csv")
