@@ -158,7 +158,7 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
     save(m_huc, file = "/home/zhoylman/drought_indicators/spi_app/widgets/m_huc.RData")
     
     
-    saveWidget(as_widget(m_huc), "/home/zhoylman/drought_indicators/spi_app/widgets/m_huc.html", selfcontained = T)
+    saveWidget(m_huc, "/home/zhoylman/drought_indicators/spi_app/widgets/m_huc.html", selfcontained = T)
     
     
     ################################################################################

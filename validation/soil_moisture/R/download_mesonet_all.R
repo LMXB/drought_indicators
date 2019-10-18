@@ -20,10 +20,7 @@ SELECT *
 FROM observations.raw
 WHERE (
     DATEPART(hour, datetime AT TIME ZONE 'Mountain Standard Time') = 0 AND
-    DATEPART(minute, datetime AT TIME ZONE 'Mountain Standard Time') = 0 AND
-    (measurement = 'Water Content' OR
-    measurement = 'Soil Temperature' OR
-    measurement = 'Precipitation')
+    DATEPART(minute, datetime AT TIME ZONE 'Mountain Standard Time') = 0
 )
 
 DECLARE @l0 observations_level_0
