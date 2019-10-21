@@ -1,0 +1,1 @@
+rmarkdown::render('/home/zhoylman/drought_indicators/flex_new/flex.Rmd')

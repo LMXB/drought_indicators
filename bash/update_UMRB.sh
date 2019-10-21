@@ -18,8 +18,5 @@ Rscript /home/zhoylman/drought_indicators/snotel/R/build_html.R
 # Convert Rmd to HTML with Rmarkdown render
 Rscript /home/zhoylman/drought_indicators/flex_new/R/knit_rmd.R >/home/zhoylman/cron-log/cron-log-knitt 2>&1
 
-# Copy HTML to shiny server "~/drought_indicators/website/
-cp -r "/home/zhoylman/drought_indicators/flex_new/flex.html" "/home/zhoylman/drought_indicators/website/"
-
 # Copy files to shiny server  
 cp -r "/home/zhoylman/drought_indicators" "/srv/shiny-server/"
