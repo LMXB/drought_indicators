@@ -75,6 +75,11 @@ watershed_list = list(watersheds_15,watersheds_30, watersheds_60, watersheds_90,
 county_list = list(county_15,county_30, county_60, county_90, county_180, county_365, county_water_year, county_year_to_date)
 raster_list = list(current_anomaly_15, current_anomaly_30, current_anomaly_60,current_anomaly_90, current_anomaly_180, current_anomaly_365, current_anomaly_water_year, current_anomaly_year_to_date)
 
+
+watershed_list_names = c("15 Day HUC8","30 Day HUC8", "60 Day HUC8", "90 Day HUC8", "180 Day HUC8", "365 Day HUC8", "Water Year", "Year to Date")
+timescale_names = c("15 Day","30 Day", "60 Day", "90 Day", "180 Day", "365 Day", "Water Year", "Year to Date")
+
+
 #labels for aggregated data
 labels = list()
 for(i in 1:length(watershed_list_names)){
@@ -101,10 +106,6 @@ for(i in 1:length(watershed_list)){
 
   watershed_list[[i]]$average[watershed_list[[i]]$average > 400] = 400
 }
-
-
-watershed_list_names = c("15 Day HUC8","30 Day HUC8", "60 Day HUC8", "90 Day HUC8", "180 Day HUC8", "365 Day HUC8", "Water Year", "Year to Date")
-timescale_names = c("15 Day","30 Day", "60 Day", "90 Day", "180 Day", "365 Day", "Water Year", "Year to Date")
 
 
 ################################################################################
