@@ -43,7 +43,7 @@ base_map = function(x){
                   leaflet::highlightOptions(weight = 5,color = "#666",fillOpacity = 0.7),label = labels_usdm[[1]], 
                 labelOptions = leaflet::labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))%>%
     leaflet::addWMSTiles(
-      "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi", group = "Weather",
+      "https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi", group = "Weather",
       layers = "nexrad-n0r-900913",
       options = leaflet::WMSTileOptions(format = "image/png", transparent = TRUE))%>%
     leaflet::addLayersControl(position = "topleft",

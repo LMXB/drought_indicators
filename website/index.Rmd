@@ -73,7 +73,7 @@ knitr::include_graphics("/home/zhoylman/drought_indicators/website/logos.png")
 ```
 <center>
 
-SNOTEL{data-orientation=rows}
+Snow Water Equivalent {data-navmenu="SNOTEL" data-icon="fa-list" data-orientation=rows}
 ========================================================
 
 ### **Snow Telemetry (SNOTEL)**
@@ -92,13 +92,87 @@ Row {.tabset .tabset-fade data-height=800}
 
 <iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/snotel/widgets/swe_snotel.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
+Accumulated Precipitation {data-navmenu="SNOTEL" data-icon="fa-list" data-orientation=rows}
+========================================================
+
+### **Snow Telemetry (SNOTEL)**
+
+<br>
+
+#### **Overview:**
+SNOTEL is an automated system of snowpack and related enviormental sensors. SNOTEL is operated by the Natural Resources Conservation Service (NRCS) of the United States Department of Agriculture in the Western United States. Plots in this module show total snow water equievelant (SWE) and total liquid precipitation (rain + SWE) measured to date compared to historical averages. 
+
+<br>
+
+Row {.tabset .tabset-fade data-height=800}
+-------------------------------------
 
 ### **Accumulated Precipitation**
 
 <iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/snotel/widgets/precip_snotel.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
+Precipitation Percentiles {data-navmenu="Precipitation" data-icon="fa-list" data-orientation=rows}
+========================================================
+### **Precipitation Percentiles**
 
-Precipitation {data-orientation=rows}
+<br>
+
+#### **Overview:**
+
+Precipitation is a strong driver of drought. In most cases, drought begins with a precipitation deficit which is the exacerbated by atmospheric conditions (such as temperature, humidity and wind speed). In this module we present precipitation percentiles calculated over different timescales. 50 represents the average (median) precipitation over the time period. 100 and 0 represent the wettest and driest conditions observed respectively.
+
+<br>
+
+#### **Data Requirements:**
+
+  + Precipitation 
+
+<br>  
+
+
+##### Select a timescale from the left panel on the map. You can also toggle overlays, such as the current US Drought Monitor (USDM) drought designations, weather (from the National Weather Service) and state boundaries.
+
+<br>
+
+##### Tabs above the map allow you to aggregate the data by political or hydrologic boundaries.
+
+###
+
+Row {.tabset .tabset-fade data-height=750}
+-------------------------------------
+
+### **Gridded Data**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/precipitation/widgets/m_raster_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
+### **Counties**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/precipitation/widgets/m_county_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
+### **Watersheds**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/precipitation/widgets/m_huc_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+
+### **Derivation:**
+For each timescale we calculate the accumulated precipitation for each year across the period of record (1979 - present) and compute the current percentile value. 
+
+**Key Strengths:**
+
+  + Easily calculated, uses only precipitation data. 
+  + Easily interpreted
+  
+**Key Weaknesses:** 
+
+  + Doesn't account for atmospheric demand of moisture, this limits identification of flash drought due to high temperature and large vapor pressure deficits
+  + Sensitive to biases in precipitation records over time
+  + Does not account for the capacity of the landscape to capture precipitation or generate runoff
+  <br>
+  
+
+Precipitation Anomaly (% of Normal) {data-navmenu="Precipitation" data-icon="fa-list" data-orientation=rows}
 ========================================================
 ### **Precipitation Anomaly**
 
@@ -130,15 +204,15 @@ Row {.tabset .tabset-fade data-height=750}
 
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="/drought_indicators/precipitation/widgets/m_raster.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/precipitation/widgets/m_raster.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="/drought_indicators/precipitation/widgets/m_county.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/precipitation/widgets/m_county.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="/drought_indicators/precipitation/widgets/m_huc.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/precipitation/widgets/m_huc.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
@@ -159,9 +233,11 @@ For each timescale we calculate the average accumulated precipitation across the
   <br>
   
 
-SPI {data-orientation=rows}
+
+
+Standardized Precipitation Index (SPI) {data-navmenu="Drought Metrics" data-icon="fa-list" data-orientation=rows}
 ========================================================
-### **The Standardized Precipitation Index (SPI)**
+### **Standardized Precipitation Index (SPI)**
 
 <br>
 
@@ -244,7 +320,7 @@ UMRB specific recommendations will be appended to this document as validation is
 Much of the background information regarding this metric was contributed by NCAR/UCAR Climate Data Guide
 
 
-SPEI {data-orientation=rows}
+Standardized Precipitation Evapotranspiration Index (SPEI) {data-navmenu="Drought Metrics" data-icon="fa-list" data-orientation=rows}
 ========================================================
 
 ### **Standardized Precipitation Evapotranspiration Index (SPEI)**
@@ -317,7 +393,7 @@ UMRB specific recommendations will be appended to this document as validation is
 Much of the background information regarding this metric was adapted from the NCAR/UCAR Climate Data Guide (here)
 
 
-EDDI {data-orientation=rows}
+Evaporative Demand Drought Index (EDDI) {data-navmenu="Drought Metrics" data-icon="fa-list" data-orientation=rows}
 ========================================================
 
 ### **Evaporative Demand Drought Index (EDDI)**

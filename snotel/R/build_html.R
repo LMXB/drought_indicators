@@ -39,7 +39,7 @@ css_fix <- "div.info.legend.leaflet-control br {clear: both;}"
 
 swe_map = base_map() %>%
 addCircleMarkers(snotel$lon, snotel$lat, snotel$simple_id, 
-                 popup = paste0("<img src='http://shiny.cfc.umt.edu:3838/drought_indicators/snotel/plots/snotel_plot_",
+                 popup = paste0("<img src='https://shiny.cfc.umt.edu/drought_indicators/snotel/plots/snotel_plot_",
                                 snotel$simple_id,".png' height='350' width='600'/>"),
                  radius = 10, stroke = TRUE, fillOpacity = 0.9,
                  color = "black", fillColor = pal(daily_lookup$percent_swe)
@@ -58,7 +58,7 @@ pal <- colorNumeric(c("red", "yellow", "green", "blue", "purple"), domain = c(mi
 
 precip_map = base_map() %>%
   addCircleMarkers(snotel$lon, snotel$lat, snotel$simple_id, 
-                   popup = paste0("<img src='http://shiny.cfc.umt.edu:3838/drought_indicators/snotel/plots/precip_snotel_plot_",
+                   popup = paste0("<img src='https://shiny.cfc.umt.edu/drought_indicators/snotel/plots/precip_snotel_plot_",
                                   snotel$simple_id,".png' height='350' width='600'/>"),
                    radius = 10, stroke = TRUE, fillOpacity = 0.9,
                    color = "black", fillColor = pal(daily_lookup$percent_precip)

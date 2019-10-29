@@ -95,7 +95,23 @@ for(t in 1:length(time_scale)){
     return(anomaly)
   }
   
+  percentile_inverse = function(x){
+    tryCatch({
+      temp_cdf = ecdf(x) 
+      cdf = temp_cdf(x)
+      return(cdf[length(cdf)]*100)
+    }, error = function(e) {
+      return(NA)
+    })
+  }
+  
+  raw_amount = function(x){
+    return(x[length(x)]/25.4)
+  }
+  
   current_anomaly = parApply(cl,integrated_precip, 1, FUN = anomaly)
+  current_percentile = parApply(cl,integrated_precip, 1, FUN = percentile_inverse)
+  current_raw = parApply(cl,integrated_precip, 1, FUN = raw_amount)
   
   #stop parellel cluster
   stopCluster(cl)
@@ -106,12 +122,18 @@ for(t in 1:length(time_scale)){
   
   #create spatial template for current anomaly values
   anomaly_map = raster_precip_clipped[[1]]
+  percentile_map = raster_precip_clipped[[1]]
+  raw_map = raster_precip_clipped[[1]]
 
   #allocate curent anomaly values to spatial template
   values(anomaly_map) = current_anomaly
+  values(percentile_map) = current_percentile
+  values(raw_map) = current_raw
   
   #add metadata for most current time stamp
   metadata(anomaly_map) = list(substr(time$datetime[length(time$datetime)],1,10))
+  metadata(percentile_map) = list(substr(time$datetime[length(time$datetime)],1,10))
+  metadata(raw_map) = list(substr(time$datetime[length(time$datetime)],1,10))
   
   #compute color ramp for visualization
   color_ramp = colorRampPalette(c("darkred","red", "white", "blue", "darkblue"))
@@ -120,46 +142,58 @@ for(t in 1:length(time_scale)){
   plot(anomaly_map, col = color_ramp(100), zlim = c(0,200),
        main = paste0("Current ", as.character(time_scale[t]), " Day anomaly"))
 
-  #define path for map export
-  path_file = paste("/home/zhoylman/drought_indicators/precipitation/maps/current_anomaly_",
-                    as.character(time_scale[t]),".tif", sep = "")
+  vars = c("current_anomaly_", "current_percentile_", "current_raw_")
   
-  # wateryear and year to date file name
-  if(t > (length(time_scale)-2)){
-    if(t == (length(time_scale)-1)){
-      path_file = paste("/home/zhoylman/drought_indicators/precipitation/maps/current_anomaly_",
-                        "water_year",".tif", sep = "")
-    }
-    if(t == (length(time_scale))){
-      path_file = paste("/home/zhoylman/drought_indicators/precipitation/maps/current_anomaly_",
-                        "year_to_date",".tif", sep = "")
+  path_file = list()
+  
+  for(v in 1:length(vars)){
+    #define path for map export
+    path_file[[v]] = paste("/home/zhoylman/drought_indicators/precipitation/maps/",vars[v],
+                      as.character(time_scale[t]),".tif", sep = "")
+    
+    # wateryear and year to date file name
+    if(t > (length(time_scale)-2)){
+      if(t == (length(time_scale)-1)){
+        path_file[[v]] = paste("/home/zhoylman/drought_indicators/precipitation/maps/",vars[v],
+                          "water_year",".tif", sep = "")
+      }
+      if(t == (length(time_scale))){
+        path_file[[v]] = paste("/home/zhoylman/drought_indicators/precipitation/maps/",vars[v],
+                          "year_to_date",".tif", sep = "")
+      }
     }
   }
   
   #write GeoTiff
-  writeRaster(anomaly_map, path_file, format = "GTiff", overwrite = T)
+  maps = list(anomaly_map, percentile_map, raw_map)
+  for(i in 1:3){
+    writeRaster(maps[[i]], path_file[[i]], format = "GTiff", overwrite = T)
+  }
   
   ############################################
   ################ SHP FILES #################
   ############################################
-  
-  # Extract raster values for each HUC 
-  r.vals <- extract(anomaly_map, watersheds)
-  
-  # Use list apply to calculate median for each polygon
-  r.median <- lapply(r.vals, FUN=median,na.rm=TRUE)
   
   nullToNA <- function(x) {
     x[sapply(x, is.null)] <- NA
     return(x)
   }
   
-  r.median = nullToNA(r.median)
+  extract_shp_data = function(map, shp){
+    # Extract raster values for each shp 
+    shp.vals = extract(map, shp)
+    # Use list apply to calculate median for each polygon
+    r.median = lapply(shp.vals, FUN=median, na.rm=TRUE) %>%
+      nullToNA()
+    return(as.vector(unlist(r.median)))
+  }
   
   #create export shp file, define most current time and define aggregate values
   watersheds_export = watersheds
   watersheds_export$current_time = substr(time$datetime[length(time$datetime)],1,10)
-  watersheds_export$average = as.vector(unlist(r.median))
+  watersheds_export$anomaly = extract_shp_data(anomaly_map, watersheds)
+  watersheds_export$percentile = extract_shp_data(percentile_map, watersheds)
+  watersheds_export$raw = extract_shp_data(raw_map, watersheds)
   
   #define path to export folder and export
   path_file_watershed = paste("/home/zhoylman/drought_indicators/precipitation/shp/", sep = "")
@@ -175,17 +209,14 @@ for(t in 1:length(time_scale)){
     }
   }
   
+  
   rgdal::writeOGR(obj=watersheds_export, dsn=path_file_watershed, layer = layer_name, driver="ESRI Shapefile", overwrite_layer = T)
   
   # Extract raster values for each county 
-  r.vals <- extract(anomaly_map, county)
-  
-  # Use list apply to calculate median for each county
-  r.median <- lapply(r.vals, FUN=median,na.rm=TRUE)
-  r.median = nullToNA(r.median)
-  #create export shp file and define aggregate values
   county_export = county
-  county_export$average = as.vector(unlist(r.median))
+  county_export$anomaly = extract_shp_data(anomaly_map, county)
+  county_export$percentile = extract_shp_data(percentile_map, county)
+  county_export$raw = extract_shp_data(raw_map, county)
   
   #define path to export folder and export
   path_file_watershed = paste("/home/zhoylman/drought_indicators/precipitation/shp/", sep = "")
