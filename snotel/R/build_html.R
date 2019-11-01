@@ -54,7 +54,10 @@ setView(lng = -108, lat = 46.5, zoom = 6)
 htmlwidgets::saveWidget(swe_map, "/home/zhoylman/drought_indicators/snotel/widgets/swe_snotel.html", selfcontained = T)
 save(swe_map, file = "/home/zhoylman/drought_indicators/snotel/widgets/swe_snotel.RData")
  
-pal <- colorNumeric(c("red", "yellow", "green", "blue", "purple"), domain = c(min(daily_lookup$percent_precip, na.rm = T),max(daily_lookup$percent_swe, na.rm = T)), na.color = "grey")
+saveWidget(swe_map, "/home/zhoylman/drought_indicators/widgets/swe_snotel.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
+
+
+pal <- colorNumeric(c("red", "yellow", "green", "blue", "purple"), domain = c(min(daily_lookup$percent_precip, na.rm = T),max(daily_lookup$percent_precip, na.rm = T)), na.color = "grey")
 
 precip_map = base_map() %>%
   addCircleMarkers(snotel$lon, snotel$lat, snotel$simple_id, 
@@ -72,3 +75,5 @@ precip_map = base_map() %>%
 
 htmlwidgets::saveWidget(precip_map, "/home/zhoylman/drought_indicators/snotel/widgets/precip_snotel.html", selfcontained = T)
 save(precip_map, file = "/home/zhoylman/drought_indicators/snotel/widgets/precip_snotel.RData")
+
+saveWidget(precip_map, "/home/zhoylman/drought_indicators/widgets/precip_snotel.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")

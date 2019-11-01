@@ -102,6 +102,10 @@ pal_bins <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff","#ffffff", "#ad
 
 pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff","#ffffff", "#add8e6", "#0000ff", "#000d66","#000d66","#000d66","#000d66","#000d66","#000d66"), seq(0,400), na.color = "transparent")
 
+#define color pallets
+pal <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffff00", "#ffffff", "#00ffff", "#0000ff", "#000d66"), interpolate = "spline"), 
+                     domain = 0:800, bins = c(0,10,30,50,70,90,110,150,200,300,500,800), na.color = "transparent")
+
 #labels for aggregated data
 labels = list()
 for(i in 1:length(watershed_list_names)){
@@ -121,11 +125,11 @@ for(i in 1:length(watershed_list_names)){
 
 for(i in 1:length(watershed_list)){
   #set upper bound for color ramp
-  values(raster_list[[i]])[values(raster_list[[i]]) > 400] = 400
+  values(raster_list[[i]])[values(raster_list[[i]]) > 800] = 800
 
-  county_list[[i]]$anomaly[county_list[[i]]$anomaly > 400] = 400
+  county_list[[i]]$anomaly[county_list[[i]]$anomaly > 800] = 800
 
-  watershed_list[[i]]$anomaly[watershed_list[[i]]$anomaly > 400] = 400
+  watershed_list[[i]]$anomaly[watershed_list[[i]]$anomaly > 800] = 800
 }
 
 
@@ -145,12 +149,15 @@ m_raster = m_raster %>%
                    baseGroups = timescale_names,
                    overlayGroups = c("USDM", "States", "Weather"),
                    options = layersControlOptions(collapsed = FALSE)) %>%
-  addLegend(pal = pal, values = 0:400,
+  addLegend(pal = pal, values = 0:800,
             title = paste0("% Average<br>Precipitation<br>", as.character(watersheds_30$crrnt_t[1])),
             position = "bottomleft")
 
 
 saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/precipitation/widgets/m_raster.html", selfcontained = T)
+
+saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/widgets/m_raster_anomaly.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
+
 
 ################################################################################
 ############################### BUILD HUC MAP ##################################
@@ -160,7 +167,7 @@ m_huc = base_map()
 
 # Add multiple layers with a loop ----------------------------------------------
 for(i in 1:length(watershed_list_names)){
-  m_huc = m_huc %>% addPolygons(data = watershed_list[[i]], group = timescale_names[i], fillColor = ~pal_bins(anomaly), weight = 2, opacity = 1, color = "black", 
+  m_huc = m_huc %>% addPolygons(data = watershed_list[[i]], group = timescale_names[i], fillColor = ~pal(anomaly), weight = 2, opacity = 1, color = "black", 
                                 dashArray = "3", fillOpacity = 0.7, highlight = 
                                   highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels[[i]], 
                                 labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))
@@ -172,11 +179,13 @@ m_huc = m_huc %>%
                    baseGroups = timescale_names,
                    overlayGroups = c("USDM", "States", "Weather"),
                    options = layersControlOptions(collapsed = FALSE)) %>%
-  addLegend(pal = pal, values = 0:400,
+  addLegend(pal = pal, values = 0:800,
             title = paste0("% Average<br>Precipitation<br>", as.character(watersheds_30$crrnt_t[1])),
             position = "bottomleft")
 
 saveWidget(m_huc, "/home/zhoylman/drought_indicators/precipitation/widgets/m_huc.html", selfcontained = T)
+
+saveWidget(m_huc, "/home/zhoylman/drought_indicators/widgets/m_huc_anomaly.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
 
 
 ################################################################################
@@ -187,7 +196,7 @@ m_county = base_map()
 
 # Add multiple layers with a loop ----------------------------------------------
 for(i in 1:length(watershed_list_names)){
-  m_county = m_county %>% addPolygons(data = county_list[[i]], group = timescale_names[i], fillColor = ~pal_bins(anomaly), weight = 2, opacity = 1, color = "black", 
+  m_county = m_county %>% addPolygons(data = county_list[[i]], group = timescale_names[i], fillColor = ~pal(anomaly), weight = 2, opacity = 1, color = "black", 
                                       dashArray = "3", fillOpacity = 0.7, highlight = 
                                         highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels_county[[i]], 
                                       labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))
@@ -199,11 +208,13 @@ m_county = m_county %>%
                    baseGroups = timescale_names,
                    overlayGroups = c("USDM", "States", "Weather"),
                    options = layersControlOptions(collapsed = FALSE)) %>%
-  addLegend(pal = pal, values = 0:400,
+  addLegend(pal = pal, values = 0:800,
             title = paste0("% Average<br>Precipitation<br>", as.character(watersheds_30$crrnt_t[1])),
             position = "bottomleft")
 
 saveWidget(as_widget(m_county), "/home/zhoylman/drought_indicators/precipitation/widgets/m_county.html", selfcontained = T)
+
+saveWidget(m_county, "/home/zhoylman/drought_indicators/widgets/m_county_anomaly.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
 
 ######################################################################################################################
 
@@ -236,7 +247,7 @@ for(i in 1:length(watershed_list_names)){
 
 for(i in 1:length(watershed_list)){
   #set upper bound for color ramp
-  values(raster_list_percentiles[[i]])[values(raster_list_percentiles[[i]]) > 100] = 100
+  values(raster_list_percentiles[[i]])[values(raster_list_percentiles[[i]]) >= 100] = 99
 }
 
 ################################################################################
@@ -259,8 +270,10 @@ m_raster = m_raster %>%
             title = paste0("Precipitation<br>Percentile<br>", as.character(watersheds_30$crrnt_t[1])),
             position = "bottomleft")
 
-m_raster
 saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/precipitation/widgets/m_raster_percentile.html", selfcontained = T)
+
+saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/widgets/m_raster_percentile.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
+
 
 ################################################################################
 ############################### BUILD HUC MAP ##################################
@@ -288,6 +301,8 @@ m_huc = m_huc %>%
 
 saveWidget(m_huc, "/home/zhoylman/drought_indicators/precipitation/widgets/m_huc_percentile.html", selfcontained = T)
 
+saveWidget(m_huc, "/home/zhoylman/drought_indicators/widgets/m_huc_percentile.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
+
 
 ################################################################################
 ############################### BUILD COUNTY MAP ###############################
@@ -314,6 +329,8 @@ m_county = m_county %>%
             position = "bottomleft")
 
 saveWidget(as_widget(m_county), "/home/zhoylman/drought_indicators/precipitation/widgets/m_county_percentile.html", selfcontained = T)
+
+saveWidget(m_county, "/home/zhoylman/drought_indicators/widgets/m_county_percentile.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
 
 ######################################################################################################################
 

@@ -49,6 +49,7 @@ base_map = function(x){
     leaflet::addLayersControl(position = "topleft",
                      overlayGroups = c("USDM", "States", "Weather"),
                      options = leaflet::layersControlOptions(collapsed = FALSE)) %>%
+    leaflet::hideGroup("Weather")%>%
     leaflet.extras::addDrawToolbar(markerOptions = drawMarkerOptions(),
                    polylineOptions = FALSE,
                    polygonOptions = FALSE,
@@ -56,9 +57,9 @@ base_map = function(x){
                    rectangleOptions = FALSE,
                    circleMarkerOptions = FALSE,
                    editOptions = FALSE,
-                   singleFeature = TRUE,
+                   singleFeature = FALSE,
                    targetGroup='draw')%>%
     leaflet::addLegend("bottomright", pal = pal_usdm_legend, values = c("D0 (Abnormally Dry)", "D1 (Moderate Drought)",
                                                                "D2 (Severe Drought)", "D3 (Extreme Drought)",
-                                                               "D4 (Exceptional Drought)"),title = "USDM")
+                                                               "D4 (Exceptional Drought)"),title = "USDM") 
 }

@@ -61,27 +61,15 @@ county_year_to_date = st_read("../spi_app/shp/current_spi/current_spi_county_yea
 
 #define color pallets
 pal_bins <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), interpolate = "spline"), 
-                     domain = -3.5:3.5, bins = seq(-3.5,3.5,0.5))
+                     domain = -2.5:2.5, bins = seq(-2.5,2.5,0.5))
 
 
-pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3.5:3.5, na.color = "transparent")
+pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -2.5:2.5, na.color = "transparent")
 
     #lists of layers for loop leaflet map generation
     watershed_list = list(watersheds_30, watersheds_60, watersheds_90, watersheds_180, watersheds_365, watersheds_water_year, watersheds_year_to_date)
     county_list = list(county_30, county_60, county_90, county_180, county_365, county_water_year, county_year_to_date)
     raster_list = list(current_spi_30, current_spi_60,current_spi_90, current_spi_180, current_spi_365, current_spi_water_year, current_spi_year_to_date)
-    
-    for(i in 1:length(watershed_list)){
-      #set upper bound for color ramp
-      values(raster_list[[i]])[values(raster_list[[i]]) > 3.5] = 3.5
-      values(raster_list[[i]])[values(raster_list[[i]]) < -3.5] = -3.5
-      
-      county_list[[i]]$average[county_list[[i]]$average > 3.5] = 3.5
-      county_list[[i]]$average[county_list[[i]]$average < -3.5] = -3.5
-      
-      watershed_list[[i]]$average[watershed_list[[i]]$average > 3.5] = 3.5
-      watershed_list[[i]]$average[watershed_list[[i]]$average < -3.5] = -3.5
-    }
     
     
     watershed_list_names = c("30 Day HUC8", "60 Day HUC8", "90 Day HUC8", "180 Day HUC8", "365 Day HUC8", "Water Year", "Year to Date")
@@ -104,6 +92,17 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
       ) %>% lapply(htmltools::HTML)
     }
     
+    for(i in 1:length(watershed_list)){
+      #set upper bound for color ramp
+      values(raster_list[[i]])[values(raster_list[[i]]) > 2.5] = 2.5
+      values(raster_list[[i]])[values(raster_list[[i]]) < -2.5] = -2.5
+      
+      county_list[[i]]$average[county_list[[i]]$average > 2.5] = 2.5
+      county_list[[i]]$average[county_list[[i]]$average < -2.5] = -2.5
+      
+      watershed_list[[i]]$average[watershed_list[[i]]$average > 2.5] = 2.5
+      watershed_list[[i]]$average[watershed_list[[i]]$average < -2.5] = -2.5
+    }
     
     ################################################################################
     ############################### BUILD RASTER MAP ###############################
@@ -121,7 +120,7 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
                        baseGroups = timescale_names,
                        overlayGroups = c("USDM", "States", "Weather"),
                        options = layersControlOptions(collapsed = FALSE)) %>%
-      addLegend(pal = pal, values = -3.5:3.5,
+      addLegend(pal = pal, values = -2.5:2.5,
                 title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
                 position = "bottomleft")
     
@@ -131,6 +130,8 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
     
     saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html", selfcontained = T)
     
+    saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/widgets/m_raster_spi.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
+    
     ################################################################################
     ############################### BUILD HUC MAP ##################################
     ################################################################################
@@ -139,7 +140,7 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
     
     # Add multiple layers with a loop ----------------------------------------------
     for(i in 1:length(watershed_list_names)){
-      m_huc = m_huc %>% addPolygons(data = watershed_list[[i]], group = timescale_names[i], fillColor = ~pal_bins(average), weight = 2, opacity = 1, color = "black", 
+      m_huc = m_huc %>% addPolygons(data = watershed_list[[i]], group = timescale_names[i], fillColor = ~pal(average), weight = 2, opacity = 1, color = "black", 
                                     dashArray = "3", fillOpacity = 0.7, highlight = 
                                       highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels[[i]], 
                                     labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))
@@ -151,7 +152,7 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
                        baseGroups = timescale_names,
                        overlayGroups = c("USDM", "States", "Weather"),
                        options = layersControlOptions(collapsed = FALSE)) %>%
-      addLegend(pal = pal, values = -3.5:3.5,
+      addLegend(pal = pal, values = -2.5:2.5,
                 title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
                 position = "bottomleft")
     
@@ -159,6 +160,8 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
     
     
     saveWidget(m_huc, "/home/zhoylman/drought_indicators/spi_app/widgets/m_huc.html", selfcontained = T)
+    
+    saveWidget(m_huc, "/home/zhoylman/drought_indicators/widgets/m_huc_spi.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
     
     
     ################################################################################
@@ -169,7 +172,7 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
     
     # Add multiple layers with a loop ----------------------------------------------
     for(i in 1:length(watershed_list_names)){
-      m_county = m_county %>% addPolygons(data = county_list[[i]], group = timescale_names[i], fillColor = ~pal_bins(average), weight = 2, opacity = 1, color = "black", 
+      m_county = m_county %>% addPolygons(data = county_list[[i]], group = timescale_names[i], fillColor = ~pal(average), weight = 2, opacity = 1, color = "black", 
                                           dashArray = "3", fillOpacity = 0.7, highlight = 
                                             highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels_county[[i]], 
                                           labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))
@@ -181,7 +184,7 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
                        baseGroups = timescale_names,
                        overlayGroups = c("USDM", "States", "Weather"),
                        options = layersControlOptions(collapsed = FALSE)) %>%
-      addLegend(pal = pal, values = -3.5:3.5,
+      addLegend(pal = pal, values = -2.5:2.5,
                 title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
                 position = "bottomleft")
     
@@ -189,4 +192,6 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -3
     
     
     saveWidget(as_widget(m_county), "/home/zhoylman/drought_indicators/spi_app/widgets/m_county.html", selfcontained = T)
+    
+    saveWidget(m_county, "/home/zhoylman/drought_indicators/widgets/m_county_spi.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
     

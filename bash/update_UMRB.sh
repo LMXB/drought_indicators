@@ -5,6 +5,7 @@ Rscript /home/zhoylman/drought_indicators/spi_app/R/SPI_Map.R
 Rscript /home/zhoylman/drought_indicators/spei_app/R/SPEI_Map.R
 Rscript /home/zhoylman/drought_indicators/eddi_app/R/EDDI_Map.R
 Rscript /home/zhoylman/drought_indicators/precipitation/R/precipitation_map.R
+Rscript /home/zhoylman/drought_indicators/sedi_app/R/SEDI_Map.R
 
 # Update Snotel Data
 Rscript /home/zhoylman/drought_indicators/snotel/R/download_current.R >/home/zhoylman/cron-log/cron-log-snotel 2>&1
@@ -16,6 +17,7 @@ Rscript /home/zhoylman/drought_indicators/spei_app/R/build_html.R
 Rscript /home/zhoylman/drought_indicators/eddi_app/R/build_html.R
 Rscript /home/zhoylman/drought_indicators/snotel/R/build_html.R
 Rscript /home/zhoylman/drought_indicators/precipitation/R/build_html.R
+Rscript /home/zhoylman/drought_indicators/sedi_app/R/build_html.R
 
 # Convert Rmd to HTML with Rmarkdown render
 Rscript /home/zhoylman/drought_indicators/flex_new/R/knit_rmd.R >/home/zhoylman/cron-log/cron-log-knitt 2>&1

@@ -1,5 +1,7 @@
 ---
 title: "UMRB Drought Indicators Dashboard"
+self_contained: false
+lib_dir: "../widgets/libs/"
 output: 
   flexdashboard::flex_dashboard:
     theme: cerulean
@@ -44,33 +46,33 @@ Introduction
 
 <br>
 
-### **Introduction**
-
 #### **Welcome to the Upper Missouri River Basin (UMRB) drought indicators dashboard.**
 
 <br>
 
 
-This document provides an overview of several drought metrics commonly used across the globe. In this document we focus on: 
+This website provides access to several drought metrics commonly used across the globe. All datasets are calculated daily and can be aggregated by watershed and county boundaries. In this document we focus on: 
 
-  + 1. Describing general overview and theoretical basis for a metric 
-  + 2. Describe the data required for calculation 
-  + 3. Compute and display current conditions
-  + 4. Briefly discussing the mathematical derivation of the metric 
-  + 5. Discuss the relative strengths and weaknesses of a metric 
-  + 6. Describe historical validation of a metric 
-  + 7. Show validation of a metric using data collected within the UMRB
-  + 8. Provide a simple recommendation of its usage across the UMRB for describing differing forms of drought
+<br>
+
+  + 1. Providing current drought information using the most current peer reviewed science
+  + 2. Describing general overview and theoretical basis for a metric 
+  + 3. Describe the data required for calculation 
+  + 4. Discuss the relative strengths and weaknesses of a metric 
+  + 5. Validating a metric using on the ground observations (soil moisture, streamflow and groundwater; ongoing)
+
+<br>
+
+This work is supported by a National Oceanic and Atmospheric Administration’s (NOAA) National Integrated Drought Information System (NIDIS) Drought Early Warning System (DEWS) grant. More information on NIDIS and the DEWS program can be found at https://www.drought.gov/drought/what-nidis. 
 
 <br>
 
 ##### **Select a drought indicator from the above tabs to analyze current conditions.**
 
 <center>
-```{r, echo = F}
-# Small fig.width
-knitr::include_graphics("/home/zhoylman/drought_indicators/website/logos.png")
-```
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/misc_content/logos.png" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
 <center>
 
 Snow Water Equivalent {data-navmenu="SNOTEL" data-icon="fa-list" data-orientation=rows}
@@ -90,7 +92,7 @@ Row {.tabset .tabset-fade data-height=800}
 
 ### **Snow Water Equivalent**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/snotel/widgets/swe_snotel.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/swe_snotel.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 Accumulated Precipitation {data-navmenu="SNOTEL" data-icon="fa-list" data-orientation=rows}
 ========================================================
@@ -109,7 +111,7 @@ Row {.tabset .tabset-fade data-height=800}
 
 ### **Accumulated Precipitation**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/snotel/widgets/precip_snotel.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/precip_snotel.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 Precipitation Percentiles {data-navmenu="Precipitation" data-icon="fa-list" data-orientation=rows}
 ========================================================
@@ -143,15 +145,15 @@ Row {.tabset .tabset-fade data-height=750}
 
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/precipitation/widgets/m_raster_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_raster_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/precipitation/widgets/m_county_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_county_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/precipitation/widgets/m_huc_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
@@ -204,15 +206,15 @@ Row {.tabset .tabset-fade data-height=750}
 
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/precipitation/widgets/m_raster.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_raster_anomaly.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/precipitation/widgets/m_county.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_county_anomaly.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/precipitation/widgets/m_huc.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_anomaly.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
@@ -267,15 +269,15 @@ Row {.tabset .tabset-fade data-height=750}
 
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/spi_app/widgets/m_raster.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_raster_spi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/spi_app/widgets/m_county.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_county_spi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/spi_app/widgets/m_huc.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_spi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
@@ -352,15 +354,15 @@ Row {.tabset .tabset-fade data-height=750}
 -------------------------------------
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/spei_app/widgets/m_raster.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_raster_spei.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/spei_app/widgets/m_county.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_county_spei.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/spei_app/widgets/m_huc.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_spei.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
@@ -423,15 +425,80 @@ Row {.tabset .tabset-fade data-height=750}
 -------------------------------------
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/eddi_app/widgets/m_raster.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_raster_eddi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/eddi_app/widgets/m_county.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_county_eddi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/eddi_app/widgets/m_huc.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_eddi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+Row {.tabset .tabset-fade}
+-------------------------------------
+### **Derivation:**
+
+
+**Key Strengths:**
+
+  +  
+
+**Key Weaknesses:** 
+
+  +  
+  
+### **Historical Validation:**
+ 
+
+### **UMRB Validation:**
+Validation in progress
+
+### **UMRB Recommendation:**
+UMRB specific recommendations will be appended to this document as validation is completed
+
+Much of the background information regarding this metric was adapted from the NCAR/UCAR Climate Data Guide (here)
+
+
+Standardized Evapotranspiration Deficit Index (SEDI) {data-navmenu="Drought Metrics" data-icon="fa-list" data-orientation=rows}
+========================================================
+
+### **Standardized Evapotranspiration Deficit Index (SEDI)**
+
+<br>
+
+#### **Overview:**
+SEDI calculates the standardized difference between actual evapotranspiration (AET or ETa) and potential evapotranspiration (PET) for a given region. Similar to the SPI, SEDI can be calculated at various timescales to represent different drought timescales. As such, the SEDI can approximate different impacts of drought on hydrological conditions and processes depending on the timescale used. SEDI is a relatively new drought metric that has advantages over strictly meteorologically based drought metrics (such as SPI) because it uses a soil water balance model to estimate water available for evapotranspiration (AET or ETa). Therefore SEDI represents the standardized unmet atmospheric demand for moisture, which is a good representation of potential vegetation water stress. 
+<br>
+
+#### **Data Requirements:**
+
+  + Actual Evapotranspiration (AET or ETa)
+  + Potential Evapotranspiration (PET)
+
+<br>
+
+
+##### Select a timescale from the left panel on the map. You can also toggle overlays, such as the current US Drought Monitor (USDM) drought designations, weather (from the National Weather Service) and state boundaries.
+
+<br>
+
+##### Tabs above the map allow you to aggregate the data by political or hydrologic boundaries.
+
+###
+
+Row {.tabset .tabset-fade data-height=750}
+-------------------------------------
+### **Gridded Data**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_raster_sedi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
+### **Counties**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_county_sedi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
+### **Watersheds**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_sedi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 Row {.tabset .tabset-fade}
 -------------------------------------
 ### **Derivation:**
