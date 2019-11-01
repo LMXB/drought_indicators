@@ -71,7 +71,7 @@ This work is supported by a National Oceanic and Atmospheric Administration’s 
 
 <center>
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/misc_content/logos.png" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<img width="60%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/misc_content/logos.png" ></img>
 
 <center>
 
