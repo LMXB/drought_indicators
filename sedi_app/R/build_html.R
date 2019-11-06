@@ -57,7 +57,7 @@ county_360 = st_read("../sedi_app/shp/current_sedi/current_sedi_county_360.shp")
 #county_year_to_date = st_read("../sedi_app/shp/current_sedi/current_sedi_county_year_to_date.shp")
 
 #define color pallets
-pal <- colorNumeric(rev(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66")), -2.5:2.5, na.color = "transparent")
+pal <- colorNumeric(rev(c("#8b0000", "#ff0000", "#ffff00", "#ffffff", "#00ffff", "#0000ff", "#000d66")), -2.5:2.5, na.color = "transparent")
 
 #lists of layers for loop leaflet map generation
 watershed_list = list(watersheds_30, watersheds_60, watersheds_90, watersheds_180, watersheds_360)

@@ -1,1 +1,0 @@
-Rscript D:\Git_Repo\drought_indicators\apps\spi_app_v3\functions\SPI_Map.R

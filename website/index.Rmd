@@ -1,9 +1,10 @@
 ---
 title: "UMRB Drought Indicators Dashboard"
 self_contained: false
-lib_dir: "../widgets/libs/"
 output: 
   flexdashboard::flex_dashboard:
+    self_contained: false
+    lib_dir: "./libs"
     theme: cerulean
     navbar:
       - { title: "MCO GitHub", href: "https://github.com/mt-climate-office", align: right }

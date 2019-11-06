@@ -60,11 +60,11 @@ county_water_year = st_read("../spi_app/shp/current_spi/current_spi_county_water
 county_year_to_date = st_read("../spi_app/shp/current_spi/current_spi_county_year_to_date.shp")
 
 #define color pallets
-pal_bins <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), interpolate = "spline"), 
+pal_bins <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffff00", "#ffffff", "#00ffff", "#0000ff", "#000d66"), interpolate = "spline"), 
                      domain = -2.5:2.5, bins = seq(-2.5,2.5,0.5))
 
 
-pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#000d66"), -2.5:2.5, na.color = "transparent")
+pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffff00", "#ffffff", "#00ffff", "#0000ff", "#000d66"), -2.5:2.5, na.color = "transparent")
 
     #lists of layers for loop leaflet map generation
     watershed_list = list(watersheds_30, watersheds_60, watersheds_90, watersheds_180, watersheds_365, watersheds_water_year, watersheds_year_to_date)
