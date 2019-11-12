@@ -14,7 +14,6 @@ station_data = read.csv("~/drought_indicators_data/mesonet/station_data_clean.cs
 load("/home/zhoylman/drought_indicators_data/mesonet/mesonet_soil_moisture.RData")
 #mesonet_soil_moisture$element = as.factor(as.character(mesonet_soil_moisture$element))
 
-
 #load functions
 source("/home/zhoylman/drought_indicators/spi_app/R/gamma_fit.R")
 source("/home/zhoylman/drought_indicators/validation/soil_moisture/R/gamma_standard_fun.R")

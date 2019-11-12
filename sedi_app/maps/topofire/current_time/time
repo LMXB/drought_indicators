@@ -1,4 +1,4 @@
-total 2558040
+total 2709208
 -rw-rw-r-- 1 zhoylman zhoylman 5064059 Jun 25 13:52 sedi_20190623_180_day.tif
 -rw-rw-r-- 1 zhoylman zhoylman 5070424 Jun 25 13:40 sedi_20190623_30_day.tif
 -rw-rw-r-- 1 zhoylman zhoylman 5145278 Jun 25 13:58 sedi_20190623_360_day.tif
@@ -509,3 +509,33 @@ total 2558040
 -rw-rw-r-- 1 zhoylman zhoylman 5146179 Nov  5 23:51 sedi_20191104_360_day.tif
 -rw-rw-r-- 1 zhoylman zhoylman 5140754 Nov  5 23:35 sedi_20191104_60_day.tif
 -rw-rw-r-- 1 zhoylman zhoylman 5173754 Nov  5 23:38 sedi_20191104_90_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5142962 Nov  7 00:17 sedi_20191105_180_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5168528 Nov  7 00:05 sedi_20191105_30_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5145178 Nov  7 00:23 sedi_20191105_360_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5141148 Nov  7 00:08 sedi_20191105_60_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5174891 Nov  7 00:11 sedi_20191105_90_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5143486 Nov  7 23:44 sedi_20191106_180_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5171061 Nov  7 23:32 sedi_20191106_30_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5146048 Nov  7 23:52 sedi_20191106_360_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5145427 Nov  7 23:36 sedi_20191106_60_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5176486 Nov  7 23:39 sedi_20191106_90_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5144883 Nov  8 23:45 sedi_20191107_180_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5172218 Nov  8 23:31 sedi_20191107_30_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5145647 Nov  8 23:53 sedi_20191107_360_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5148625 Nov  8 23:35 sedi_20191107_60_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5178047 Nov  8 23:39 sedi_20191107_90_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5144308 Nov  9 23:46 sedi_20191108_180_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5169358 Nov  9 23:33 sedi_20191108_30_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5145077 Nov  9 23:54 sedi_20191108_360_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5155736 Nov  9 23:37 sedi_20191108_60_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5181025 Nov  9 23:40 sedi_20191108_90_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5144638 Nov 10 23:43 sedi_20191109_180_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5162812 Nov 10 23:30 sedi_20191109_30_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5144958 Nov 10 23:50 sedi_20191109_360_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5160813 Nov 10 23:34 sedi_20191109_60_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5183180 Nov 10 23:37 sedi_20191109_90_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5145394 Nov 11 23:44 sedi_20191110_180_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5153803 Nov 11 23:31 sedi_20191110_30_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5145248 Nov 11 23:51 sedi_20191110_360_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5164289 Nov 11 23:35 sedi_20191110_60_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5183771 Nov 11 23:38 sedi_20191110_90_day.tif
