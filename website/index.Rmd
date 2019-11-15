@@ -237,7 +237,29 @@ For each timescale we calculate the average accumulated precipitation across the
   
 
 
+Soil Moisture Percentiles (Modeled) {data-navmenu="Soil Moisture" data-icon="fa-list" data-orientation=rows}
+========================================================
+### **Soil Moisture Percentiles**
+#### **National Weather Service, Climate Prediction Center**
 
+<br>
+
+#### **Overview:**
+
+Soil moisture is a strong indicator of drought. In this module we present modeled soil moisture percentiles calculated by the National Weather Service, Climate Prediction Center. This map is an ensamble model of the MOSAIC, NOAH, VIC & SAC soil moisture models. 50 represents the average (median) precipitation over the time period. 100 and 0 represent the wettest and driest conditions observed respectively.
+
+<br>  
+
+###
+
+Row {.tabset .tabset-fade data-height=750}
+-------------------------------------
+
+### **Gridded Data**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_raster_soil_moisture.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
+ 
 Standardized Precipitation Index (SPI) {data-navmenu="Drought Metrics" data-icon="fa-list" data-orientation=rows}
 ========================================================
 ### **Standardized Precipitation Index (SPI)**
