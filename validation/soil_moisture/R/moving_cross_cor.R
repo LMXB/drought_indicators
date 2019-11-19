@@ -1,16 +1,19 @@
-moving_cross_cor = function(spei,soil_moisture){ 
+#define the not in opperator. Super useful 
+'%notin%' = Negate('%in%')
+
+moving_cross_cor = function(drought_index,soil_moisture){ 
   tryCatch({
-    x_size = length(spei)
-    for(t in 1:length(spei)){
-      x1 = spei[[t]]
+    x_size = length(drought_index)
+    for(t in 1:length(drought_index)){
+      index_timescale_select = drought_index[[t]]
       
       # define time format
-      x1$time = round(as.POSIXct(x1$time), unit = "days")
+      index_timescale_select$time = round(as.POSIXct(index_timescale_select$time), unit = "days")
       soil_moisture$Date = round(as.POSIXct(soil_moisture$Date, format = "%Y-%m-%d"), unit = "days")
       
       # filter datasets for consitant obs 
-      x_filter <- x1[x1$time %in% soil_moisture$Date,]
-      y_filter <- soil_moisture[soil_moisture$Date %in% x1$time,]
+      x_filter <- index_timescale_select[index_timescale_select$time %in% soil_moisture$Date,]
+      y_filter <- soil_moisture[soil_moisture$Date %in% index_timescale_select$time,]
       
       #rename date time collumn
       colnames(y_filter) = c("time", names(y_filter)[-1])
@@ -19,13 +22,15 @@ moving_cross_cor = function(spei,soil_moisture){
       x_filter$time = as.POSIXct(x_filter$time)
       y_filter$time = as.POSIXct(y_filter$time)
       
-      #merge based 
+      #merge based on time
       merged = dplyr::full_join(x_filter, y_filter, by = "time")
       
+      #extract names for indexing (drought index names and depths change across networks/indicies)
+      drought_metric_name = colnames(merged)[2]
       depth = colnames(merged)[-c(1:2)]
       
       merged = merged %>%
-        select(time, spei, depth)%>%
+        dplyr::select(time, drought_metric_name, depth)%>%
         mutate(mean_soil_moisture = rowMeans(.[depth], na.rm = T))%>%
         as_tibble()
       
@@ -38,9 +43,13 @@ moving_cross_cor = function(spei,soil_moisture){
       for(i in 1: length(depth)){
         x_select = merged %>%
           #select the collums I want, depth
-          select(time, spei, depth[i]) %>%
+          dplyr::select(time, drought_metric_name, depth[i]) %>%
           #filter negative soil moisture data
           dplyr::filter(get(depth[i]) > 0) %>%
+          #filter bad soil moisture data
+          dplyr::filter(get(depth[i]) < 100) %>%
+          #filter Inf and -Inf
+          filter_all(all_vars(is.finite(.))) %>%
           #filter for complete cases
           tidyr::drop_na()%>%
           #compute standardized value
@@ -50,10 +59,25 @@ moving_cross_cor = function(spei,soil_moisture){
         
         if(i == 1){
           correlation = x_select %>%
-          dplyr::group_by(month) %>%
-          dplyr::summarize(correlation = cor(spei,standardized))
+            #group by month
+            dplyr::group_by(month) %>%
+            # run correlation by month and calcualte number of obs in each month 
+            dplyr::summarize(correlation = cor(get(drought_metric_name), get(depth[i])),
+                             length = length(get(depth[i])))%>%
+            #find missing months and add NAs if nessisary
+            bind_rows(data.frame(month = c(which(c(1:12) %notin% .$month)),
+                                 correlation = rep(NA, length(which(c(1:12) %notin% .$month))),
+                                 length = rep(0, length(which(c(1:12) %notin% .$month)))))%>%
+            arrange(month) %>%
+            #remove correlations with less than 30 obs
+            mutate(correlation = ifelse(length < 30, NA, correlation))%>%
+            dplyr::select(month, correlation)
           
+          # first i, start the bigger dataframe
           correlation_full = correlation
+          
+          #dont think this if statement is needed any longer after 
+          #the dplyr row binding
           if(length(correlation_full$month) == 0){
             correlation_full = data.frame(month = 1:12,
                                           correlation = rep(NA,12))%>%
@@ -62,8 +86,19 @@ moving_cross_cor = function(spei,soil_moisture){
         }
         else{
           correlation = x_select %>%
+            #group by month
             dplyr::group_by(month) %>%
-            dplyr::summarize(correlation = cor(spei,standardized))
+            # run correlation by month and calcualte number of obs in each month 
+            dplyr::summarize(correlation = cor(get(drought_metric_name), get(depth[i])),
+                             length = length(get(depth[i])))%>%
+            #find missing months and add NAs if nessisary
+            bind_rows(data.frame(month = c(which(c(1:12) %notin% .$month)),
+                                 correlation = rep(NA, length(which(c(1:12) %notin% .$month))),
+                                 length = rep(0, length(which(c(1:12) %notin% .$month)))))%>%
+            arrange(month) %>%
+            #remove correlations with less than 30 obs
+            mutate(correlation = ifelse(length < 30, NA, correlation))%>%
+            dplyr::select(month, correlation)
           
           if(length(correlation$month) == 0){
             correlation = data.frame(month = 1:12,
