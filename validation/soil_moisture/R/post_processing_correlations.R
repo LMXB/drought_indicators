@@ -268,4 +268,125 @@ webshot::webshot("/home/zhoylman/drought_indicators/validation/soil_moisture/plo
                  cliprect = "viewport", vwidth = 2000,vheight = 1000)
 
 
+################# Monthly Post Processing ########################
+
+data = rbind(extract_density(best_times_combined[[1]]$mean, "Mean"),
+             extract_density(best_times_combined[[1]]$shallow, "Shallow"),
+             extract_density(best_times_combined[[1]]$middle, "Middle"),
+             extract_density(best_times_combined[[1]]$deep, "Deep"))
+
+best_density = data %>%
+  group_by(name) %>%
+  select(y, name) %>%
+  summarise_each(max)
+
+best_times = data %>%
+  dplyr::filter(y %in% best_density$y)%>%
+  mutate(x = mround(x,5))%>%
+  mutate(index = which(x == c(seq(5,730,5))))
+
+for(i in 1:4){
+  index[i] = which(best_times$x[i] == c(seq(5,730,5)))
+}
+
+#extract snotel
+for(i in 1:length(monthly_correlation_matrix_snotel_spi)){
+  mean_temp = monthly_correlation_matrix_snotel_spi[[i]][[index[1]]]$mean_soil_moisture
+  
+  shallow_temp = rowMeans(data.frame(in_2 = monthly_correlation_matrix_snotel_spi[[i]][[index[2]]]$Soil.Moisture.Percent..2in..pct..Start.of.Day.Values,
+                                     in_4 = monthly_correlation_matrix_snotel_spi[[i]][[index[2]]]$Soil.Moisture.Percent..4in..pct..Start.of.Day.Values),
+                          na.rm = TRUE)
+  
+  middle_temp = rowMeans(data.frame(in_8 = monthly_correlation_matrix_snotel_spi[[i]][[index[3]]]$Soil.Moisture.Percent..8in..pct..Start.of.Day.Values,
+                                     in_20 = monthly_correlation_matrix_snotel_spi[[i]][[index[3]]]$Soil.Moisture.Percent..20in..pct..Start.of.Day.Values),
+                          na.rm = TRUE)
+  
+  deep_temp = monthly_correlation_matrix_snotel_spi[[i]][[index[4]]]$Soil.Moisture.Percent..40in..pct..Start.of.Day.Values
+  
+  if(i == 1){
+    mean_full = data.frame(mean_temp)
+    shallow_full = data.frame(shallow_temp)
+    middle_full = data.frame(middle_temp)
+    deep_full = data.frame(deep_temp)
+  }
+  else{
+    mean_full = cbind(mean_full, mean_temp)
+    shallow_full = cbind(shallow_full, shallow_temp)
+    middle_full = cbind(middle_full, middle_temp)
+    deep_full = cbind(deep_full, deep_temp)
+  }
+}
+
+# extract mesonet
+for(i in 1:length(monthly_correlation_matrix_mesonet_spi)){
+  mean_temp = monthly_correlation_matrix_mesonet_spi[[i]][[index[1]]]$mean_soil_moisture
+  mean_full = cbind(mean_full, mean_temp)
+  #shallow
+  shallow_temp = rowMeans(data.frame(in_0 = monthly_correlation_matrix_mesonet_spi[[i]][[index[2]]]$soilwc00,
+                                     in_4 = monthly_correlation_matrix_mesonet_spi[[i]][[index[2]]]$soilwc04),na.rm = TRUE)
+  shallow_full = cbind(shallow_full, shallow_temp)
+  #middle
+  middle_temp = rowMeans(data.frame(in_8 = monthly_correlation_matrix_mesonet_spi[[i]][[index[3]]]$soilwc08,
+                                     in_20 = monthly_correlation_matrix_mesonet_spi[[i]][[index[3]]]$soilwc20),na.rm = TRUE)
+  middle_full = cbind(middle_full, middle_temp)
+  #deep
+  deep_temp = monthly_correlation_matrix_mesonet_spi[[i]][[index[4]]]$soilwc36
+  deep_full = cbind(deep_full, deep_temp)
+  
+}
+
+
+summary = data.frame(median = apply(mean_full, 1, median, na.rm=TRUE),
+                     upper = apply(mean_full, 1, quantile, 0.75, na.rm=TRUE),
+                     lower = apply(mean_full, 1, quantile, 0.25, na.rm=TRUE),
+                     time = as.POSIXct(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))))
+
+summary_shallow = data.frame(median = apply(shallow_full, 1, median, na.rm=TRUE),
+                     upper = apply(shallow_full, 1, quantile, 0.75, na.rm=TRUE),
+                     lower = apply(shallow_full, 1, quantile, 0.25, na.rm=TRUE),
+                     time = as.POSIXct(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))))
+
+summary_middle = data.frame(median = apply(middle_full, 1, median, na.rm=TRUE),
+                     upper = apply(middle_full, 1, quantile, 0.75, na.rm=TRUE),
+                     lower = apply(middle_full, 1, quantile, 0.25, na.rm=TRUE),
+                     time = as.POSIXct(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))))
+
+summary_deep = data.frame(median = apply(deep_full, 1, median, na.rm=TRUE),
+                     upper = apply(deep_full, 1, quantile, 0.75, na.rm=TRUE),
+                     lower = apply(deep_full, 1, quantile, 0.25, na.rm=TRUE),
+                     time = as.POSIXct(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))))
+
+
+
+library(ggplot2)
+library(scales)
+
+plot_monthly = function(data1, color1, depth, time_scale){
+  plot = ggplot() +
+    geom_ribbon(data = data1, aes(x = time, ymin = lower, ymax = upper), alpha = 0.2, fill = color1)+
+    geom_line(data = data1, aes(x = time, y = median), color = color1)+
+    theme_bw(base_size = 16)+
+    theme(plot.title = element_text(hjust = 0.5))+
+    ylab("Correlation")+
+    ggtitle(paste0("SPI [",time_scale," day] ~ Soil Moisture ", "[", depth, "]"))+
+    scale_x_datetime(labels = date_format("%b"),
+                     date_breaks = "2 month")+
+    theme(axis.title.x=element_blank(),
+          plot.title = element_text(size = 14, face = "bold"))
+  return(plot)
+}
+
+plots = list()
+datasets = list(summary, summary_shallow, summary_middle, summary_deep)
+colors = c("black", "forestgreen", "blue", "purple")
+depths = c("Mean", "Shallow", "Middle", "Deep")
+time_scale = c(seq(5,730,5)[index])
+
+for(i in 1:4){
+  plots[[i]] = plot_monthly(datasets[[i]], colors[i], depths[i], time_scale[i])
+}
+
+plot_grid_monthly_spi = cowplot::plot_grid(plots[[1]],plots[[2]],plots[[3]],plots[[4]], nrow = 2)
+ggsave("./validation/soil_moisture/plots/summary/plot_grid_monthly_spi.png",
+       plot_grid_monthly_spi, width = 10, height = 9, units = "in", dpi = 600)
 
