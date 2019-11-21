@@ -154,7 +154,7 @@ for(i in 2:length(drought_metrics)){
   gc()
   rm(temp, drought_data);gc()
   toc()
-  Sys.time()
+  print(Sys.time())
 }
 
 
@@ -194,4 +194,5 @@ for(i in 2:length(drought_metrics)){
                      drought_metrics[i],"_unfrozen.RData"))
   gc()
   rm(temp, drought_data);gc()
+  print(Sys.time())
 }
