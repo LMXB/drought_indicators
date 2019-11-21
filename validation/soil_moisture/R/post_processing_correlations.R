@@ -187,85 +187,6 @@ plot_grid_depth = cowplot::plot_grid(depth_plot[[1]],depth_plot[[2]],depth_plot[
 ggsave("./validation/soil_moisture/plots/summary/depth_density_unfrozen.png",
        plot_grid_depth, width = 10, height = 9, units = "in", dpi = 600)
 
-# leaflet map 
-library(dplyr)
-#read in geospatial data
-station_data = read.csv("~/drought_indicators_data/mesonet/station_data_clean.csv")
-station_data$X = NULL
-snotel = read.csv("./validation/soil_moisture/snotel_data/nrcs_soil_moisture.csv")
-snotel_cropped = snotel %>%
-  dplyr::select(site_name, latitude, longitude) %>%
-  rename(station_key = site_name)
-
-snotel_cropped$network = "NRCS"
-master_list = rbind(snotel_cropped,station_data)
-
-master_times = cbind(master_list, 
-                     mean_time_spi = c(best_times_list$spi$mean, best_times_mesonet_list$spi$mean),
-                     mean_time_spei = c(best_times_list$spei$mean, best_times_mesonet_list$spei$mean),
-                     mean_time_eddi = c(best_times_list$eddi$mean, best_times_mesonet_list$eddi$mean),
-                     mean_time_sedi = c(best_times_list$sedi$mean, best_times_mesonet_list$sedi$mean),
-                     mean_cor_spi = c(best_cor_list$spi$mean, best_cor_mesonet_list$spi$mean),
-                     mean_cor_spei = c(best_cor_list$spei$mean, best_cor_mesonet_list$spei$mean),
-                     mean_cor_eddi = c(best_cor_list$eddi$mean, best_cor_mesonet_list$eddi$mean),
-                     mean_cor_sedi = c(best_cor_list$sedi$mean, best_cor_mesonet_list$sedi$mean))
-
-write.csv(master_times, "./validation/soil_moisture/summary_data/geospatial_with_best.csv")
-
-states = sf::st_read("/home/zhoylman/drought_indicators/shp_kml/states.shp") %>%
-  dplyr::filter(STATE_NAME != "Alaska" & STATE_NAME != "Hawaii")
-
-pal <- leaflet::colorNumeric(c("red", "yellow", "green", "blue", "purple"), 
-                             domain = c(0, 730), na.color = "transparent")
-
-sites = leaflet::leaflet(master_times,options = leaflet::tileOptions(minZoom = 4, maxZoom = 10)) %>%
-  leaflet::addTiles("https://maps.tilehosting.com/data/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
-  leaflet::addProviderTiles("Stamen.TonerLines") %>%
-  leaflet::addProviderTiles("Stamen.TonerLabels") %>%
-  leaflet::addCircleMarkers(~longitude, ~latitude, 
-                            radius = 8, stroke = TRUE, fillOpacity = 0.9,
-                            color = "blue", fillColor = "white", group = "Locations"
-  )%>%
-  leaflet::addCircleMarkers(~longitude, ~latitude, 
-                            radius = 8, stroke = TRUE, fillOpacity = 0.9,
-                            color = pal(master_times$mean_spi), fillColor = pal(master_times$mean_spi), group = "SPI"
-  )%>%
-  leaflet::addCircleMarkers(~longitude, ~latitude, 
-                            radius = 8, stroke = TRUE, fillOpacity = 0.9,
-                            color = pal(master_times$mean_spei), fillColor = pal(master_times$mean_spei), group = "SPEI"
-  )%>%
-  leaflet::addCircleMarkers(~longitude, ~latitude, 
-                            radius = 8, stroke = TRUE, fillOpacity = 0.9,
-                            color = pal(master_times$mean_eddi), fillColor = pal(master_times$mean_eddi), group = "EDDI"
-  )%>%
-  leaflet::addCircleMarkers(~longitude, ~latitude, 
-                            radius = 8, stroke = TRUE, fillOpacity = 0.9,
-                            color = pal(master_times$mean_sedi), fillColor = pal(master_times$mean_sedi), group = "SEDI"
-  )%>%
-  leaflet::addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
-  leaflet.extras::addDrawToolbar(markerOptions = leaflet.extras::drawMarkerOptions(),
-                                 polylineOptions = FALSE,
-                                 polygonOptions = FALSE,
-                                 circleOptions = FALSE,
-                                 rectangleOptions = FALSE,
-                                 circleMarkerOptions = FALSE,
-                                 editOptions = FALSE,
-                                 singleFeature = F,
-                                 targetGroup='draw') %>%
-  leaflet::addLegend(pal = pal, values = master_times$mean_spei, position = "bottomleft",
-                     title = "Mean Soil Moisture<br>Best Timescale (days)"
-  )%>%
-  leaflet::addLayersControl(
-    baseGroups = c("Locations","SPI", "SPEI", "EDDI", "SEDI"),
-    options = leaflet::layersControlOptions(collapsed = FALSE))
-
-
-
-htmlwidgets::saveWidget(sites, "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/validation_sites_best_times.html", selfcontained = T)
-
-webshot::webshot("/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/validation_sites_best_times.html", 
-                 file = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/validation_sites.png",
-                 cliprect = "viewport", vwidth = 2000,vheight = 1000)
 
 
 ################# Monthly Post Processing and plots ########################
@@ -352,47 +273,91 @@ for(d in 1:length(monthly_data_snotel)){
   summary = data.frame(median = apply(mean_full, 1, median, na.rm=TRUE),
                        upper = apply(mean_full, 1, quantile, 0.75, na.rm=TRUE),
                        lower = apply(mean_full, 1, quantile, 0.25, na.rm=TRUE),
-                       time = as.POSIXct(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))))
+                       time = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
+                                         format = "%Y-%m-%d %H:%M"))
   
   summary_shallow = data.frame(median = apply(shallow_full, 1, median, na.rm=TRUE),
                                upper = apply(shallow_full, 1, quantile, 0.75, na.rm=TRUE),
                                lower = apply(shallow_full, 1, quantile, 0.25, na.rm=TRUE),
-                               time = as.POSIXct(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))))
-  
+                               time = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
+                                                 format = "%Y-%m-%d %H:%M"))  
   summary_middle = data.frame(median = apply(middle_full, 1, median, na.rm=TRUE),
                               upper = apply(middle_full, 1, quantile, 0.75, na.rm=TRUE),
                               lower = apply(middle_full, 1, quantile, 0.25, na.rm=TRUE),
-                              time = as.POSIXct(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))))
-  
+                              time = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
+                                                format = "%Y-%m-%d %H:%M"))  
   summary_deep = data.frame(median = apply(deep_full, 1, median, na.rm=TRUE),
                             upper = apply(deep_full, 1, quantile, 0.75, na.rm=TRUE),
                             lower = apply(deep_full, 1, quantile, 0.25, na.rm=TRUE),
-                            time = as.POSIXct(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))))
+                            time = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
+                                              format = "%Y-%m-%d %H:%M"))  
   
+  find_summer_stat = function(x){
+    median = x %>%
+      mutate(month = c(1:12)) %>%
+      dplyr::filter(month > 4 & month < 11)%>%
+      summarise(median(median))
+    median = median$`median(median)`
+    return(median)
+  }
   
-  plot_monthly = function(data1, color1, depth, time_scale, name){
+  summary_list = list(summary, summary_shallow, summary_middle, summary_deep)
+  
+  plot_monthly = function(data1, color1, depth, time_scale, name, summary){
     plot = ggplot() +
       geom_ribbon(data = data1, aes(x = time, ymin = lower, ymax = upper), alpha = 0.2, fill = color1)+
       geom_line(data = data1, aes(x = time, y = median), color = color1)+
       theme_bw(base_size = 12)+
       theme(plot.title = element_text(hjust = 0.5))+
       ylab("Correlation (r)")+
-      ggtitle(paste0(name," [",time_scale," day] ~ Soil Moisture ", "[", depth, "]"))+
+      ggtitle(paste0(name," [",time_scale," day] ~ Soil Moisture ", "[", depth, "]   "))+
       scale_x_datetime(labels = date_format("%b"),
                        date_breaks = "2 month")+
       theme(axis.title.x=element_blank(),
-            plot.title = element_text(size = 10, face = "bold"))
+            plot.title = element_text(size = 10, face = "bold")) +
+      geom_errorbarh(data = summary, aes(xmin = time[5], xmax = time[10],
+                                     y = find_summer_stat(summary)*.7, height = 0.05, x = NULL))+
+      annotate(geom = "text", y = find_summer_stat(summary)*.5, x = as.POSIXct("2018-07-15 00:00",
+                                                                               format = "%Y-%m-%d %H:%M"),
+               label = paste0("r = ", round(find_summer_stat(summary),2)))
+    return(plot)
+  }
+  
+  plot_monthly_eddi = function(data1, color1, depth, time_scale, name, summary){
+    plot = ggplot() +
+      geom_ribbon(data = data1, aes(x = time, ymin = lower, ymax = upper), alpha = 0.2, fill = color1)+
+      geom_line(data = data1, aes(x = time, y = median), color = color1)+
+      theme_bw(base_size = 12)+
+      theme(plot.title = element_text(hjust = 0.5))+
+      ylab("Correlation (r)")+
+      ggtitle(paste0(name," [",time_scale," day] ~ Soil Moisture ", "[", depth, "]   "))+
+      scale_x_datetime(labels = date_format("%b"),
+                       date_breaks = "2 month")+
+      theme(axis.title.x=element_blank(),
+            plot.title = element_text(size = 10, face = "bold")) +
+      geom_errorbarh(data = summary, aes(xmin = time[5], xmax = time[10],
+                                         y = find_summer_stat(summary)+0.1, height = 0.03, x = NULL))+
+      annotate(geom = "text", y = find_summer_stat(summary)+0.15, x = as.POSIXct("2018-07-15 00:00",
+                                                                               format = "%Y-%m-%d %H:%M"),
+               label = paste0("r = ", round(find_summer_stat(summary),2)))+
+      ylim(-0.3,0.3)
     return(plot)
   }
   
   plots = list()
+  
   datasets = list(summary, summary_shallow, summary_middle, summary_deep)
   colors = c("black", "forestgreen", "blue", "purple")
   depths = c("Mean", "Shallow", "Middle", "Deep")
   time_scale = c(seq(5,730,5)[index])
   
   for(i in 1:4){
-    plots[[i]] = plot_monthly(datasets[[i]], colors[i], depths[i], time_scale[i], index_names[d])
+    if(d == 3){
+      plots[[i]] = plot_monthly_eddi(datasets[[i]], colors[i], depths[i], time_scale[i], index_names[d], summary_list[[i]])
+    }
+    else{
+      plots[[i]] = plot_monthly(datasets[[i]], colors[i], depths[i], time_scale[i], index_names[d], summary_list[[i]])
+    }
   }
   
   plot_grid_monthly = cowplot::plot_grid(plots[[1]],plots[[2]],plots[[3]],plots[[4]], nrow = 2)
@@ -404,5 +369,87 @@ for(d in 1:length(monthly_data_snotel)){
 }
 
 
+################### site map #######################
+library(dplyr)
+#read in geospatial data
+station_data = read.csv("~/drought_indicators_data/mesonet/station_data_clean.csv")
+station_data$X = NULL
+snotel = read.csv("./validation/soil_moisture/snotel_data/nrcs_soil_moisture.csv")
+snotel_cropped = snotel %>%
+  dplyr::select(site_name, latitude, longitude) %>%
+  rename(station_key = site_name)
+
+snotel_cropped$network = "NRCS"
+master_list = rbind(snotel_cropped,station_data)
+
+master_times = cbind(master_list, 
+                     mean_time_spi = c(best_times_list$spi$mean, best_times_mesonet_list$spi$mean),
+                     mean_time_spei = c(best_times_list$spei$mean, best_times_mesonet_list$spei$mean),
+                     mean_time_eddi = c(best_times_list$eddi$mean, best_times_mesonet_list$eddi$mean),
+                     mean_time_sedi = c(best_times_list$sedi$mean, best_times_mesonet_list$sedi$mean),
+                     mean_cor_spi = c(best_cor_list$spi$mean, best_cor_mesonet_list$spi$mean),
+                     mean_cor_spei = c(best_cor_list$spei$mean, best_cor_mesonet_list$spei$mean),
+                     mean_cor_eddi = c(best_cor_list$eddi$mean, best_cor_mesonet_list$eddi$mean),
+                     mean_cor_sedi = c(best_cor_list$sedi$mean, best_cor_mesonet_list$sedi$mean))
+
+#write.csv(master_times, "./validation/soil_moisture/summary_data/geospatial_with_best.csv")
+
+states = sf::st_read("/home/zhoylman/drought_indicators/shp_kml/states.shp") %>%
+  dplyr::filter(STATE_NAME != "Alaska" & STATE_NAME != "Hawaii")
 
 
+static_map = 
+
+
+################### Leaflet #########################
+pal <- leaflet::colorNumeric(c("red", "yellow", "green", "blue", "purple"), 
+                             domain = c(0, 730), na.color = "transparent")
+
+sites = leaflet::leaflet(master_times,options = leaflet::tileOptions(minZoom = 4, maxZoom = 10)) %>%
+  leaflet::addTiles("https://maps.tilehosting.com/data/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
+  leaflet::addProviderTiles("Stamen.TonerLines") %>%
+  leaflet::addProviderTiles("Stamen.TonerLabels") %>%
+  leaflet::addCircleMarkers(~longitude, ~latitude, 
+                            radius = 8, stroke = TRUE, fillOpacity = 0.9,
+                            color = "blue", fillColor = "white", group = "Locations"
+  )%>%
+  leaflet::addCircleMarkers(~longitude, ~latitude, 
+                            radius = 8, stroke = TRUE, fillOpacity = 0.9,
+                            color = pal(master_times$mean_spi), fillColor = pal(master_times$mean_spi), group = "SPI"
+  )%>%
+  leaflet::addCircleMarkers(~longitude, ~latitude, 
+                            radius = 8, stroke = TRUE, fillOpacity = 0.9,
+                            color = pal(master_times$mean_spei), fillColor = pal(master_times$mean_spei), group = "SPEI"
+  )%>%
+  leaflet::addCircleMarkers(~longitude, ~latitude, 
+                            radius = 8, stroke = TRUE, fillOpacity = 0.9,
+                            color = pal(master_times$mean_eddi), fillColor = pal(master_times$mean_eddi), group = "EDDI"
+  )%>%
+  leaflet::addCircleMarkers(~longitude, ~latitude, 
+                            radius = 8, stroke = TRUE, fillOpacity = 0.9,
+                            color = pal(master_times$mean_sedi), fillColor = pal(master_times$mean_sedi), group = "SEDI"
+  )%>%
+  leaflet::addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
+  leaflet.extras::addDrawToolbar(markerOptions = leaflet.extras::drawMarkerOptions(),
+                                 polylineOptions = FALSE,
+                                 polygonOptions = FALSE,
+                                 circleOptions = FALSE,
+                                 rectangleOptions = FALSE,
+                                 circleMarkerOptions = FALSE,
+                                 editOptions = FALSE,
+                                 singleFeature = F,
+                                 targetGroup='draw') %>%
+  leaflet::addLegend(pal = pal, values = master_times$mean_spei, position = "bottomleft",
+                     title = "Mean Soil Moisture<br>Best Timescale (days)"
+  )%>%
+  leaflet::addLayersControl(
+    baseGroups = c("Locations","SPI", "SPEI", "EDDI", "SEDI"),
+    options = leaflet::layersControlOptions(collapsed = FALSE))
+
+
+
+htmlwidgets::saveWidget(sites, "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/validation_sites_best_times.html", selfcontained = T)
+
+webshot::webshot("/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/validation_sites_best_times.html", 
+                 file = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/validation_sites.png",
+                 cliprect = "viewport", vwidth = 2000,vheight = 1000)
