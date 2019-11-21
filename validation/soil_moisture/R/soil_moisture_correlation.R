@@ -6,6 +6,7 @@ library(sf)
 library(tictoc)
 library(timeSeries)
 library(stringr)
+library(tictoc)
 
 #load network site data
 mesonet_site_data = read.csv("~/drought_indicators_data/mesonet/station_data_clean.csv")
@@ -117,8 +118,9 @@ for(i in 1:length(drought_metrics)){
 
 ######################### SNOTEL Monthly correlation ######################
 
-drought_metrics = c("spi")
-for(i in 1:length(drought_metrics)){
+drought_metrics = c("spi", "spei", "eddi", "sedi")
+for(i in 2:length(drought_metrics)){
+  tic()
   #define drought metric path
   drought_metric_path = paste0("/home/zhoylman/drought_indicators_data/snotel/snotel_",
                                drought_metrics[i],".RData")
@@ -151,13 +153,15 @@ for(i in 1:length(drought_metrics)){
                      drought_metrics[i],"_unfrozen.RData"))
   gc()
   rm(temp, drought_data);gc()
+  toc()
+  Sys.time()
 }
 
 
 ######################### Mesonet Monthly correlation ######################
 
-drought_metrics = c("spi")
-for(i in 1:length(drought_metrics)){
+drought_metrics = c("spi", "spei", "eddi", "sedi")
+for(i in 2:length(drought_metrics)){
   #define drought metric path
   drought_metric_path = paste0("/home/zhoylman/drought_indicators_data/mesonet/mesonet_",
                                drought_metrics[i],".RData")
