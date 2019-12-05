@@ -137,7 +137,7 @@ for(i in 1:4){
 }
 plot_grid = cowplot::plot_grid(plot[[4]],plot[[1]],plot[[2]],plot[[3]], nrow = 2)
 ggsave("./validation/soil_moisture/plots/summary/correlation_density_unfrozen.png",
-       plot_grid, width = 10, height = 9, units = "in", dpi = 600)
+       plot_grid, width = 10, height = 9, units = "in", dpi = 400)
 
 
 # plot density graphs by metric
@@ -185,7 +185,7 @@ for(i in 1:length(names_short)){
 
 plot_grid_depth = cowplot::plot_grid(depth_plot[[1]],depth_plot[[2]],depth_plot[[3]],depth_plot[[4]], nrow = 2)
 ggsave("./validation/soil_moisture/plots/summary/depth_density_unfrozen.png",
-       plot_grid_depth, width = 10, height = 9, units = "in", dpi = 600)
+       plot_grid_depth, width = 10, height = 9, units = "in", dpi = 400)
 
 
 
@@ -365,7 +365,7 @@ for(d in 1:length(monthly_data_snotel)){
   plot_final = cowplot::plot_grid(depth_plot[[d]], plot_grid_monthly , nrow = 1)
   
   ggsave(paste0("./validation/soil_moisture/plots/summary/plot_grid_monthly_",index_names[d],".png"),
-         plot_final, width = 12, height = 5, units = "in", dpi = 600)
+         plot_final, width = 12, height = 5, units = "in", dpi = 400)
 }
 
 
@@ -398,7 +398,69 @@ states = sf::st_read("/home/zhoylman/drought_indicators/shp_kml/states.shp") %>%
   dplyr::filter(STATE_NAME != "Alaska" & STATE_NAME != "Hawaii")
 
 
-static_map = 
+static_map = ggplot() + 
+  geom_sf(data = states, fill = "transparent")+
+  theme_bw(base_size = 16)+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  geom_point(data = master_times, aes(x = longitude, y = latitude), fill = "blue", 
+             color = "black", shape = 21, alpha = 0.5, size = 2)+
+  xlab("")+
+  ylab("")
+
+static_map
+
+ggsave(paste0("./validation/soil_moisture/plots/summary/site_map.png"),
+       static_map, width = 10, height = 5, units = "in", dpi = 400)
+
+rbPal <- (colorRampPalette(c("darkblue", "blue", "lightblue", "yellow", "orange", "red", "darkred")))
+
+index_names_lower = c("spi", "spei", "eddi", "sedi")
+
+library(cowplot)
+
+for(i in 1:4){
+  data_select = master_times %>%
+    dplyr::select(longitude, latitude, paste0("mean_time_",index_names_lower[i]))%>%
+    na.omit()
+  
+  static_map_metric = ggplot() + 
+    geom_sf(data = states, fill = "transparent")+
+    theme_bw(base_size = 16)+
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+          plot.title = element_text(hjust = 0.5))+
+    geom_point(data = data_select , aes(x = longitude, y = latitude,
+                                                       fill = get(paste0("mean_time_",index_names_lower[i]))), 
+               color = "black", shape = 21, alpha = 1, size = 2)+
+    xlab("")+
+    ylab("")+
+    ggtitle(paste0("Optimal Timescale (", index_names[i], ")"))+
+    scale_fill_gradientn("",colours=(rbPal(100)), guide = F)
+  
+  #function to draw manual ramp
+  g_legend<-function(a.gplot){
+    tmp <- ggplot_gtable(ggplot_build(a.gplot))
+    leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+    legend <- tmp$grobs[[leg]]
+    legend
+  }
+  
+  dummy_plot = ggplot(data = data_select) +
+    geom_tile(aes(y=latitude, x=longitude, fill = get(paste0("mean_time_",index_names_lower[i]))), alpha = 1)+
+    scale_fill_gradientn("Days",colours=(rbPal(100)))
+  
+  #draw ramp
+  legend <- g_legend(dummy_plot)
+  
+  #plot final plot
+  static_map_metric_inset = 
+    ggdraw() +
+    draw_plot(static_map_metric) +
+    draw_plot(legend, x = .8, y = .2, width = .35, height = .35)
+  
+  
+  ggsave(paste0("./validation/soil_moisture/plots/summary/spatial_",index_names_lower[i],"_map.png"),
+         static_map_metric_inset, width = 10, height = 5, units = "in", dpi = 400)  
+}
 
 
 ################### Leaflet #########################
