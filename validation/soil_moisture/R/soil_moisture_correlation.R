@@ -17,6 +17,7 @@ source("./spi_app/R/gamma_fit.R")
 source("./validation/soil_moisture/R/gamma_standard_fun.R")
 source("./validation/soil_moisture/R/cross_cor.R")
 source("./validation/soil_moisture/R/moving_cross_cor.R")
+source("./validation/soil_moisture/R/drv_cor.R")
 
 #load preprocessed soil moisture data 
 load("~/drought_indicators_data/preprocessed_soil_moisture/mesonet_soil_moisture_list.Rdata")
@@ -28,12 +29,16 @@ load("~/drought_indicators_data/preprocessed_soil_moisture/snotel_soil_moisture.
 # soil_moisture = mesonet_soil_moisture_list[[site]]
 # cross_cor(drought_index,soil_moisture)
 # moving_cross_cor(drought_index,soil_moisture)
+# drv_cor(drought_index,soil_moisture)
+
 # 
-# site = 10
+# site = 1
 # drought_index = snotel_spi[[site]]
 # soil_moisture = snotel_soil_moisture[[site]]
 # cross_cor(drought_index,soil_moisture)
 # moving_cross_cor(drought_index,soil_moisture)
+# drv_cor(drought_index,soil_moisture)
+
 
 ############################# Run Validation Analysis #######################################
 
