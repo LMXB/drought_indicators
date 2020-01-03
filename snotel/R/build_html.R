@@ -40,7 +40,7 @@ css_fix <- "div.info.legend.leaflet-control br {clear: both;}"
 
 swe_map = base_map() %>%
 addCircleMarkers(snotel$lon, snotel$lat, snotel$simple_id, 
-                 popup = paste0("<img src='https://mco.cfc.umt.edu/drought_indicators/plots/snotel_plot_",
+                 popup = paste0("<img src='https://shiny.cfc.umt.edu/drought_indicators/plots/snotel_plot_",
                                 snotel$simple_id,".png' height='350' width='600'/>"),
                  radius = 10, stroke = TRUE, fillOpacity = 0.9,
                  color = "black", fillColor = pal(daily_lookup$percent_swe)
@@ -64,7 +64,7 @@ pal <- colorNumeric(c("red", "yellow", "green", "blue", "purple"), domain = c(mi
 
 precip_map = base_map() %>%
   addCircleMarkers(snotel$lon, snotel$lat, snotel$simple_id, 
-                   popup = paste0("<img src='https://mco.cfc.umt.edu/drought_indicators/plots/precip_snotel_plot_",
+                   popup = paste0("<img src='https://shiny.cfc.umt.edu/drought_indicators/plots/precip_snotel_plot_",
                                   snotel$simple_id,".png' height='350' width='600'/>"),
                    radius = 10, stroke = TRUE, fillOpacity = 0.9,
                    color = "black", fillColor = pal(daily_lookup$percent_precip)
@@ -91,7 +91,7 @@ pal <- colorNumeric(c("red", "yellow", "green", "blue", "purple"), domain = c(mi
 source("/home/zhoylman/drought_indicators/mapping_functions/base_map_mobile.R")
 swe_map_mobile = base_map_mobile() %>%
   addCircleMarkers(snotel$lon, snotel$lat, snotel$simple_id, group = "Snow Water Equiv",
-                   popup = paste0("<img src='https://mco.cfc.umt.edu/drought_indicators/plots/snotel_plot_mobile_",
+                   popup = paste0("<img src='https://shiny.cfc.umt.edu/drought_indicators/plots/snotel_plot_mobile_",
                                   snotel$simple_id,".png' height='200' width='270'/>"),
                    radius = 12, stroke = TRUE, fillOpacity = 0.9,
                    color = "black", fillColor = pal(daily_lookup$percent_swe)

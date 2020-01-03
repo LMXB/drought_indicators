@@ -5,7 +5,7 @@ output:
   flexdashboard::flex_dashboard:
     self_contained: false
     lib_dir: "./libs"
-    theme: cerulean
+    theme: readable
     navbar:
       - { title: "MCO GitHub", href: "https://github.com/mt-climate-office", align: right }
     css: styles.css
@@ -17,7 +17,6 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
 
 <head>
 <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -52,19 +51,19 @@ Introduction
 <br>
 
 
-This website provides access to several drought metrics commonly used across the globe. All datasets are calculated daily and can be aggregated by watershed and county boundaries. In this document we focus on: 
+This website provides access to drought indices that are used by the Montana Governor's Drought and Water Supply Advisory Committee (Monitroring Sub-Committee). All datasets are calculated daily and can be aggregated by watershed and county boundaries. In this document we focus on: 
 
 <br>
 
   + 1. Providing current drought information using the most current peer reviewed science
-  + 2. Describing general overview and theoretical basis for a metric 
-  + 3. Describe the data required for calculation 
+  + 2. A description of the theoretical basis for a metric 
+  + 3. Data required for calculation of each index
   + 4. Discuss the relative strengths and weaknesses of a metric 
   + 5. Validating a metric using on the ground observations (soil moisture, streamflow and groundwater; ongoing)
 
 <br>
 
-This work is supported by a National Oceanic and Atmospheric Administration’s (NOAA) National Integrated Drought Information System (NIDIS) Drought Early Warning System (DEWS) grant. More information on NIDIS and the DEWS program can be found at https://www.drought.gov/drought/what-nidis. 
+This work is supported by a National Oceanic and Atmospheric Administration’s (NOAA) National Integrated Drought Information System (NIDIS) Drought Early Warning System (DEWS). More information on NIDIS and the DEWS program can be found at https://www.drought.gov/drought/what-nidis. 
 
 <br>
 
@@ -72,19 +71,42 @@ This work is supported by a National Oceanic and Atmospheric Administration’s 
 
 <center>
 
-<img width="60%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/misc_content/logos.png" ></img>
+<img width="60%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/misc_content/logos.png" ></img>
 
 <center>
 
-Snow Water Equivalent {data-navmenu="SNOTEL" data-icon="fa-list" data-orientation=rows}
+Current Data (All Variables) {data-navmenu="MT Mesonet" data-icon="fa-list" data-orientation=rows}
 ========================================================
 
+### **Montana Mesonet**
+
+<br>
+
+#### **Overview:**
+
+The Montana Climate Office (MCO) is leading the development of a cooperative statewide soil moisture and meteorological information system. It is designed to support decision-making in agriculture, range and forested watershed contexts. This network will add new remote sites and integrate existing cooperator networks to develop the first statewide soil-climate network. No one entity can ensure sustained operation and success of a statewide climate and soil moisture information network. The MCO is embracing a cooperative context that will address a diverse set of information needs. 
+
+<br>
+
+##### Please allow a moment to retrieve the most current data from the mesonet. 
+
+Row {.tabset .tabset-fade data-height=800}
+-------------------------------------
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mesonet.climate.umt.edu/map" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
+####
+
+Collaborators: NOAA National Mesonet Program, Department of Interior Bureau of Land Management, Montana Department of Agriculture, University of Montana - W.A. Franke College of Forestry and Conservation, Montana State University, MSU Extension, Montana Institute on Ecosystems, Montana Agricultural Experiment Stations, Crow Agency, Montana Department of Natural Resources and Conservation, Stillwater County, private landowners, ranchers, farmers and businesses.
+
+Snow Water Equivalent {data-navmenu="SNOTEL" data-icon="fa-list" data-orientation=rows}
+========================================================
 ### **Snow Telemetry (SNOTEL)**
 
 <br>
 
 #### **Overview:**
-SNOTEL is an automated system of snowpack and related enviormental sensors. SNOTEL is operated by the Natural Resources Conservation Service (NRCS) of the United States Department of Agriculture in the Western United States. Plots in this module show total snow water equievelant (SWE) and total liquid precipitation (rain + SWE) measured to date compared to historical averages. 
+SNOTEL is an automated system of snowpack and related environmental sensors. SNOTEL is operated by the Natural Resources Conservation Service (NRCS) of the United States Department of Agriculture in the Western United States. Plots in this module show total snow water equievelant (SWE) and total liquid precipitation (rain + SWE) and compares these to historical averages. 
 
 <br>
 
@@ -93,7 +115,7 @@ Row {.tabset .tabset-fade data-height=800}
 
 ### **Snow Water Equivalent**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/swe_snotel.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/swe_snotel.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 Accumulated Precipitation {data-navmenu="SNOTEL" data-icon="fa-list" data-orientation=rows}
 ========================================================
@@ -112,7 +134,7 @@ Row {.tabset .tabset-fade data-height=800}
 
 ### **Accumulated Precipitation**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/precip_snotel.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/precip_snotel.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 Precipitation Percentiles {data-navmenu="Precipitation" data-icon="fa-list" data-orientation=rows}
 ========================================================
@@ -122,7 +144,7 @@ Precipitation Percentiles {data-navmenu="Precipitation" data-icon="fa-list" data
 
 #### **Overview:**
 
-Precipitation is a strong driver of drought. In most cases, drought begins with a precipitation deficit which is the exacerbated by atmospheric conditions (such as temperature, humidity and wind speed). In this module we present precipitation percentiles calculated over different timescales. 50 represents the average (median) precipitation over the time period. 100 and 0 represent the wettest and driest conditions observed respectively.
+Precipitation is a strong driver of drought. In most cases, drought begins with a precipitation deficit which is the exacerbated by atmospheric conditions (such as temperature, humidity and wind speed). In this module we present precipitation percentiles calculated over timescales ranging from 15 to 365 days. As an example of how to interpret each map, 50 represents the normal (median; white shading) precipitation over a given time period, 100 would be the wettest period on record (dark blue) and 0 would represent the driest conditions observed (dark red). The analysis is conducted over a period from 1979 to present.
 
 <br>
 
@@ -146,15 +168,15 @@ Row {.tabset .tabset-fade data-height=750}
 
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_raster_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_raster_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_county_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_county_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_huc_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
@@ -164,14 +186,14 @@ For each timescale we calculate the accumulated precipitation for each year acro
 
 **Key Strengths:**
 
-  + Easily calculated, uses only precipitation data. 
-  + Easily interpreted
+  + Easy to calculate; uses only precipitation data. 
+  + Easy to interpret
   
 **Key Weaknesses:** 
 
-  + Doesn't account for atmospheric demand of moisture, this limits identification of flash drought due to high temperature and large vapor pressure deficits
   + Sensitive to biases in precipitation records over time
-  + Does not account for the capacity of the landscape to capture precipitation or generate runoff
+  + Doesn't account for atmospheric demand on moisture (i.e. evapotranspiration), this limits identification of flash droughts due to high temperatures and large vapor pressure deficits
+  + Does not account for the capacity of the landscape to store or release moisture (e.g. soil moisture, groundwater and streamflow)
   <br>
   
 
@@ -183,7 +205,7 @@ Precipitation Anomaly (% of Normal) {data-navmenu="Precipitation" data-icon="fa-
 
 #### **Overview:**
 
-Precipitation is a strong driver of drought. In most cases, drought begins with a precipitation deficit which is then exacerbated by atmospheric conditions (such as temperature, humidity and wind speed). In this module we present precipitation anomalies calculated over different timescales. For each timescale we calculate the average accumulated precipitation across the period of record (1979 - present) and compute the percent of average. 100% represents average expected precipitation. 
+Precipitation is a strong driver of drought. In most cases, drought begins with a precipitation deficit which is the exacerbated by atmospheric conditions (such as temperature, humidity and wind speed). In this module we present precipitation anomalies calculated over timescales that range from 15 to 365 days. For each timescale we calculate the average accumulated precipitation relative to the period of record (1979 - present) and compute the percent of average. As an example of how to interpret each map 100% would represent the average expected precipitation (white shading) during a given time period. 
 
 <br>
 
@@ -207,15 +229,15 @@ Row {.tabset .tabset-fade data-height=750}
 
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_raster_anomaly.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_raster_anomaly.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_county_anomaly.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_county_anomaly.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_huc_anomaly.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_anomaly.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
@@ -225,14 +247,14 @@ For each timescale we calculate the average accumulated precipitation across the
 
 **Key Strengths:**
 
-  + Easily calculated, uses only precipitation data. 
-  + Easily interpreted
+  + Easy to calculate; uses only precipitation data. 
+  + Easy to interpret
   
 **Key Weaknesses:** 
 
-  + Doesn't account for atmospheric demand of moisture, this limits identification of flash drought due to high temperature and large vapor pressure deficits
   + Sensitive to biases in precipitation records over time
-  + Does not account for the capacity of the landscape to capture precipitation or generate runoff
+  + Doesn't account for atmospheric demand of moisture, this limits identification of flash drought due to high temperature and large vapor pressure deficits
+  + Does not account for the capacity of the landscape to store or release water (e.g. soil moisture, groundwater and streamflow)
   <br>
   
 
@@ -246,7 +268,7 @@ Soil Moisture Percentiles (Modeled) {data-navmenu="Soil Moisture" data-icon="fa-
 
 #### **Overview:**
 
-Soil moisture is a strong indicator of drought. In this module we present modeled soil moisture percentiles calculated by the National Weather Service, Climate Prediction Center. This map is an ensamble model of the MOSAIC, NOAH, VIC & SAC soil moisture models. 50 represents the average (median) precipitation over the time period. 100 and 0 represent the wettest and driest conditions observed respectively.
+Soil moisture is a strong indicator of drought. In this module we present modeled soil moisture percentiles calculated by the NOAAs Climate Prediction Center. This map is based on an ensemble of the MOSAIC, NOAH, VIC & SAC soil moisture models. The map is derived using a 30 day time scale and is updated every week. As an example of how to read this map, 50 represents the average (median) soil moisture relative to the period from 1980 to 2007. 100 and 0 represent the wettest and driest conditions observed respectively.
 
 <br>  
 
@@ -257,7 +279,7 @@ Row {.tabset .tabset-fade data-height=750}
 
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_raster_soil_moisture.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_raster_soil_moisture.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
  
 Standardized Precipitation Index (SPI) {data-navmenu="Drought Metrics" data-icon="fa-list" data-orientation=rows}
@@ -268,7 +290,7 @@ Standardized Precipitation Index (SPI) {data-navmenu="Drought Metrics" data-icon
 
 #### **Overview:**
 
-The SPI is a commonly used metric which quantifies precipitation anomalies at various timescales. This metric is often used to estimate a range of hydrological conditions that respond to precipation over differing timescales. For example, SPI is related to soil moisture anomalies when calculated over short time scales (days to weeks) but is more related to groundwater and reservoir storage over longer timescales (months to years). The values of SPI can be interpreted as a number of standard deviations away from the average (mean) cumulative precipitation depth for a given time period. The SPI has unique statistical qualities in that it is directly related to precipitation probaility and it can be used to represent both dry (negative values; represented here with warmer colors) and wet (positive values; represented here with cooler colors) conditions. 
+The SPI is a common metric which quantifies precipitation anomalies at various timescales. SPI is often used to estimate a range of hydrological processes that respond to precipation from short to long periods of time. For example, SPI is related to soil moisture anomalies when calculated over short time scales (days to weeks) but is more related to groundwater and reservoir storage over longer timescales (months to years). The values of SPI can be interpreted as a number of standard deviations away from the average cumulative precipitation depth for a given time period. The SPI has unique statistical qualities in that it is directly related to precipitation probaility and it can be used to represent both dry (negative values; represented here with warmer colors) and wet (positive values; represented here with cooler colors) conditions. 
 
 <br>
 
@@ -292,34 +314,34 @@ Row {.tabset .tabset-fade data-height=750}
 
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_raster_spi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_raster_spi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_county_spi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_county_spi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_huc_spi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_spi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
 
 ### **Derivation:**
-The SPI quantifies precipitation as a standardized departure from a selected probability distribution function that models the raw precipitation data. The raw precipitation data are typically fitted to a gamma or a Pearson Type III distribution, and then transformed to a normal distribution (Keyantash and NCAR staff, 2018). Normalization of data is important because precipitation data is heavily right hand skewed. This is because smaller precipitation events are much more probable than large events. 
+The SPI quantifies precipitation as a standardized departure from a probability distribution function that models the raw precipitation data. The raw precipitation data are typically fitted to a gamma or a Pearson Type III distribution, and then transformed to a normal distribution (Keyantash and NCAR staff, 2018). Normalization of data is important because precipitation data is heavily right hand skewed. This is because smaller precipitation events are much more probable than large events. In our calculations we use a gamma distribution.
 
 **Key Strengths:**
 
-  + Easily calculated, uses only precipitation data
-  + Can be used to estimate effects of drought or water abundance on differing hydrologic reservoirs (e.g. soil moisture, groundwater, etc) using different time scales
-  + Comparable in across regions (within reason) due to normalization of data
-  + Can account for changes in climatology as probability distributions are updated through time
+  + Easy to calculate; uses only precipitation data
+  + Can be used to estimate effects of wet or dry time periods on hydrologic processes (e.g. soil moisture, groundwater, etc) using different time scales
+  + Comparable across regions due to normalization of data
+  + Can account for changes in climatology because the probability distributions are updated through time
   
 **Key Weaknesses:** 
 
-  + Doesn't account for atmospheric demand of moisture, this limits identification of flash drought due to high temperature and large vapor pressure deficits
   + Sensitive to biases in precipitation records over time
-  + Does not account for the capacity of the landscape to capture precipitation or generate runoff
+  + Doesn't account for atmospheric demand of moisture, this limits identification of flash drought due to high temperature and large vapor pressure deficits
+  + Does not account for the capacity of the landscape to store or release water (e.g. soil moisture, groundwater and streamflow)
   <br>
   
 
@@ -347,13 +369,12 @@ Much of the background information regarding this metric was contributed by NCAR
 
 Standardized Precipitation Evapotranspiration Index (SPEI) {data-navmenu="Drought Metrics" data-icon="fa-list" data-orientation=rows}
 ========================================================
-
 ### **Standardized Precipitation Evapotranspiration Index (SPEI)**
 
 <br>
 
 #### **Overview:**
-SPEI takes into account both precipitation and potential evapotranspiration to describe the wetness/dryness of a time period. Similar to the SPI, SPEI can be calculated at various timescales to represent different drought timescales. As such, the SPEI can approximate different impacts of drought on hydrological conditions and processes depending on the timescale used. Although similar to the SPI, SPEI incorporates the import effect of atmospheric demand on drought which can cause significant impacts over short time scales (flash drought). 
+SPEI takes into account both precipitation and potential evapotranspiration to describe the wetness or dryness of a time period. SPEI can be calculated at various timescales to represent different drought timescales and its impacts on hydrological conditions ranging from short to long timescales. SPEI incorporates the important effect of atmospheric demand on drought. 
 
 <br>
 
@@ -377,15 +398,15 @@ Row {.tabset .tabset-fade data-height=750}
 -------------------------------------
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_raster_spei.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_raster_spei.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_county_spei.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_county_spei.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_huc_spei.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_spei.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
@@ -420,13 +441,12 @@ Much of the background information regarding this metric was adapted from the NC
 
 Evaporative Demand Drought Index (EDDI) {data-navmenu="Drought Metrics" data-icon="fa-list" data-orientation=rows}
 ========================================================
-
 ### **Evaporative Demand Drought Index (EDDI)**
 
 <br>
 
 #### **Overview:**
-EDDI calculates the rank of accumulated PET for a given region. Unlike SPI and SPEI, EDDI does not standardize data based off of theoretical (parameterized) probability distributions. Instead, EDDI uses a non-parametric approach to compute empirical probabilities using inverse normal approximation. This method calculates EDDI by ranking the data from smallest to largest and accounting for the number of observations. Therefore, maximum and minimum values of EDDI are constrained by the number of years on record (which determines the number of observations). Practically, this causes EDDI to only show the relative ranking of year, with respect to the period of record, and does not approximate the magnitude of PET anomalies outside of relative ranking. 
+EDDI calculates the rank of accumulated PET for a given region. EDDI does not standardize data based off of theoretical (parameterized) probability distributions (such as SPI and SPEI). Instead, EDDI uses a non-parametric approach to compute empirical probabilities using inverse normal approximation. This method calculates EDDI by ranking the data from smallest to largest and accounting for the number of observations. Therefore, maximum and minimum values of EDDI are constrained by the number of years on record (which determines the number of observations). Practically, this causes EDDI to show the relative ranking of year, with respect to the period of record. 
 <br>
 
 #### **Data Requirements:**
@@ -448,15 +468,15 @@ Row {.tabset .tabset-fade data-height=750}
 -------------------------------------
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_raster_eddi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_raster_eddi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_county_eddi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_county_eddi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_huc_eddi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_eddi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 Row {.tabset .tabset-fade}
 -------------------------------------
 ### **Derivation:**
@@ -513,15 +533,15 @@ Row {.tabset .tabset-fade data-height=750}
 -------------------------------------
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_raster_sedi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_raster_sedi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_county_sedi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_county_sedi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://mco.cfc.umt.edu/drought_indicators/widgets/m_huc_sedi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_sedi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 Row {.tabset .tabset-fade}
 -------------------------------------
 ### **Derivation:**
