@@ -1,7 +1,8 @@
 #define the not in opperator. Super useful 
 '%notin%' = Negate('%in%')
 
-moving_cross_cor = function(drought_index,soil_moisture){ 
+#function to run correlations for wetting and drying time periods independently
+drv_cor = function(drought_index,soil_moisture){ 
   tryCatch({
     x_size = length(drought_index)
     for(t in 1:length(drought_index)){
@@ -54,62 +55,63 @@ moving_cross_cor = function(drought_index,soil_moisture){
           tidyr::drop_na()%>%
           #compute standardized value
           mutate(standardized = gamma_standard_fun(get(depth[i])))%>%
-          #add month id
-          mutate(month = lubridate::month(time))
+          #add derivative vector
+          mutate(drv = c(NA, diff(standardized)))%>%
+          #catigorize into positive (wetting) or negative (drying)
+          mutate(drv_cond = as.factor(ifelse(drv > 0, "Wetting", "Drying"))) %>%
+          #filter for complete cases (remove first time period )
+          tidyr::drop_na()
+          
+        #plots for trouble shooting
+        #plot(x_select$time, x_select$standardized, col = x_select$drv_cond)
+        #lines(x_select$time, x_select$standardized)
+        
+        #plot(x_select$standardized, x_select$spi, col = x_select$drv_cond)
         
         if(i == 1){
           correlation = x_select %>%
             #group by month
-            dplyr::group_by(month) %>%
+            dplyr::group_by(drv_cond) %>%
             # run correlation by month and calcualte number of obs in each month 
             dplyr::summarize(correlation = cor(get(drought_metric_name), get(depth[i])),
-                             length = length(get(depth[i])))%>%
-            #find missing months and add NAs if nessisary
-            bind_rows(data.frame(month = c(which(c(1:12) %notin% .$month)),
-                                 correlation = rep(NA, length(which(c(1:12) %notin% .$month))),
-                                 length = rep(0, length(which(c(1:12) %notin% .$month)))))%>%
-            arrange(month) %>%
-            #remove correlations with less than 30 obs
-            mutate(correlation = ifelse(length < 30, NA, correlation))%>%
-            dplyr::select(month, correlation)
+                             length = length(get(depth[i])))
+          # remove data that is derived from less than a year of data
+          if(sum(correlation$length) < 365){
+            correlation$correlation = NA
+          }
+          
+          # select data we want
+          correlation = correlation %>%
+            select(drv_cond, correlation)
+          
+          #fill in dummy filler data if there isnt any data in the first probe
+          # otherwise there will be no wetting/drying factor varibale names
+          if(length(correlation$drv_cond)==1){
+            correlation = data.frame(drv_cond = c("Drying", "Wetting"),
+                                     correlation = c(NA,NA)) %>%
+              as_tibble()
+          }
           
           # first i, start the bigger dataframe
           correlation_full = correlation
           
-          #dont think this if statement is needed any longer after 
-          #the dplyr row binding
-          if(length(correlation_full$month) == 0){
-            correlation_full = data.frame(month = 1:12,
-                                          correlation = rep(NA,12))%>%
-              as_tibble()
-          }
         }
         else{
           correlation = x_select %>%
             #group by month
-            dplyr::group_by(month) %>%
+            dplyr::group_by(drv_cond) %>%
             # run correlation by month and calcualte number of obs in each month 
             dplyr::summarize(correlation = cor(get(drought_metric_name), get(depth[i])),
-                             length = length(get(depth[i])))%>%
-            #find missing months and add NAs if nessisary
-            bind_rows(data.frame(month = c(which(c(1:12) %notin% .$month)),
-                                 correlation = rep(NA, length(which(c(1:12) %notin% .$month))),
-                                 length = rep(0, length(which(c(1:12) %notin% .$month)))))%>%
-            arrange(month) %>%
-            #remove correlations with less than 30 obs
-            mutate(correlation = ifelse(length < 30, NA, correlation))%>%
-            dplyr::select(month, correlation)
-          
-          if(length(correlation$month) == 0){
-            correlation = data.frame(month = 1:12,
-                                     correlation = rep(NA,12))%>%
-              as_tibble()
+                             length = length(get(depth[i])))
+          # remove data that is derived from less than a year of data
+          if(sum(correlation$length) < 365){
+            correlation$correlation = NA
           }
-          
+          #bind (this is the reason for the if else cascade above)
           correlation_full = cbind(correlation_full, correlation$correlation)
         }
         if(i == length(depth)){
-          colnames(correlation_full) = c("month",depth)
+          colnames(correlation_full) = c("drv_cond",depth)
           correlation_matrix[[t]] = correlation_full
         }
       }
