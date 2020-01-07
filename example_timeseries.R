@@ -1,10 +1,14 @@
 library(ggplot2)
+<<<<<<< HEAD
 library(fame)
 library(scales)
+=======
+>>>>>>> 70337aeade0f17471c429151eb72f524b20ef3b8
 
 load("~/drought_indicators_data/preprocessed_soil_moisture/mesonet_soil_moisture_list.Rdata")
 
 
+<<<<<<< HEAD
 data = data.frame(x = as.POSIXct(mesonet_soil_moisture_list[[46]]$Date),
                   y = rowMeans(mesonet_soil_moisture_list[[46]][,2:6], na.rm = T))
 
@@ -32,3 +36,8 @@ plot = ggplot(data = data, aes(x = x, y = y, color = drv_cond, group=1))+
 
 ggsave("./validation/soil_moisture/plots/summary/wetting_drying_example.png",
        plot, width = 7, height = 4, units = "in", dpi = 400)
+=======
+data = data.frame(x = mesonet_soil_moisture_list[[28]]$Date,
+                  y = mesonet_soil_moisture_list[[28]]$soilwc00)
+
+>>>>>>> 70337aeade0f17471c429151eb72f524b20ef3b8
