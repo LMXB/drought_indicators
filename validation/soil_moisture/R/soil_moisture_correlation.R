@@ -201,3 +201,86 @@ for(i in 2:length(drought_metrics)){
   rm(temp, drought_data);gc()
   print(Sys.time())
 }
+
+
+########################## Wetting / Drying Correlations #################
+######################### SNOTEL wet_dry correlation ######################
+
+drought_metrics = c("spi", "spei", "eddi", "sedi")
+for(i in 1:length(drought_metrics)){
+  tic()
+  #define drought metric path
+  drought_metric_path = paste0("/home/zhoylman/drought_indicators_data/snotel/snotel_",
+                               drought_metrics[i],".RData")
+  #load data
+  load(drought_metric_path)
+  
+  #start cluster
+  cl = makeCluster(20)
+  registerDoParallel(cl)
+  clusterExport(cl, "gamma_fit")
+  clusterExport(cl, "gamma_standard_fun")
+  clusterExport(cl, "drv_cor")
+  
+  #dynamically reassin data name
+  assign("drought_data", get(paste0("snotel_", drought_metrics[i])))
+  
+  # Run correlation analysis output = [[site]][[timescale]]
+  temp = foreach(site = 1:length(snotel_soil_moisture)) %dopar% {
+    library(dplyr)
+    drv_cor(drought_data[[site]], snotel_soil_moisture[[site]])
+  }
+  stopCluster(cl)
+  
+  assign(paste0("wet_dry_correlation_matrix_snotel_", drought_metrics[i]), temp)
+  
+  objectName = paste0("wet_dry_correlation_matrix_snotel_", drought_metrics[i])
+  
+  save(list = paste0("wet_dry_correlation_matrix_snotel_", drought_metrics[i]), 
+       file = paste0("/home/zhoylman/drought_indicators_data/correlation_matrix/wet_dry_correlation_matrix_",
+                     drought_metrics[i],"_unfrozen.RData"))
+  gc()
+  rm(temp, drought_data);gc()
+  toc()
+  print(Sys.time())
+}
+
+
+######################### Mesonet wet_dry correlation ######################
+
+drought_metrics = c("spi", "spei", "eddi", "sedi")
+for(i in 1:length(drought_metrics)){
+  #define drought metric path
+  drought_metric_path = paste0("/home/zhoylman/drought_indicators_data/mesonet/mesonet_",
+                               drought_metrics[i],".RData")
+  #load data
+  load(drought_metric_path)
+  
+  #start cluster
+  cl = makeCluster(20)
+  registerDoParallel(cl)
+  clusterExport(cl, "gamma_fit")
+  clusterExport(cl, "gamma_standard_fun")
+  clusterExport(cl, "drv_cor")
+  
+  #dynamically reassin data name
+  assign("drought_data", get(paste0("mesonet_", drought_metrics[i])))
+  
+  # Run correlation analysis output = [[site]][[timescale]]
+  temp = foreach(site = 1:length(mesonet_soil_moisture_list)) %dopar% {
+    library(dplyr)
+    drv_cor(drought_data[[site]], mesonet_soil_moisture_list[[site]])
+  }
+  stopCluster(cl)
+  
+  assign(paste0("wet_dry_correlation_matrix_mesonet_", drought_metrics[i]), temp)
+  
+  objectName = paste0("wet_dry_correlation_matrix_mesonet_", drought_metrics[i])
+  
+  save(list = paste0("wet_dry_correlation_matrix_mesonet_", drought_metrics[i]), 
+       file = paste0("/home/zhoylman/drought_indicators_data/correlation_matrix/wet_dry_correlation_matrix_mesonet_",
+                     drought_metrics[i],"_unfrozen.RData"))
+  gc()
+  rm(temp, drought_data);gc()
+  print(Sys.time())
+}

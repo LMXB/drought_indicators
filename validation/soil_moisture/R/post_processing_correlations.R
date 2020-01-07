@@ -14,24 +14,39 @@ best_cor_list = list()
 best_times_mesonet_list = list()
 best_cor_mesonet_list = list()
 
-for(i in 1:4){
-  best_times_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_spi), ncol = 6))
-  colnames(best_times_list[[i]]) = c("2in","4in", "8in", "20in", "40in", "mean")
-  
-  best_cor_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_spi), ncol = 6))
-  colnames(best_cor_list[[i]]) = c("2in","4in", "8in", "20in", "40in", "mean")
-  
-  best_times_mesonet_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_mesonet_spi), ncol = 6))
-  colnames(best_times_mesonet_list[[i]]) = c("0in", "4in", "8in", "20in", "36in", "mean")
-  
-  best_cor_mesonet_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_mesonet_spi), ncol = 6))
-  colnames(best_cor_mesonet_list[[i]]) = c("0in", "4in", "8in", "20in", "36in", "mean")
+for(i in 1:8){
+  if(i < 5){
+    #best_times_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_spi), ncol = 6))
+    colnames(best_times_list[[i]]) = c("2in","4in", "8in", "20in", "40in", "mean")
+    
+    #best_cor_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_spi), ncol = 6))
+    colnames(best_cor_list[[i]]) = c("2in","4in", "8in", "20in", "40in", "mean")
+    
+    #best_times_mesonet_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_mesonet_spi), ncol = 6))
+    colnames(best_times_mesonet_list[[i]]) = c("0in", "4in", "8in", "20in", "36in", "mean")
+    
+    #best_cor_mesonet_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_mesonet_spi), ncol = 6))
+    colnames(best_cor_mesonet_list[[i]]) = c("0in", "4in", "8in", "20in", "36in", "mean")
+  }
+  else{
+    #best_times_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_spi), ncol = 12))
+    colnames(best_times_list[[i]]) = paste0(c(rep("wet_",6), rep("dry_",6)), c("2in","4in", "8in", "20in", "40in", "mean"))
+    
+    #best_cor_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_spi), ncol = 12))
+    colnames(best_cor_list[[i]]) = paste0(c(rep("wet_",6), rep("dry_",6)), c("2in","4in", "8in", "20in", "40in", "mean"))
+    
+    #best_times_mesonet_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_mesonet_spi), ncol = 12))
+    colnames(best_times_mesonet_list[[i]]) = paste0(c(rep("wet_",6), rep("dry_",6)), c("0in", "4in", "8in", "20in", "36in", "mean"))
+    
+    #best_cor_mesonet_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_mesonet_spi), ncol = 12))
+    colnames(best_cor_mesonet_list[[i]]) = paste0(c(rep("wet_",6), rep("dry_",6)), c("0in", "4in", "8in", "20in", "36in", "mean"))
+  }
 }
 
-names(best_times_list) = c("spi","spei","eddi","sedi")
-names(best_cor_list) = c("spi","spei","eddi","sedi")
-names(best_times_mesonet_list) = c("spi","spei","eddi","sedi")
-names(best_cor_mesonet_list) = c("spi","spei","eddi","sedi")
+names(best_times_list) = c("spi","spei","eddi","sedi","spi_wet_dry","spei_wet_dry","eddi_wet_dry","sedi_wet_dry")
+names(best_cor_list) = c("spi","spei","eddi","sedi","spi_wet_dry","spei_wet_dry","eddi_wet_dry","sedi_wet_dry")
+names(best_times_mesonet_list) = c("spi","spei","eddi","sedi","spi_wet_dry","spei_wet_dry","eddi_wet_dry","sedi_wet_dry")
+names(best_cor_mesonet_list) = c("spi","spei","eddi","sedi","spi_wet_dry","spei_wet_dry","eddi_wet_dry","sedi_wet_dry")
 
 # find best correlations and times for snotel
 for(i in 1:length(correlation_matrix_spi)){
@@ -68,9 +83,35 @@ for(i in 1:length(correlation_matrix_mesonet_spi)){
   })
 }
 
+## playing with wet dry data
+for(i in 1:length(wet_dry_correlation_matrix_snotel_spi)){
+  tryCatch({
+    best_times_list$spi_wet_dry[i,] = find_best_wet_dry(wet_dry_correlation_matrix_snotel_spi[[i]])
+    best_times_list$spei_wet_dry[i,] = find_best_wet_dry(wet_dry_correlation_matrix_snotel_spei[[i]])
+    best_times_list$eddi_wet_dry[i,] = find_best_wet_dry_neg(wet_dry_correlation_matrix_snotel_eddi[[i]])
+    best_times_list$sedi_wet_dry[i,] = find_best_wet_dry_neg(wet_dry_correlation_matrix_snotel_sedi[[i]])
+  },
+  error = function(e){
+    return(c(NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA))
+  })
+}
+
+for(i in 1:length(wet_dry_correlation_matrix_mesonet_spi)){
+  tryCatch({
+    best_times_mesonet_list$spi_wet_dry[i,] = find_best_wet_dry_mesonet(wet_dry_correlation_matrix_mesonet_spi[[i]])
+    best_times_mesonet_list$spei_wet_dry[i,] = find_best_wet_dry_mesonet(wet_dry_correlation_matrix_mesonet_spei[[i]])
+    best_times_mesonet_list$eddi_wet_dry[i,] = find_best_wet_dry_mesonet_neg(wet_dry_correlation_matrix_mesonet_eddi[[i]])
+    best_times_mesonet_list$sedi_wet_dry[i,] = find_best_wet_dry_mesonet_neg(wet_dry_correlation_matrix_mesonet_sedi[[i]])
+  },
+  error = function(e){
+    return(c(NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA))
+  })
+}
+
 # aggregate based on generalized depths
 best_times_combined = list()
 best_cor_combined = list()
+best_times_combined_wet_dry = list()
 
 for(i in 1:4){
   best_times_combined[[i]] = data.frame(shallow = c(best_times_list[[i]]$`2in`, best_times_list[[i]]$`4in`,
@@ -88,9 +129,32 @@ for(i in 1:4){
                                       mean = c(best_cor_list[[i]]$mean, best_cor_mesonet_list[[i]]$mean))
 }
 
+for(i in 5:8){
+  best_times_combined_wet_dry[[i]] = data.frame(
+                                        #wet
+                                        shallow_wet = c(best_times_list[[i]]$`wet_2in`, best_times_list[[i]]$`wet_4in`,
+                                                    best_times_mesonet_list[[i]]$`wet_0in`, best_times_mesonet_list[[i]]$`wet_4in`),
+                                        middle_wet = c(best_times_list[[i]]$`wet_8in`, best_times_list[[i]]$`wet_20in`,
+                                                   best_times_mesonet_list[[i]]$`wet_8in`, best_times_mesonet_list[[i]]$`wet_20in`),
+                                        deep_wet = c(best_times_list[[i]]$`wet_40in`, best_times_mesonet_list[[i]]$`wet_36in`),
+                                        mean_wet = c(best_times_list[[i]]$wet_mean, best_times_mesonet_list[[i]]$wet_mean),
+                                        #dry
+                                        shallow_dry = c(best_times_list[[i]]$`dry_2in`, best_times_list[[i]]$`dry_4in`,
+                                                        best_times_mesonet_list[[i]]$`dry_0in`, best_times_mesonet_list[[i]]$`dry_4in`),
+                                        middle_dry = c(best_times_list[[i]]$`dry_8in`, best_times_list[[i]]$`dry_20in`,
+                                                       best_times_mesonet_list[[i]]$`dry_8in`, best_times_mesonet_list[[i]]$`dry_20in`),
+                                        deep_dry = c(best_times_list[[i]]$`dry_40in`, best_times_mesonet_list[[i]]$`dry_36in`),
+                                        mean_dry = c(best_times_list[[i]]$dry_mean, best_times_mesonet_list[[i]]$dry_mean))
+}
+
+for(i in c(1,1,1,1)){
+  best_times_combined_wet_dry[[i]] = NULL
+}
+
 # rename and organize
 names(best_times_combined) = c("spi","spei","eddi","sedi")
 names(best_cor_combined) = c("spi","spei","eddi","sedi")
+names(best_times_combined_wet_dry) = c("spi","spei","eddi","sedi")
 depths = c("2 - 4in","8 - 20in", "36 - 40in", "Mean")
 
 # plot density graphs by depth
@@ -187,7 +251,55 @@ plot_grid_depth = cowplot::plot_grid(depth_plot[[1]],depth_plot[[2]],depth_plot[
 ggsave("./validation/soil_moisture/plots/summary/depth_density_unfrozen.png",
        plot_grid_depth, width = 10, height = 9, units = "in", dpi = 400)
 
+################# wet dry plot ##########################################
+wet_dry_plot = list()
+# plot density graphs by metric
 
+names_short = c("SPI","SPEI","EDDI","SEDI")
+for(i in 1:length(names_short)){
+  
+  # best_cor_ggplot = c(round(median(best_cor_combined[[i]]$mean, na.rm = T),2),
+  #                     round(median(best_cor_combined[[i]]$shallow, na.rm = T),2),
+  #                     round(median(best_cor_combined[[i]]$middle, na.rm = T),2),
+  #                     round(median(best_cor_combined[[i]]$deep, na.rm = T),2))
+  
+  data = rbind(extract_density(best_times_combined_wet_dry[[i]]$mean_wet, "Mean", "Wetting"),
+               extract_density(best_times_combined_wet_dry[[i]]$shallow_wet, "Shallow", "Wetting"),
+               extract_density(best_times_combined_wet_dry[[i]]$middle_wet, "Middle", "Wetting"),
+               extract_density(best_times_combined_wet_dry[[i]]$deep_wet, "Deep", "Wetting"),
+               extract_density(best_times_combined_wet_dry[[i]]$mean_dry, "Mean", "Drying"),
+               extract_density(best_times_combined_wet_dry[[i]]$shallow_dry, "Shallow", "Drying"),
+               extract_density(best_times_combined_wet_dry[[i]]$middle_dry, "Middle", "Drying"),
+               extract_density(best_times_combined_wet_dry[[i]]$deep_dry, "Deep", "Drying"))
+  
+  best_density = data %>%
+    group_by(name, linetype) %>%
+    select(y, name) %>%
+    summarise_each(max)
+  
+  best_times = data %>%
+    dplyr::filter(y %in% best_density$y)
+  
+  wet_dry_plot[[i]] = ggplot(data = data, aes(x = x, y = y, color = name, linetype = linetype))+
+    geom_line()+
+    ggtitle(names_short[i])+
+    xlab("Timescale (Days)")+
+    ylab("Density")+
+    theme_bw(base_size = 12)+
+    xlim(0,600)+
+    theme(legend.position = c(0.85, 0.65))+
+    theme(legend.background = element_rect(color = 'black', fill = 'white', linetype='solid'),
+          plot.title = element_text(hjust = 0.5))+
+    ggrepel::geom_text_repel(data = best_times, aes(x = x, y=y, color = name, label = mround(x, 5)))+
+    geom_point(data = best_times, aes(x = x, y=y, color = name))+
+    scale_color_manual(breaks = c("Mean", "Shallow", "Middle", "Deep"),
+                       values = c("black", "forestgreen", "blue", "purple"))+
+    labs(color="Depth", linetype=NULL)
+}
+
+plot_grid_wet_dry = cowplot::plot_grid(wet_dry_plot[[1]],wet_dry_plot[[2]],wet_dry_plot[[3]],wet_dry_plot[[4]], nrow = 2)
+ggsave("./validation/soil_moisture/plots/summary/wet_dry_depth_plot.png",
+       plot_grid_wet_dry, width = 10, height = 9, units = "in", dpi = 400)
 
 ################# Monthly Post Processing and plots ########################
 library(ggplot2)
@@ -367,6 +479,10 @@ for(d in 1:length(monthly_data_snotel)){
   ggsave(paste0("./validation/soil_moisture/plots/summary/plot_grid_monthly_",index_names[d],".png"),
          plot_final, width = 12, height = 5, units = "in", dpi = 400)
 }
+
+
+#wet dry analsyis
+
 
 
 ################### site map #######################

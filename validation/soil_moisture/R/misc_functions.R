@@ -181,11 +181,90 @@ find_best_mesonet_cor_neg = function(x){
   
 }
 
-extract_density = function(x, name){
+extract_density = function(x, name, linetype){
   data = density(x, na.rm = T)
-  data_extract = data.frame(x = data$x, y = data$y, name = name)
+  data_extract = data.frame(x = data$x, y = data$y, name = name, linetype = linetype)
   return(data_extract)
 }
 mround <- function(x,base){
   base*round(x/base)
+}
+
+find_best_wet_dry = function(x){
+  dry = lapply(x, dplyr::filter, drv_cond == "Drying") %>%
+    do.call(rbind,.) %>%
+    data.frame() %>%
+    select(-drv_cond)%>%
+    t()
+  
+  wet = lapply(x, dplyr::filter, drv_cond == "Wetting") %>%
+    do.call(rbind,.) %>%
+    data.frame() %>%
+    select(-drv_cond)%>%
+    t()
+  
+  best_dry = find_best(dry)
+  best_wet = find_best(wet)
+  
+  return(c(best_wet,best_dry))
+}
+
+find_best_wet_dry_neg = function(x){
+  dry = lapply(x, dplyr::filter, drv_cond == "Drying") %>%
+    do.call(rbind,.) %>%
+    data.frame() %>%
+    select(-drv_cond)%>%
+    t()
+  
+  wet = lapply(x, dplyr::filter, drv_cond == "Wetting") %>%
+    do.call(rbind,.) %>%
+    data.frame() %>%
+    select(-drv_cond)%>%
+    t()
+  
+  best_dry = find_best_neg(dry)
+  best_wet = find_best_neg(wet)
+  
+  return(c(best_wet,best_dry))
+}
+
+
+
+find_best_wet_dry_mesonet = function(x){
+  dry = lapply(x, dplyr::filter, drv_cond == "Drying") %>%
+    do.call(rbind,.) %>%
+    data.frame() %>%
+    select(-drv_cond)%>%
+    t()
+  
+  wet = lapply(x, dplyr::filter, drv_cond == "Wetting") %>%
+    do.call(rbind,.) %>%
+    data.frame() %>%
+    select(-drv_cond)%>%
+    t()
+  
+  best_dry = find_best_mesonet(dry)
+  best_wet = find_best_mesonet(wet)
+  
+  return(c(best_wet,best_dry))
+}
+
+
+find_best_wet_dry_mesonet_neg = function(x){
+  dry = lapply(x, dplyr::filter, drv_cond == "Drying") %>%
+    do.call(rbind,.) %>%
+    data.frame() %>%
+    select(-drv_cond)%>%
+    t()
+  
+  wet = lapply(x, dplyr::filter, drv_cond == "Wetting") %>%
+    do.call(rbind,.) %>%
+    data.frame() %>%
+    select(-drv_cond)%>%
+    t()
+  
+  best_dry = find_best_mesonet_neg(dry)
+  best_wet = find_best_mesonet_neg(wet)
+  
+  return(c(best_wet,best_dry))
 }
