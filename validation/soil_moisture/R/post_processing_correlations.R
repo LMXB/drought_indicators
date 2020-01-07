@@ -16,29 +16,29 @@ best_cor_mesonet_list = list()
 
 for(i in 1:8){
   if(i < 5){
-    #best_times_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_spi), ncol = 6))
+    best_times_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_spi), ncol = 6))
     colnames(best_times_list[[i]]) = c("2in","4in", "8in", "20in", "40in", "mean")
     
-    #best_cor_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_spi), ncol = 6))
+    best_cor_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_spi), ncol = 6))
     colnames(best_cor_list[[i]]) = c("2in","4in", "8in", "20in", "40in", "mean")
     
-    #best_times_mesonet_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_mesonet_spi), ncol = 6))
+    best_times_mesonet_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_mesonet_spi), ncol = 6))
     colnames(best_times_mesonet_list[[i]]) = c("0in", "4in", "8in", "20in", "36in", "mean")
     
-    #best_cor_mesonet_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_mesonet_spi), ncol = 6))
+    best_cor_mesonet_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_mesonet_spi), ncol = 6))
     colnames(best_cor_mesonet_list[[i]]) = c("0in", "4in", "8in", "20in", "36in", "mean")
   }
   else{
-    #best_times_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_spi), ncol = 12))
+    best_times_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_spi), ncol = 12))
     colnames(best_times_list[[i]]) = paste0(c(rep("wet_",6), rep("dry_",6)), c("2in","4in", "8in", "20in", "40in", "mean"))
     
-    #best_cor_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_spi), ncol = 12))
+    best_cor_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_spi), ncol = 12))
     colnames(best_cor_list[[i]]) = paste0(c(rep("wet_",6), rep("dry_",6)), c("2in","4in", "8in", "20in", "40in", "mean"))
     
-    #best_times_mesonet_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_mesonet_spi), ncol = 12))
+    best_times_mesonet_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_mesonet_spi), ncol = 12))
     colnames(best_times_mesonet_list[[i]]) = paste0(c(rep("wet_",6), rep("dry_",6)), c("0in", "4in", "8in", "20in", "36in", "mean"))
     
-    #best_cor_mesonet_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_mesonet_spi), ncol = 12))
+    best_cor_mesonet_list[[i]] = data.frame(matrix(nrow = length(correlation_matrix_mesonet_spi), ncol = 12))
     colnames(best_cor_mesonet_list[[i]]) = paste0(c(rep("wet_",6), rep("dry_",6)), c("0in", "4in", "8in", "20in", "36in", "mean"))
   }
 }

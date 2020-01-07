@@ -24,7 +24,7 @@ load("~/drought_indicators_data/preprocessed_soil_moisture/mesonet_soil_moisture
 load("~/drought_indicators_data/preprocessed_soil_moisture/snotel_soil_moisture.Rdata")
 
 #trouble shooting set up for functions
-# site = 1
+# site = 28
 # drought_index = mesonet_spi[[site]]
 # soil_moisture = mesonet_soil_moisture_list[[site]]
 # cross_cor(drought_index,soil_moisture)
