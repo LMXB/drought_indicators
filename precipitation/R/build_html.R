@@ -32,6 +32,9 @@ source("/home/zhoylman/drought_indicators/mapping_functions/base_map.R")
 
 setwd('/home/zhoylman/drought_indicators/precipitation')
 
+counties_shp = st_read("../shp_kml/larger_extent/county_umrb.shp")
+
+
 #precipitation data (anomaly)
 current_anomaly_15 = raster::raster("../precipitation/maps/current_anomaly_15.tif")
 current_anomaly_30 = raster::raster("../precipitation/maps/current_anomaly_30.tif")
@@ -145,10 +148,12 @@ for(i in 1:length(watershed_list_names)){
 
 # Add some layer controls
 m_raster = m_raster %>%
+  addPolygons(data = counties_shp, group = "Counties", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
   addLayersControl(position = "topleft",
                    baseGroups = timescale_names,
-                   overlayGroups = c("USDM", "States", "Weather"),
+                   overlayGroups = c("USDM", "States", "Weather", "Counties"),
                    options = layersControlOptions(collapsed = FALSE)) %>%
+  leaflet::hideGroup("Counties")%>%
   addLegend(pal = pal, values = 0:800,
             title = paste0("% Average<br>Precipitation<br>", as.character(watersheds_30$crrnt_t[1])),
             position = "bottomleft")
@@ -262,10 +267,12 @@ for(i in 1:length(watershed_list_names)){
 
 # Add some layer controls
 m_raster = m_raster %>%
+  addPolygons(data = counties_shp, group = "Counties", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
   addLayersControl(position = "topleft",
                    baseGroups = timescale_names,
-                   overlayGroups = c("USDM", "States", "Weather"),
+                   overlayGroups = c("USDM", "States", "Weather", "Counties"),
                    options = layersControlOptions(collapsed = FALSE)) %>%
+  leaflet::hideGroup("Counties")%>%
   addLegend(pal = pal_bins, values = seq(0,100,10),
             title = paste0("Precipitation<br>Percentile<br>", as.character(watersheds_30$crrnt_t[1])),
             position = "bottomleft")

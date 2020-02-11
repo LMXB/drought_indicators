@@ -35,6 +35,8 @@ library(htmlwidgets)
 
 setwd('/home/zhoylman/drought_indicators/soil_moisture')
 
+counties_shp = st_read("../shp_kml/larger_extent/county_umrb.shp")
+
 #load custom functions
 source("../mapping_functions/base_map.R")
 
@@ -44,20 +46,22 @@ download.file("https://www.cpc.ncep.noaa.gov//products/Drought/Figures/index/SM_
 soil_moisture = raster("/home/zhoylman/drought_indicators/soil_moisture/maps/current.tif")%>%
   mask(., readOGR("/home/zhoylman/drought_indicators/shp_kml/larger_extent/outline_umrb.shp"))
 
-soil_moisture[soil_moisture > 100] = 100
+soil_moisture[soil_moisture >= 100] = 100
 soil_moisture[soil_moisture < 0] = 0
 
 pal <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffff00", "#ffffff", "#00ffff", "#0000ff", "#000d66"), interpolate = "spline"), 
-                     domain = 0:100, bins = seq(0,100,10), na.color = "transparent")
+                     domain = 0:101, bins = seq(0,101,10), na.color = "transparent")
 m_raster = base_map() %>%
     addRasterImage(soil_moisture, colors = pal, opacity = 0.8, group = "Soil Moisture", project = TRUE)
 
 m_raster = m_raster %>%
+  addPolygons(data = counties_shp, group = "Counties", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
   addLayersControl(position = "topleft",
-                   baseGroups = "Soil Moisture",
-                   overlayGroups = c("USDM", "States", "Weather"),
+                   baseGroups = timescale_names,
+                   overlayGroups = c("USDM", "States", "Weather", "Counties"),
                    options = layersControlOptions(collapsed = FALSE)) %>%
-  addLegend(pal = pal, values = seq(0,100,10),
+  leaflet::hideGroup("Counties")%>%
+  addLegend(pal = pal, values = seq(0,101,10),
             title = paste0("Soil Moisture<br>Percentile<br>", as.Date(Sys.time())), 
             position = "bottomleft")
 

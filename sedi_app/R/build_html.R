@@ -33,6 +33,9 @@ setwd('/home/zhoylman/drought_indicators/sedi_app')
 #load custom functions
 source("../mapping_functions/base_map.R")
 
+counties_shp = st_read("../shp_kml/larger_extent/county_umrb.shp")
+
+
 #sedi data
 current_sedi_30 = raster::raster("../sedi_app/maps/current_sedi/current_sedi_30_day.tif")
 current_sedi_60 = raster::raster("../sedi_app/maps/current_sedi/current_sedi_60_day.tif")
@@ -108,10 +111,12 @@ for(i in 1:length(watershed_list_names)){
 }
 # Add some layer controls 
 m_raster = m_raster %>%
+  addPolygons(data = counties_shp, group = "Counties", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
   addLayersControl(position = "topleft",
                    baseGroups = timescale_names,
-                   overlayGroups = c("USDM", "States", "Weather"),
+                   overlayGroups = c("USDM", "States", "Weather", "Counties"),
                    options = layersControlOptions(collapsed = FALSE)) %>%
+  leaflet::hideGroup("Counties")%>%
   addLegend(pal = pal, values = -2.5:2.5,
             title = paste0("Current SEDI<br>", as.character(watersheds_30$crrnt_t[1])),
             position = "bottomleft")

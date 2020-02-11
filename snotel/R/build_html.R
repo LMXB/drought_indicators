@@ -11,7 +11,6 @@ library(mapview)
 
 source("/home/zhoylman/drought_indicators/mapping_functions/base_map.R")
 
-
 #define input shp files
 snotel = st_read("/home/zhoylman/drought_indicators/snotel/shp/Snotel_Sites.shp")
 states = st_read("/home/zhoylman/drought_indicators/shp_kml/states.shp")
@@ -83,25 +82,51 @@ save(precip_map, file = "/home/zhoylman/drought_indicators/snotel/widgets/precip
 
 saveWidget(precip_map, "/home/zhoylman/drought_indicators/widgets/precip_snotel.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
 
-
-
 ##### Mobile SWE ######
 pal <- colorNumeric(c("red", "yellow", "green", "blue", "purple"), domain = c(min(daily_lookup$percent_swe, na.rm = T),max(daily_lookup$percent_swe, na.rm = T)), na.color = "grey")
+pal_rev <- colorNumeric(rev(c("red", "yellow", "green", "blue", "purple")), domain = c(min(daily_lookup$percent_swe, na.rm = T),max(daily_lookup$percent_swe, na.rm = T)), na.color = "grey")
+
 
 source("/home/zhoylman/drought_indicators/mapping_functions/base_map_mobile.R")
+
+time_check = format(tail(file.info("/home/zhoylman/drought_indicators/snodas/data/processed/delta_snow_depth/delta_1_depth_in.tif")$ctime), "%m-%d-%Y")
+
+current_1 = raster::raster("/home/zhoylman/drought_indicators/snodas/data/processed/delta_snow_depth/delta_1_depth_in.tif")
+current_3 = raster::raster("/home/zhoylman/drought_indicators/snodas/data/processed/delta_snow_depth/delta_3_depth_in.tif")
+current_7 = raster::raster("/home/zhoylman/drought_indicators/snodas/data/processed/delta_snow_depth/delta_7_depth_in.tif")
+
+
+pal_r <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffff00", "#ffffff", "#00ffff", "#0000ff", "#000d66"), interpolate = "spline"), 
+                domain = -10:10, bins = c(-10,-5,-3,-2,-1,-0.5,0.5,1,2,3,5,10), na.color = "transparent")
+
+pal_r_rev <- colorBin(colorRamp(rev(c("#8b0000", "#ff0000", "#ffff00", "#ffffff", "#00ffff", "#0000ff", "#000d66")), interpolate = "spline"), 
+                  domain = -10:10, bins = c(-10,-5,-3,-2,-1,-0.5,0.5,1,2,3,5,10), na.color = "transparent")
+
 swe_map_mobile = base_map_mobile() %>%
-  addCircleMarkers(snotel$lon, snotel$lat, snotel$simple_id, group = "Snow Water Equiv",
+  addCircleMarkers(snotel$lon, snotel$lat, snotel$simple_id, group = "SNOTEL (SWE)",
                    popup = paste0("<img src='https://shiny.cfc.umt.edu/drought_indicators/plots/snotel_plot_mobile_",
                                   snotel$simple_id,".png' height='200' width='270'/>"),
                    radius = 12, stroke = TRUE, fillOpacity = 0.9,
                    color = "black", fillColor = pal(daily_lookup$percent_swe)
   )%>%
+  addRasterImage(current_1, colors = pal_r, opacity = 0.8, group = "24hr Change", project = TRUE)%>%
+  addRasterImage(current_3, colors = pal_r, opacity = 0.8, group = "72hr Change", project = TRUE)%>%
+  addRasterImage(current_7, colors = pal_r, opacity = 0.8, group = "7 Day Change", project = TRUE)%>%
   leaflet::addLayersControl(position = "topleft",
-                            overlayGroups = c("Snow Water Equiv", "States", "Weather"),
+                            baseGroups = c("24hr Change","72hr Change", "7 Day Change"),
+                            overlayGroups = c("SNOTEL (SWE)", "States",  "Weather"),
                             options = leaflet::layersControlOptions(collapsed = FALSE)) %>%
-  addLegend("bottomleft", pal = pal, values = daily_lookup$percent_swe,
+  addLegend("bottomleft", pal = pal_rev, values = daily_lookup$percent_swe,
             title = "% Average<br>SWE (Daily)",
-            opacity = 1
+            opacity = 1,
+            group = "SNOTEL (SWE)",
+            labFormat = labelFormat(transform = function(x) sort(x, decreasing = TRUE))
+  )%>%
+  addLegend("bottomright", pal = pal_r_rev, values = 10:-10,
+            title = paste0("Snow Depth <br> Change (in)<br>",time_check),
+            opacity = 1,
+            group = "24hr Snow Change",
+            labFormat = labelFormat(transform = function(x) sort(x, decreasing = TRUE))
   )%>%
   setView(lng = -113.990211, lat = 46.864089, zoom = 7)%>%
   onRender("function(el, x) {

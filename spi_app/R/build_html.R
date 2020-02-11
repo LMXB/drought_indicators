@@ -36,6 +36,9 @@ source("../spi_app/R/gamma_fit.R")
 source("../mapping_functions/base_map.R")
 source("../spi_app/R/spi_calc_plot.R")
 
+#import counties
+counties_shp = st_read("../shp_kml/larger_extent/county_umrb.shp")
+
 #SPI data
 current_spi_30 = raster::raster("../spi_app/maps/current_spi/current_spi_30.tif")
 current_spi_60 = raster::raster("../spi_app/maps/current_spi/current_spi_60.tif")
@@ -116,10 +119,12 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffff00", "#ffffff", "#00ffff", "#0
     
     # Add some layer controls
     m_raster = m_raster %>%
+      addPolygons(data = counties_shp, group = "Counties", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
       addLayersControl(position = "topleft",
                        baseGroups = timescale_names,
-                       overlayGroups = c("USDM", "States", "Weather"),
+                       overlayGroups = c("USDM", "States", "Weather", "Counties"),
                        options = layersControlOptions(collapsed = FALSE)) %>%
+      leaflet::hideGroup("Counties")%>%
       addLegend(pal = pal, values = -2.5:2.5,
                 title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
                 position = "bottomleft")
