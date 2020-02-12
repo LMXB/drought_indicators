@@ -54,17 +54,18 @@ for(i in 1:length(correlation_matrix_spi)){
     best_times_list$spi[i,] = find_best(correlation_matrix_spi[[i]])
     best_times_list$spei[i,] = find_best(correlation_matrix_spei[[i]])
     best_times_list$eddi[i,] = find_best_neg(correlation_matrix_eddi[[i]])
-    best_times_list$sedi[i,] = find_best_neg(correlation_matrix_sedi[[i]])
+    best_times_list$sedi[i,] = find_best_neg(correlation_matrix_snotel_sedi[[i]])
     
     best_cor_list$spi[i,] = find_best_cor(correlation_matrix_spi[[i]])
     best_cor_list$spei[i,] = find_best_cor(correlation_matrix_spei[[i]])
     best_cor_list$eddi[i,] = find_best_cor_neg(correlation_matrix_eddi[[i]])
-    best_cor_list$sedi[i,] = find_best_cor_neg(correlation_matrix_sedi[[i]])
+    best_cor_list$sedi[i,] = find_best_cor_neg(correlation_matrix_snotel_sedi[[i]])
   },
   error = function(e){
     return(c(NA,NA,NA,NA,NA,NA))
   })
 }
+
 # find best correlations and times for mesonet
 for(i in 1:length(correlation_matrix_mesonet_spi)){
   tryCatch({
@@ -233,7 +234,7 @@ for(i in 1:length(names_short)){
     xlab("Timescale (Days)")+
     ylab("Density")+
     theme_bw(base_size = 14)+
-    xlim(0,600)+
+    xlim(0,730)+
     theme(legend.position = c(0.75, 0.75))+
     theme(legend.background = element_rect(color = 'black', fill = 'white', linetype='solid'),
           plot.title = element_text(hjust = 0.5))+
@@ -263,14 +264,14 @@ for(i in 1:length(names_short)){
   #                     round(median(best_cor_combined[[i]]$middle, na.rm = T),2),
   #                     round(median(best_cor_combined[[i]]$deep, na.rm = T),2))
   
-  data = rbind(extract_density(best_times_combined_wet_dry[[i]]$mean_wet, "Mean", "Wetting"),
-               extract_density(best_times_combined_wet_dry[[i]]$shallow_wet, "Shallow", "Wetting"),
-               extract_density(best_times_combined_wet_dry[[i]]$middle_wet, "Middle", "Wetting"),
-               extract_density(best_times_combined_wet_dry[[i]]$deep_wet, "Deep", "Wetting"),
-               extract_density(best_times_combined_wet_dry[[i]]$mean_dry, "Mean", "Drying"),
-               extract_density(best_times_combined_wet_dry[[i]]$shallow_dry, "Shallow", "Drying"),
-               extract_density(best_times_combined_wet_dry[[i]]$middle_dry, "Middle", "Drying"),
-               extract_density(best_times_combined_wet_dry[[i]]$deep_dry, "Deep", "Drying"))
+  data = rbind(extract_density_linetype(best_times_combined_wet_dry[[i]]$mean_wet, "Mean", "Wetting"),
+               extract_density_linetype(best_times_combined_wet_dry[[i]]$shallow_wet, "Shallow", "Wetting"),
+               extract_density_linetype(best_times_combined_wet_dry[[i]]$middle_wet, "Middle", "Wetting"),
+               extract_density_linetype(best_times_combined_wet_dry[[i]]$deep_wet, "Deep", "Wetting"),
+               extract_density_linetype(best_times_combined_wet_dry[[i]]$mean_dry, "Mean", "Drying"),
+               extract_density_linetype(best_times_combined_wet_dry[[i]]$shallow_dry, "Shallow", "Drying"),
+               extract_density_linetype(best_times_combined_wet_dry[[i]]$middle_dry, "Middle", "Drying"),
+               extract_density_linetype(best_times_combined_wet_dry[[i]]$deep_dry, "Deep", "Drying"))
   
   best_density = data %>%
     group_by(name, linetype) %>%
@@ -513,6 +514,9 @@ master_times = cbind(master_list,
 states = sf::st_read("/home/zhoylman/drought_indicators/shp_kml/states.shp") %>%
   dplyr::filter(STATE_NAME != "Alaska" & STATE_NAME != "Hawaii")
 
+states_union = sf::st_read("/home/zhoylman/drought_indicators/shp_kml/states.shp") %>%
+  dplyr::filter(STATE_NAME != "Alaska" & STATE_NAME != "Hawaii") %>%
+  st_union()
 
 static_map = ggplot() + 
   geom_sf(data = states, fill = "transparent")+
@@ -527,6 +531,34 @@ static_map
 
 ggsave(paste0("./validation/soil_moisture/plots/summary/site_map.png"),
        static_map, width = 10, height = 5, units = "in", dpi = 400)
+
+
+## example spei map 
+spei_map = raster::raster("/home/zhoylman/drought_indicators_data/spei_20190901_60_day.tif") %>%
+  rasterToPoints()%>%
+  as.data.frame() %>%
+  rename(spei = 3)
+
+color_ramp = c("#8b0000", "#ff0000", "#ffffff", "#0000ff", "#00008b")
+
+static_spei_map = ggplot() + 
+  geom_sf(data = states_union, fill = "transparent", size = 1.5)+
+  geom_tile(data = spei_map, aes(x, y, fill = spei)) + 
+  theme_bw(base_size = 16)+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  scale_fill_gradientn("SPEI", colours = color_ramp, limits = c(-3,3))+
+  ggtitle(paste0("Standardized Precipitation Evapotranspiration Index\n 9-1-2019 (60 Day Timescale)"))+
+  xlab("")+
+  ylab("")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+static_spei_map
+
+ggsave(paste0("./validation/soil_moisture/plots/summary/spei_map.png"),
+       static_spei_map, width = 10, height = 5, units = "in", dpi = 420)
+
+
 
 rbPal <- (colorRampPalette(c("darkblue", "blue", "lightblue", "yellow", "orange", "red", "darkred")))
 

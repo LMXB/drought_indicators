@@ -44,7 +44,9 @@ load("~/drought_indicators_data/preprocessed_soil_moisture/snotel_soil_moisture.
 
 ################################ SNOTEL correlation #########################################
 
-drought_metrics = c("spi", "spei", "eddi", "sedi")
+#drought_metrics = c("spi", "spei", "eddi", "sedi")
+drought_metrics = c("sedi")
+
 for(i in 1:length(drought_metrics)){
   #define drought metric path
   drought_metric_path = paste0("/home/zhoylman/drought_indicators_data/snotel/snotel_",
@@ -82,7 +84,6 @@ for(i in 1:length(drought_metrics)){
 
 ##################### Mesonet correlation ##############################
 
-drought_metrics = c("spi", "spei", "eddi", "sedi")
 for(i in 1:length(drought_metrics)){
   #define drought metric path
   drought_metric_path = paste0("/home/zhoylman/drought_indicators_data/mesonet/mesonet_",
@@ -123,8 +124,7 @@ for(i in 1:length(drought_metrics)){
 
 ######################### SNOTEL Monthly correlation ######################
 
-drought_metrics = c("spi", "spei", "eddi", "sedi")
-for(i in 2:length(drought_metrics)){
+for(i in 1:length(drought_metrics)){
   tic()
   #define drought metric path
   drought_metric_path = paste0("/home/zhoylman/drought_indicators_data/snotel/snotel_",
@@ -165,8 +165,7 @@ for(i in 2:length(drought_metrics)){
 
 ######################### Mesonet Monthly correlation ######################
 
-drought_metrics = c("spi", "spei", "eddi", "sedi")
-for(i in 2:length(drought_metrics)){
+for(i in 1:length(drought_metrics)){
   #define drought metric path
   drought_metric_path = paste0("/home/zhoylman/drought_indicators_data/mesonet/mesonet_",
                                drought_metrics[i],".RData")
@@ -206,7 +205,6 @@ for(i in 2:length(drought_metrics)){
 ########################## Wetting / Drying Correlations #################
 ######################### SNOTEL wet_dry correlation ######################
 
-drought_metrics = c("spi", "spei", "eddi", "sedi")
 for(i in 1:length(drought_metrics)){
   tic()
   #define drought metric path
@@ -248,7 +246,6 @@ for(i in 1:length(drought_metrics)){
 
 ######################### Mesonet wet_dry correlation ######################
 
-drought_metrics = c("spi", "spei", "eddi", "sedi")
 for(i in 1:length(drought_metrics)){
   #define drought metric path
   drought_metric_path = paste0("/home/zhoylman/drought_indicators_data/mesonet/mesonet_",
