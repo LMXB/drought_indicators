@@ -16,6 +16,7 @@ snotel_site_data = read.csv("~/drought_indicators_data/snotel/nrcs_soil_moisture
 source("./spi_app/R/gamma_fit.R")
 source("./validation/soil_moisture/R/gamma_standard_fun.R")
 source("./validation/soil_moisture/R/cross_cor.R")
+source("./validation/soil_moisture/R/cross_cor_summer.R")
 source("./validation/soil_moisture/R/moving_cross_cor.R")
 source("./validation/soil_moisture/R/drv_cor.R")
 
@@ -44,8 +45,8 @@ load("~/drought_indicators_data/preprocessed_soil_moisture/snotel_soil_moisture.
 
 ################################ SNOTEL correlation #########################################
 
-#drought_metrics = c("spi", "spei", "eddi", "sedi")
-drought_metrics = c("sedi")
+drought_metrics = c("spi", "spei", "eddi", "sedi")
+#drought_metrics = c("spi")
 
 for(i in 1:length(drought_metrics)){
   #define drought metric path
@@ -119,6 +120,78 @@ for(i in 1:length(drought_metrics)){
   rm(temp, drought_data);gc()
 }
 
+################################ Summer correaltion #################################
+for(i in 1:length(drought_metrics)){
+  #define drought metric path
+  drought_metric_path = paste0("/home/zhoylman/drought_indicators_data/snotel/snotel_",
+                               drought_metrics[i],".RData")
+  #load data
+  load(drought_metric_path)
+  
+  #start cluster
+  cl = makeCluster(20)
+  registerDoParallel(cl)
+  clusterExport(cl, "gamma_fit")
+  clusterExport(cl, "gamma_standard_fun")
+  clusterExport(cl, "cross_cor_summer")
+  
+  #dynamically reassin data name
+  assign("drought_data", get(paste0("snotel_", drought_metrics[i])))
+  
+  # Run correlation analysis
+  temp = foreach(site = 1:length(snotel_soil_moisture)) %dopar% {
+    library(dplyr)
+    cross_cor_summer(drought_data[[site]], snotel_soil_moisture[[site]])
+  }
+  stopCluster(cl)
+  
+  assign(paste0("correlation_matrix_summer_snotel_", drought_metrics[i]), temp)
+  
+  objectName = paste0("correlation_matrix_summer_snotel_", drought_metrics[i])
+  
+  save(list = paste0("correlation_matrix_summer_snotel_", drought_metrics[i]), 
+       file = paste0("/home/zhoylman/drought_indicators_data/correlation_matrix/correlation_matrix_summer_snotel_",
+                     drought_metrics[i],"_unfrozen.RData"))
+  gc()
+  rm(temp, drought_data);gc()
+}
+
+##################### Mesonet correlation ##############################
+
+for(i in 1:length(drought_metrics)){
+  #define drought metric path
+  drought_metric_path = paste0("/home/zhoylman/drought_indicators_data/mesonet/mesonet_",
+                               drought_metrics[i],".RData")
+  #load data
+  load(drought_metric_path)
+  
+  #start cluster
+  cl = makeCluster(20)
+  registerDoParallel(cl)
+  clusterExport(cl, "gamma_fit")
+  clusterExport(cl, "gamma_standard_fun")
+  clusterExport(cl, "cross_cor_summer")
+  
+  #dynamically reassin data name
+  assign("drought_data", get(paste0("mesonet_", drought_metrics[i])))
+  
+  # Run correlation analysis
+  temp = foreach(site = 1:length(mesonet_soil_moisture_list)) %dopar% {
+    library(dplyr)
+    cross_cor_summer(drought_data[[site]], mesonet_soil_moisture_list[[site]])
+  }
+  stopCluster(cl)
+  
+  assign(paste0("correlation_matrix_summer_mesonet_", drought_metrics[i]), temp)
+  
+  objectName = paste0("correlation_matrix_summer_mesonet_", drought_metrics[i])
+  
+  save(list = paste0("correlation_matrix_summer_mesonet_", drought_metrics[i]), 
+       file = paste0("/home/zhoylman/drought_indicators_data/correlation_matrix/correlation_matrix_summer_mesonet_unfrozen_",
+                     drought_metrics[i],".RData"))
+  gc()
+  rm(temp, drought_data);gc()
+}
 
 ########################## monthly correlations ###########################
 
