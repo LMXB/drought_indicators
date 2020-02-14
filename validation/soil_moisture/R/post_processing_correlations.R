@@ -585,6 +585,7 @@ for(d in 1:length(monthly_data_snotel)){
 
 library(ggplot2)
 library(scales)
+library(matrixStats)
 
 index_names = c("SPI","SPEI","EDDI","SEDI")
 
@@ -620,13 +621,18 @@ for(d in 1:length(monthly_data_snotel)){
   for(i in 1:length(monthly_data_snotel[[d]])){
     mean_temp = monthly_data_snotel[[d]][[i]][[index[1]]]$mean_soil_moisture
     
-    shallow_temp = rowMeans(data.frame(in_2 = monthly_data_snotel[[d]][[i]][[index[2]]]$Soil.Moisture.Percent..2in..pct..Start.of.Day.Values,
-                                       in_4 = monthly_data_snotel[[d]][[i]][[index[2]]]$Soil.Moisture.Percent..4in..pct..Start.of.Day.Values),
-                            na.rm = TRUE)
+    shallow_temp = tryCatch({rowMedians(as.matrix(data.frame(in_2 = monthly_data_snotel[[d]][[i]][[index[2]]]$Soil.Moisture.Percent..2in..pct..Start.of.Day.Values,
+                                       in_4 = monthly_data_snotel[[d]][[i]][[index[2]]]$Soil.Moisture.Percent..4in..pct..Start.of.Day.Values)), na.rm = TRUE)
+    }, error=function(e) {
+      return(rep(NA, 12))
+    }) 
     
-    middle_temp = rowMeans(data.frame(in_8 = monthly_data_snotel[[d]][[i]][[index[3]]]$Soil.Moisture.Percent..8in..pct..Start.of.Day.Values,
-                                      in_20 = monthly_data_snotel[[d]][[i]][[index[3]]]$Soil.Moisture.Percent..20in..pct..Start.of.Day.Values),
-                           na.rm = TRUE)
+    middle_temp = tryCatch({
+      rowMedians(as.matrix(data.frame(in_8 = monthly_data_snotel[[d]][[i]][[index[3]]]$Soil.Moisture.Percent..8in..pct..Start.of.Day.Values,
+                                      in_20 = monthly_data_snotel[[d]][[i]][[index[3]]]$Soil.Moisture.Percent..20in..pct..Start.of.Day.Values)), na.rm = TRUE)
+    }, error=function(e) {
+      return(rep(NA, 12))
+    }) 
     
     deep_temp = monthly_data_snotel[[d]][[i]][[index[4]]]$Soil.Moisture.Percent..40in..pct..Start.of.Day.Values
     
@@ -649,12 +655,18 @@ for(d in 1:length(monthly_data_snotel)){
     mean_temp = monthly_data_mesonet[[d]][[i]][[index[1]]]$mean_soil_moisture
     mean_full = cbind(mean_full, mean_temp)
     #shallow
-    shallow_temp = rowMeans(data.frame(in_0 = monthly_data_mesonet[[d]][[i]][[index[2]]]$soilwc00,
-                                       in_4 = monthly_data_mesonet[[d]][[i]][[index[2]]]$soilwc04),na.rm = TRUE)
+    shallow_temp = tryCatch({rowMedians(as.matrix(data.frame(in_0 = monthly_data_mesonet[[d]][[i]][[index[2]]]$soilwc00,
+                                       in_4 = monthly_data_mesonet[[d]][[i]][[index[2]]]$soilwc04)),na.rm = TRUE)
+    }, error=function(e) {
+      return(rep(NA, 12))
+    }) 
     shallow_full = cbind(shallow_full, shallow_temp)
     #middle
-    middle_temp = rowMeans(data.frame(in_8 = monthly_data_mesonet[[d]][[i]][[index[3]]]$soilwc08,
-                                      in_20 = monthly_data_mesonet[[d]][[i]][[index[3]]]$soilwc20),na.rm = TRUE)
+    middle_temp = tryCatch({rowMedians(as.matrix(data.frame(in_8 = monthly_data_mesonet[[d]][[i]][[index[3]]]$soilwc08,
+                                      in_20 = monthly_data_mesonet[[d]][[i]][[index[3]]]$soilwc20)),na.rm = TRUE)
+    }, error=function(e) {
+      return(rep(NA, 12))
+    }) 
     middle_full = cbind(middle_full, middle_temp)
     #deep
     deep_temp = monthly_data_mesonet[[d]][[i]][[index[4]]]$soilwc36
@@ -760,7 +772,6 @@ for(d in 1:length(monthly_data_snotel)){
   ggsave(paste0("./validation/soil_moisture/plots/summary/plot_grid_monthly_summer_",index_names[d],".png"),
          plot_final, width = 12, height = 5, units = "in", dpi = 400)
 }
-
 
 
 
@@ -918,7 +929,7 @@ for(i in 1:4){
                color = "black", shape = 21, alpha = 1, size = 2)+
     xlab("")+
     ylab("")+
-    ggtitle(paste0("May = October Optimal Timescale (", index_names[i], ")"))+
+    ggtitle(paste0("May - October Optimal Timescale (", index_names[i], ")"))+
     scale_fill_gradientn("",colours=(rbPal(100)), guide = F)
   
   #function to draw manual ramp
@@ -950,55 +961,113 @@ for(i in 1:4){
 
 
 
-################### Leaflet #########################
-pal <- leaflet::colorNumeric(c("red", "yellow", "green", "blue", "purple"), 
-                             domain = c(0, 730), na.color = "transparent")
-
-sites = leaflet::leaflet(master_times,options = leaflet::tileOptions(minZoom = 4, maxZoom = 10)) %>%
-  leaflet::addTiles("https://maps.tilehosting.com/data/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
-  leaflet::addProviderTiles("Stamen.TonerLines") %>%
-  leaflet::addProviderTiles("Stamen.TonerLabels") %>%
-  leaflet::addCircleMarkers(~longitude, ~latitude, 
-                            radius = 8, stroke = TRUE, fillOpacity = 0.9,
-                            color = "blue", fillColor = "white", group = "Locations"
-  )%>%
-  leaflet::addCircleMarkers(~longitude, ~latitude, 
-                            radius = 8, stroke = TRUE, fillOpacity = 0.9,
-                            color = pal(master_times$mean_spi), fillColor = pal(master_times$mean_spi), group = "SPI"
-  )%>%
-  leaflet::addCircleMarkers(~longitude, ~latitude, 
-                            radius = 8, stroke = TRUE, fillOpacity = 0.9,
-                            color = pal(master_times$mean_spei), fillColor = pal(master_times$mean_spei), group = "SPEI"
-  )%>%
-  leaflet::addCircleMarkers(~longitude, ~latitude, 
-                            radius = 8, stroke = TRUE, fillOpacity = 0.9,
-                            color = pal(master_times$mean_eddi), fillColor = pal(master_times$mean_eddi), group = "EDDI"
-  )%>%
-  leaflet::addCircleMarkers(~longitude, ~latitude, 
-                            radius = 8, stroke = TRUE, fillOpacity = 0.9,
-                            color = pal(master_times$mean_sedi), fillColor = pal(master_times$mean_sedi), group = "SEDI"
-  )%>%
-  leaflet::addPolygons(data = states, group = "States", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
-  leaflet.extras::addDrawToolbar(markerOptions = leaflet.extras::drawMarkerOptions(),
-                                 polylineOptions = FALSE,
-                                 polygonOptions = FALSE,
-                                 circleOptions = FALSE,
-                                 rectangleOptions = FALSE,
-                                 circleMarkerOptions = FALSE,
-                                 editOptions = FALSE,
-                                 singleFeature = F,
-                                 targetGroup='draw') %>%
-  leaflet::addLegend(pal = pal, values = master_times$mean_spei, position = "bottomleft",
-                     title = "Mean Soil Moisture<br>Best Timescale (days)"
-  )%>%
-  leaflet::addLayersControl(
-    baseGroups = c("Locations","SPI", "SPEI", "EDDI", "SEDI"),
-    options = leaflet::layersControlOptions(collapsed = FALSE))
 
 
 
-htmlwidgets::saveWidget(sites, "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/validation_sites_best_times.html", selfcontained = T)
 
-webshot::webshot("/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/validation_sites_best_times.html", 
-                 file = "/home/zhoylman/drought_indicators/validation/soil_moisture/plots/summary/validation_sites.png",
-                 cliprect = "viewport", vwidth = 2000,vheight = 1000)
+
+
+## montly all timescales
+library(ggplot2)
+library(scales)
+library(matrixStats)
+
+index_names = c("SPI","SPEI","EDDI","SEDI")
+
+monthly_data_snotel = list(monthly_correlation_matrix_snotel_spi, monthly_correlation_matrix_snotel_spei,
+                           monthly_correlation_matrix_snotel_eddi, monthly_correlation_matrix_snotel_sedi)
+
+monthly_data_mesonet = list(monthly_correlation_matrix_mesonet_spi, monthly_correlation_matrix_mesonet_spei,
+                            monthly_correlation_matrix_mesonet_eddi, monthly_correlation_matrix_mesonet_sedi)
+
+
+monthly_ls = list()
+
+# d for metrcs
+#for(d in 1:length(monthly_data_snotel)){
+
+timescale_line_plot = list()
+
+for(d in 1:length(monthly_data_snotel)){
+  # i for sites
+  for(t in 1:146){
+    for(i in 1:length(monthly_data_snotel[[d]])){
+      # t for timescales
+      mean_temp = monthly_data_snotel[[d]][[i]][[t]]$mean_soil_moisture
+      if(i == 1){
+        mean_full = data.frame(mean_temp)
+      }
+      else{
+        mean_full = cbind(mean_full, mean_temp)
+      }
+    }
+    for(i in 1:length(monthly_data_mesonet[[d]])){
+      # t for timescales
+      mean_temp_mesonet = monthly_data_mesonet[[d]][[i]][[t]]$mean_soil_moisture
+      if(i == 1){
+        mean_full_mesonet = data.frame(mean_temp_mesonet)
+      }
+      else{
+        mean_full_mesonet = cbind(mean_full_mesonet, mean_temp)
+      }
+    }
+    full = cbind(mean_full, mean_full_mesonet)
+    summary = data.frame(rowMedians(as.matrix(full), na.rm = T))
+    colnames(summary) = "median"
+    monthly_ls[[t]] = summary
+  }
+  
+  #plot results
+  colfunc <- colorRampPalette(c("darkblue", "blue", "lightblue", "yellow", "orange", "red", "darkred"))
+  cols = colfunc(146)
+  
+  timescale_line_plot[[d]] = ggplot()+
+    geom_line(data = NULL, aes(x = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
+                                              format = "%Y-%m-%d %H:%M"), y = monthly_ls[[1]]$median), color = cols[1]) +
+    theme_bw(base_size = 20) + 
+    ylab("Correlation (r)")+
+    xlab("Month")+
+    ylim(-0.7,0.7)+
+    ggtitle(index_names[d])+
+    scale_x_datetime(labels = date_format("%b"),
+                     date_breaks = "2 month")+
+    theme(plot.title = element_text(hjust = 0.5))
+  
+  for(i in 2:length(monthly_ls)){
+    temp_data = data.frame(x = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
+                                          format = "%Y-%m-%d %H:%M"),
+                           y = monthly_ls[[i]]$median)
+    timescale_line_plot[[d]] = timescale_line_plot[[d]] +
+      geom_line(data = temp_data, aes(x = x, y = y), color = cols[i])
+  }
+  
+}
+
+
+#function to draw manual ramp
+g_legend<-function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  legend
+}
+
+dummy_plot = ggplot(data = data_select) +
+  geom_tile(aes(y=latitude, x=longitude, fill = get(paste0("mean_time_",index_names_lower[i]))), alpha = 1)+
+  scale_fill_gradientn("Days",colours=(rbPal(100)))
+
+#draw ramp
+legend <- g_legend(dummy_plot)
+
+
+plot_grid_timescales = cowplot::plot_grid(timescale_line_plot[[1]],timescale_line_plot[[2]],
+                                          timescale_line_plot[[3]],timescale_line_plot[[4]], nrow = 2)
+
+plot_grid_timescales_inset = 
+  ggdraw() +
+  draw_plot(plot_grid_timescales) +
+  draw_plot(legend, x = .93, y = .18, width = .4, height = .4)
+
+ggsave(paste0("./validation/soil_moisture/plots/summary/timescale_lines.png"),
+       plot_grid_timescales_inset, width = 16, height = 12, units = "in", dpi = 400)
+
