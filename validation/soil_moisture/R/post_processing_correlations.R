@@ -981,67 +981,112 @@ monthly_data_mesonet = list(monthly_correlation_matrix_mesonet_spi, monthly_corr
                             monthly_correlation_matrix_mesonet_eddi, monthly_correlation_matrix_mesonet_sedi)
 
 
-monthly_ls = list()
-
 # d for metrcs
 #for(d in 1:length(monthly_data_snotel)){
 
-timescale_line_plot = list()
-
-for(d in 1:length(monthly_data_snotel)){
-  # i for sites
-  for(t in 1:146){
-    for(i in 1:length(monthly_data_snotel[[d]])){
-      # t for timescales
-      mean_temp = monthly_data_snotel[[d]][[i]][[t]]$mean_soil_moisture
-      if(i == 1){
-        mean_full = data.frame(mean_temp)
+plot_monthy = function(d){
+  timescale_line_plot = list()
+    monthly_ls = list()
+    # i for sites
+    for(t in 1:146){
+      for(i in 1:length(monthly_data_snotel[[d]])){
+        # t for timescales
+        mean_temp = monthly_data_snotel[[d]][[i]][[t]]$mean_soil_moisture
+        if(i == 1){
+          mean_full = data.frame(mean_temp)
+        }
+        else{
+          mean_full = cbind(mean_full, mean_temp)
+        }
       }
-      else{
-        mean_full = cbind(mean_full, mean_temp)
+      for(i in 1:length(monthly_data_mesonet[[d]])){
+        # t for timescales
+        mean_temp_mesonet = monthly_data_mesonet[[d]][[i]][[t]]$mean_soil_moisture
+        if(i == 1){
+          mean_full_mesonet = data.frame(mean_temp_mesonet)
+        }
+        else{
+          mean_full_mesonet = cbind(mean_full_mesonet, mean_temp)
+        }
+      }
+      full = cbind(mean_full, mean_full_mesonet)
+      summary = data.frame(rowMedians(as.matrix(full), na.rm = T))
+      colnames(summary) = "median"
+      monthly_ls[[t]] = summary
+    }
+    
+    monthly_df = as.data.frame(lapply(monthly_ls, cbind))
+    best_monthly_time = function(x, direction){
+      if(direction == "max"){
+        return(c(
+        seq(5,730,5)[which(monthly_df[x,] == max(monthly_df[x,]))],
+        max(monthly_df[x,])
+        ))
+      }
+      if(direction == "min"){
+        return(c(
+          seq(5,730,5)[which(monthly_df[x,] == min(monthly_df[x,]))],
+          min(monthly_df[x,])
+        ))
       }
     }
-    for(i in 1:length(monthly_data_mesonet[[d]])){
-      # t for timescales
-      mean_temp_mesonet = monthly_data_mesonet[[d]][[i]][[t]]$mean_soil_moisture
-      if(i == 1){
-        mean_full_mesonet = data.frame(mean_temp_mesonet)
-      }
-      else{
-        mean_full_mesonet = cbind(mean_full_mesonet, mean_temp)
-      }
+    
+    best_times = data.frame()
+    if(d < 3){
+      for(i in 1:12){best_times[i,1:2] = best_monthly_time(i, "max")}
     }
-    full = cbind(mean_full, mean_full_mesonet)
-    summary = data.frame(rowMedians(as.matrix(full), na.rm = T))
-    colnames(summary) = "median"
-    monthly_ls[[t]] = summary
-  }
-  
-  #plot results
-  colfunc <- colorRampPalette(c("darkblue", "blue", "lightblue", "yellow", "orange", "red", "darkred"))
-  cols = colfunc(146)
-  
-  timescale_line_plot[[d]] = ggplot()+
-    geom_line(data = NULL, aes(x = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
-                                              format = "%Y-%m-%d %H:%M"), y = monthly_ls[[1]]$median), color = cols[1]) +
-    theme_bw(base_size = 20) + 
-    ylab("Correlation (r)")+
-    xlab("Month")+
-    ylim(-0.7,0.7)+
-    ggtitle(index_names[d])+
-    scale_x_datetime(labels = date_format("%b"),
-                     date_breaks = "2 month")+
-    theme(plot.title = element_text(hjust = 0.5))
-  
-  for(i in 2:length(monthly_ls)){
-    temp_data = data.frame(x = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
-                                          format = "%Y-%m-%d %H:%M"),
-                           y = monthly_ls[[i]]$median)
-    timescale_line_plot[[d]] = timescale_line_plot[[d]] +
-      geom_line(data = temp_data, aes(x = x, y = y), color = cols[i])
-  }
-  
+    if(d >= 3){
+      for(i in 1:12){best_times[i,1:2] = best_monthly_time(i, "min")}
+    }
+    
+    best_times$time = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
+                                 format = "%Y-%m-%d %H:%M")
+    
+    #plot results
+    colfunc <- colorRampPalette(c("darkblue", "blue", "lightblue", "yellow", "orange", "red", "darkred"))
+    cols = colfunc(146)
+    #y lim definitions
+    if(d == 1){
+      ylim_vals = c(-0.1,0.8)
+      yjust = 0.05
+    } 
+    if(d == 2){
+      ylim_vals = c(-0.1,0.8)
+      yjust = 0.05
+    } 
+    if(d == 3){
+      ylim_vals = c(-0.4,0.4)
+      yjust = -0.05
+    } 
+    if(d == 4){
+      ylim_vals = c(-0.8,0.1)
+      yjust = -0.05
+    } 
+    
+    timescale_line_plot = ggplot()+
+      geom_line(data = NULL, aes(x = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
+                                                format = "%Y-%m-%d %H:%M"), y = monthly_df[,1]), color = cols[1]) +
+      theme_bw(base_size = 20) + 
+      ylab("Correlation (r)")+
+      xlab("Month")+
+      ggtitle(index_names[d])+
+      scale_x_datetime(labels = date_format("%b"),
+                       date_breaks = "2 month")+
+      ylim(ylim_vals)+
+      theme(plot.title = element_text(hjust = 0.5))+
+      geom_text(data = best_times, aes(x = time, y = V2+yjust, label = V1))
+    
+    for(g in 2:length(monthly_ls)){
+      temp_data = data.frame(x = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
+                                            format = "%Y-%m-%d %H:%M"),
+                             y = monthly_df[,g])
+      timescale_line_plot = timescale_line_plot +
+        geom_line(data = temp_data, aes(x = x, y = y), color = cols[g])
+    }
+    return(timescale_line_plot)
 }
+
+colfunc <- colorRampPalette(c("darkblue", "blue", "lightblue", "yellow", "orange", "red", "darkred"))
 
 
 #function to draw manual ramp
@@ -1052,22 +1097,22 @@ g_legend<-function(a.gplot){
   legend
 }
 
-dummy_plot = ggplot(data = data_select) +
-  geom_tile(aes(y=latitude, x=longitude, fill = get(paste0("mean_time_",index_names_lower[i]))), alpha = 1)+
-  scale_fill_gradientn("Days",colours=(rbPal(100)))
+dummy_plot = ggplot(data = data.frame(x = seq(1:146), y = seq(1:146), z = seq(5,730, 5))) +
+  geom_tile(aes(y=y, x=x, fill = z, alpha = 1))+
+  scale_fill_gradientn("Days",colours=(colfunc(100)))
 
 #draw ramp
-legend <- g_legend(dummy_plot)
+legend <- g_legend(dummy_plot) 
 
 
-plot_grid_timescales = cowplot::plot_grid(timescale_line_plot[[1]],timescale_line_plot[[2]],
-                                          timescale_line_plot[[3]],timescale_line_plot[[4]], nrow = 2)
-
+plot_grid_timescales = cowplot::plot_grid(plot_monthy(1),plot_monthy(2),
+                                          plot_monthy(3),plot_monthy(4), nrow = 2)
+library(cowplot)
 plot_grid_timescales_inset = 
   ggdraw() +
   draw_plot(plot_grid_timescales) +
   draw_plot(legend, x = .93, y = .18, width = .4, height = .4)
 
 ggsave(paste0("./validation/soil_moisture/plots/summary/timescale_lines.png"),
-       plot_grid_timescales_inset, width = 16, height = 12, units = "in", dpi = 400)
+       plot_grid_timescales_inset, width = 14, height = 10, units = "in", dpi = 300)
 
