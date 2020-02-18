@@ -1098,20 +1098,22 @@ g_legend<-function(a.gplot){
 }
 
 dummy_plot = ggplot(data = data.frame(x = seq(1:146), y = seq(1:146), z = seq(5,730, 5))) +
-  geom_tile(aes(y=y, x=x, fill = z, alpha = 1))+
+  geom_tile(aes(y=y, x=x, fill = z), alpha = 1)+
   scale_fill_gradientn("Days",colours=(colfunc(100)))
 
 #draw ramp
 legend <- g_legend(dummy_plot) 
 
 
-plot_grid_timescales = cowplot::plot_grid(plot_monthy(1),plot_monthy(2),
-                                          plot_monthy(3),plot_monthy(4), nrow = 2)
+plot_grid_timescales = cowplot::plot_grid(plot_monthy(1),plot_monthy(2), NULL,
+                                          plot_monthy(3),plot_monthy(4), NULL, 
+                                          nrow = 2, rel_widths = c(1, 1, 0.1,
+                                                                   1, 1, 0.1))
 library(cowplot)
 plot_grid_timescales_inset = 
   ggdraw() +
   draw_plot(plot_grid_timescales) +
-  draw_plot(legend, x = .93, y = .18, width = .4, height = .4)
+  draw_plot(legend, x = .95, y = -0.05, width = .4, height = .4)
 
 ggsave(paste0("./validation/soil_moisture/plots/summary/timescale_lines.png"),
        plot_grid_timescales_inset, width = 14, height = 10, units = "in", dpi = 300)
