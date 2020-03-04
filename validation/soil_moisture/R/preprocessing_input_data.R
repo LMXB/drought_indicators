@@ -11,10 +11,10 @@ library(stringr)
 station_data = read.csv("~/drought_indicators_data/mesonet/station_data_clean.csv")
 
 #load mesonet data
-load("/home/zhoylman/drought_indicators_data/mesonet/mesonet_soil_moisture.RData")
+load("/home/zhoylman/drought_indicators_data/mesonet/mesonet_soil_moisture_unfrozen.RData")
 
 #re organize data
-mesonet_soil_moisture = mesonet_soil_moisture[order(mesonet_soil_moisture$station_key, mesonet_soil_moisture$datetime),]
+mesonet_soil_moisture = mesonet_soil_moisture[order(mesonet_soil_moisture$station_key, mesonet_soil_moisture$date),]
 
 #find site names with valid soil moisture data
 valid_stations = unique(station_data$station_key)
@@ -41,7 +41,9 @@ master_list = rbind(station_data,snotel_cropped)
 
 # restucture mesonet soil moisture data to be consitant with list format of NRCS
 # get mesonet depths and remove the surface probe (soilvwc00)
-mesonet_depths = sort(unique(mesonet_soil_moisture$element))
+mesonet_soil_moisture = mesonet_soil_moisture %>%
+  arrange(station_key, date)
+mesonet_depths = sort(unique(mesonet_soil_moisture$name))
 data_reorganized = list()
 data = list()
 
@@ -49,9 +51,9 @@ for(m in 1:length(station_data$station_key)){
   for(i in 1:length(mesonet_depths)){
     tryCatch({
       data[[i]] = mesonet_soil_moisture %>%
-        dplyr::filter(station_key == station_data$station_key[m] & element == mesonet_depths[i])%>%
-        dplyr::select(datetime,value)%>%
-        dplyr::rename(Date = datetime)
+        dplyr::filter(station_key == station_data$station_key[m] & name == mesonet_depths[i])%>%
+        dplyr::select(date,value)%>%
+        dplyr::rename(Date = date)
       colnames(data[[i]]) = c("Date", as.character(mesonet_depths[i]))
     },error = function(e){
       return(NA)

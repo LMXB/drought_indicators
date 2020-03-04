@@ -8,7 +8,7 @@ library(sf)
 
 #define input shp files
 snotel = read.csv("~/drought_indicators/validation/soil_moisture/snotel_data/nrcs_soil_moisture.csv")
-def_data = read.csv("~/drought_indicators_data/holden_data/def_mm_mesonet_1980-2019.csv")
+def_data = read.csv("~/drought_indicators_data/holden_data/def_mm_4km.csv")
 station_data = read.csv("~/drought_indicators_data/mesonet/station_data.csv")
 
 #mesonet parse

@@ -181,7 +181,13 @@ find_best_mesonet_cor_neg = function(x){
   
 }
 
-extract_density = function(x, name, linetype){
+extract_density = function(x, name){
+  data = density(x, na.rm = T)
+  data_extract = data.frame(x = data$x, y = data$y, name = name)
+  return(data_extract)
+}
+
+extract_density_linetype = function(x, name, linetype){
   data = density(x, na.rm = T)
   data_extract = data.frame(x = data$x, y = data$y, name = name, linetype = linetype)
   return(data_extract)

@@ -8,7 +8,7 @@ library(sf)
 
 # query lat long data from sql
 # for Zoran run source ~/.bashrc in terminal 
-station_data = read.csv("/home/zhoylman/drought_indicators/validation/soil_moisture/mesonet_data/mesonet_station_data.csv")
+station_data = read.csv("/home/zhoylman/drought_indicators_data/mesonet/station_data_clean.csv")
 
 #define timescales
 time_scales = c(seq(5,730,5))
@@ -20,7 +20,7 @@ time_export = list()
 
 ################## spei #################
 
-cl = makeCluster(detectCores()-1)
+cl = makeCluster(20)
 registerDoParallel(cl)
 
 tic()
@@ -44,7 +44,7 @@ mesonet_spei = out_spei
 
 ################## spi #################
 
-cl = makeCluster(detectCores()-1)
+cl = makeCluster(20)
 registerDoParallel(cl)
 
 tic()
@@ -67,7 +67,7 @@ mesonet_spi = out_spi
 
 ################## eddi #################
 
-cl = makeCluster(detectCores()-1)
+cl = makeCluster(20)
 registerDoParallel(cl)
 
 tic()
