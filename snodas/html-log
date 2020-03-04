@@ -29,10 +29,10 @@ bbox:           xmin: -178.2176 ymin: 18.92179 xmax: -66.96927 ymax: 71.40624
 epsg (SRID):    4326
 proj4string:    +proj=longlat +datum=WGS84 +no_defs
 Reading layer `current_usdm' from data source `/home/zhoylman/drought_indicators/USDM_current/current_usdm.shp' using driver `ESRI Shapefile'
-Simple feature collection with 2 features and 5 fields
+Simple feature collection with 3 features and 5 fields
 geometry type:  MULTIPOLYGON
 dimension:      XY
-bbox:           xmin: -117.243 ymin: 40.99477 xmax: -107.2438 ymax: 48.51334
+bbox:           xmin: -117.243 ymin: 40.99929 xmax: -107.9825 ymax: 48.80678
 epsg (SRID):    4326
 proj4string:    +proj=longlat +datum=WGS84 +no_defs
 Reading layer `Snotel_Sites' from data source `/home/zhoylman/drought_indicators/snotel/shp/Snotel_Sites.shp' using driver `ESRI Shapefile'
@@ -62,10 +62,6 @@ dimension:      XY
 bbox:           xmin: -178.2176 ymin: 18.92179 xmax: -66.96927 ymax: 71.40624
 epsg (SRID):    4326
 proj4string:    +proj=longlat +datum=WGS84 +no_defs
-Warning messages:
-1: In validateCoords(lng, lat, funcName) :
+Warning message:
+In validateCoords(lng, lat, funcName) :
   Data contains 18 rows with either missing or invalid lat/lon values and will be ignored
-2: In colors(.) :
-  Some values were outside the color scale and will be treated as NA
-3: In colors(.) :
-  Some values were outside the color scale and will be treated as NA

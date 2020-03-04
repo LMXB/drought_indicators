@@ -51,7 +51,7 @@ Introduction
 <br>
 
 
-This website provides access to drought indices that are used by the Montana Governor's Drought and Water Supply Advisory Committee (Monitroring Sub-Committee). All datasets are calculated daily and can be aggregated by watershed and county boundaries. In this document we focus on: 
+This website provides access to drought indices that are used by the Montana Governor's Drought and Water Supply Advisory Committee (Monitoring Sub-Committee). All datasets are calculated daily and can be aggregated by watershed and county boundaries. In this document we focus on: 
 
 <br>
 
@@ -106,7 +106,7 @@ Snow Water Equivalent {data-navmenu="SNOTEL" data-icon="fa-list" data-orientatio
 <br>
 
 #### **Overview:**
-SNOTEL is an automated system of snowpack and related environmental sensors. SNOTEL is operated by the Natural Resources Conservation Service (NRCS) of the United States Department of Agriculture in the Western United States. Plots in this module show total snow water equievelant (SWE) and total liquid precipitation (rain + SWE) and compares these to historical averages. 
+SNOTEL is an automated system of snowpack and related environmental sensors. SNOTEL is operated by the Natural Resources Conservation Service (NRCS) of the United States Department of Agriculture in the Western United States. Plots in this module show total snow water equivalent (SWE) and total liquid precipitation (rain + SWE) and compares these to historical averages. 
 
 <br>
 
@@ -125,7 +125,7 @@ Accumulated Precipitation {data-navmenu="SNOTEL" data-icon="fa-list" data-orient
 <br>
 
 #### **Overview:**
-SNOTEL is an automated system of snowpack and related enviormental sensors. SNOTEL is operated by the Natural Resources Conservation Service (NRCS) of the United States Department of Agriculture in the Western United States. Plots in this module show total snow water equievelant (SWE) and total liquid precipitation (rain + SWE) measured to date compared to historical averages. 
+SNOTEL is an automated system of snowpack and related environmental sensors. SNOTEL is operated by the Natural Resources Conservation Service (NRCS) of the United States Department of Agriculture in the Western United States. Plots in this module show total snow water equivalent (SWE) and total liquid precipitation (rain + SWE) measured to date compared to historical averages. 
 
 <br>
 
@@ -290,7 +290,7 @@ Standardized Precipitation Index (SPI) {data-navmenu="Drought Metrics" data-icon
 
 #### **Overview:**
 
-The SPI is a common metric which quantifies precipitation anomalies at various timescales. SPI is often used to estimate a range of hydrological processes that respond to precipation from short to long periods of time. For example, SPI is related to soil moisture anomalies when calculated over short time scales (days to weeks) but is more related to groundwater and reservoir storage over longer timescales (months to years). The values of SPI can be interpreted as a number of standard deviations away from the average cumulative precipitation depth for a given time period. The SPI has unique statistical qualities in that it is directly related to precipitation probaility and it can be used to represent both dry (negative values; represented here with warmer colors) and wet (positive values; represented here with cooler colors) conditions. 
+The SPI is a common metric which quantifies precipitation anomalies at various timescales. SPI is often used to estimate a range of hydrological processes that respond to precipitation from short to long periods of time. For example, SPI is related to soil moisture anomalies when calculated over short time scales (days to weeks) but is more related to groundwater and reservoir storage over longer timescales (months to years). The values of SPI can be interpreted as a number of standard deviations away from the average cumulative precipitation depth for a given time period. The SPI has unique statistical qualities in that it is directly related to precipitation probability and it can be used to represent both dry (negative values; represented here with warmer colors) and wet (positive values; represented here with cooler colors) conditions. 
 
 <br>
 

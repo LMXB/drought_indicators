@@ -114,7 +114,7 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffff00", "#ffffff", "#00ffff", "#0
     m_raster = base_map()
     for(i in 1:length(watershed_list_names)){
       m_raster = m_raster %>%
-        addRasterImage(raster_list[[i]], colors = pal, opacity = 0.8, group = timescale_names[i], project = TRUE)
+        addRasterImage(raster_list[[i]], colors = pal, opacity = 0.8, group = timescale_names[i], project = TRUE, layerId = timescale_names[i]) 
     }
     
     # Add some layer controls
@@ -122,15 +122,14 @@ pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffff00", "#ffffff", "#00ffff", "#0
       addPolygons(data = counties_shp, group = "Counties", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
       addLayersControl(position = "topleft",
                        baseGroups = timescale_names,
-                       overlayGroups = c("USDM", "States", "Weather", "Counties"),
+                       overlayGroups = c("USDM", "States", "Weather", "Streets", "Counties"),
                        options = layersControlOptions(collapsed = FALSE)) %>%
-      leaflet::hideGroup("Counties")%>%
+      leaflet::hideGroup(c("Counties", "Streets"))%>%
       addLegend(pal = pal, values = -2.5:2.5,
                 title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
-                position = "bottomleft")
+                position = "bottomleft") 
     
-    
-    
+
     save(m_raster, file = "/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.RData")
     
     saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/spi_app/widgets/m_raster.html", selfcontained = T)

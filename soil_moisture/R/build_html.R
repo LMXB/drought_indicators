@@ -58,9 +58,9 @@ m_raster = m_raster %>%
   addPolygons(data = counties_shp, group = "Counties", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
   addLayersControl(position = "topleft",
                    baseGroups = timescale_names,
-                   overlayGroups = c("USDM", "States", "Weather", "Counties"),
+                   overlayGroups = c("USDM", "States", "Weather", "Streets", "Counties"),
                    options = layersControlOptions(collapsed = FALSE)) %>%
-  leaflet::hideGroup("Counties")%>%
+  leaflet::hideGroup(c("Counties", "Streets"))%>%
   addLegend(pal = pal, values = seq(0,101,10),
             title = paste0("Soil Moisture<br>Percentile<br>", as.Date(Sys.time())), 
             position = "bottomleft")

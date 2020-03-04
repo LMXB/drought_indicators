@@ -27,11 +27,13 @@ pal_usdm_legend <- colorFactor(c("#ffff00", "#918151", "#ffa500", "#ff0000", "#8
                                                                                                     "D4 (Exceptional Drought)"))
 #define basemap function
 base_map = function(x){
-  leaflet::leaflet(options = leaflet::tileOptions(minZoom = 4, maxZoom = 10)) %>%
+  leaflet::leaflet(options = leaflet::tileOptions(minZoom = 4)) %>%
     leaflet::addMapPane("USDM", zIndex = 410) %>%
+    leaflet::addProviderTiles("Stamen.Toner") %>%
     leaflet::addTiles("https://maps.tilehosting.com/data/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
     leaflet::addProviderTiles("Stamen.TonerLines") %>%
     leaflet::addProviderTiles("Stamen.TonerLabels") %>%
+    addProviderTiles("OpenStreetMap.BlackAndWhite", group = "Streets") %>%
     leaflet::setMaxBounds( lng1 = -122
                   , lat1 = 55
                   , lng2 = -91
@@ -47,19 +49,22 @@ base_map = function(x){
       layers = "nexrad-n0r-900913",
       options = leaflet::WMSTileOptions(format = "image/png", transparent = TRUE))%>%
     leaflet::addLayersControl(position = "topleft",
-                     overlayGroups = c("USDM", "States", "Weather"),
+                     overlayGroups = c("USDM", "States", "Weather", "Streets"),
                      options = leaflet::layersControlOptions(collapsed = FALSE)) %>%
-    leaflet::hideGroup("Weather")%>%
-    leaflet.extras::addDrawToolbar(markerOptions = drawMarkerOptions(),
+    leaflet::hideGroup(c("Weather", "Streets"))%>%
+    leaflet.extras::addDrawToolbar(markerOptions = FALSE,
                    polylineOptions = FALSE,
                    polygonOptions = FALSE,
                    circleOptions = FALSE,
                    rectangleOptions = FALSE,
                    circleMarkerOptions = FALSE,
                    editOptions = FALSE,
-                   singleFeature = FALSE,
-                   targetGroup='draw')%>%
+                   singleFeature = FALSE
+                   )%>%
     leaflet::addLegend("bottomright", pal = pal_usdm_legend, values = c("D0 (Abnormally Dry)", "D1 (Moderate Drought)",
                                                                "D2 (Severe Drought)", "D3 (Extreme Drought)",
-                                                               "D4 (Exceptional Drought)"),title = "USDM") 
+                                                               "D4 (Exceptional Drought)"),title = "USDM") %>%
+    onRender("function(el, x) {
+      this.removeControl(this.zoomControl);
+    }")
 }
