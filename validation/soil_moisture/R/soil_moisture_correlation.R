@@ -19,10 +19,25 @@ source("./validation/soil_moisture/R/cross_cor.R")
 source("./validation/soil_moisture/R/cross_cor_summer.R")
 source("./validation/soil_moisture/R/moving_cross_cor.R")
 source("./validation/soil_moisture/R/drv_cor.R")
+source("./validation/soil_moisture/R/cor_sm.R")
 
 #load preprocessed soil moisture data 
 load("~/drought_indicators_data/preprocessed_soil_moisture/mesonet_soil_moisture_list.Rdata")
 load("~/drought_indicators_data/preprocessed_soil_moisture/snotel_soil_moisture.Rdata")
+
+#combine records
+soil_moisture_total = c(mesonet_soil_moisture_list, snotel_soil_moisture)
+
+#import topofire soilmoisture
+soil_moisture_topofire = read.csv("/home/zhoylman/drought_indicators_data/holden_data/topofire_soilmoisture_4km.csv")%>%
+  select(-X) %>%
+  mutate(date = as.Date(as.character(date), format = "%Y%m%d"))
+
+#trouble shooting set up for functions
+# site = 1
+# drought_index = data.frame(time = soil_moisture_topofire$date, sm = soil_moisture_topofire[,site])
+# soil_moisture = soil_moisture_total[[site]]
+# cor_sm(drought_index, soil_moisture)
 
 #trouble shooting set up for functions
 # site = 28
@@ -42,7 +57,27 @@ load("~/drought_indicators_data/preprocessed_soil_moisture/snotel_soil_moisture.
 
 
 ############################# Run Validation Analysis #######################################
+############################# Topofire Soil Moisture  #######################################
+topofire_sm_correlation = list()
+for(site in 200:250){
+  drought_index = data.frame(time = soil_moisture_topofire$date, sm = soil_moisture_topofire[,site])
+  soil_moisture = soil_moisture_total[[site]]
+  topofire_sm_correlation[[site]] = cor_sm_summer(drought_index, soil_moisture)
+}
 
+pull_var = function(x){
+  data = x['mean_soil_moisture', ]
+  return(data)
+}
+
+data = lapply(topofire_sm_correlation, pull_var) %>%
+  do.call(rbind.data.frame, .)
+
+hist(data$sm_gamma, xlab = "Correlation (r)", 
+     main = "Histogram of Correlation\nBetween Gamma SM (topofire)\nand Gamma Standard Mean Soil Moisture (Observed)")
+
+
+################################   Drought Metrics  #########################################
 ################################ SNOTEL correlation #########################################
 
 drought_metrics = c("spi", "spei", "eddi", "sedi")
