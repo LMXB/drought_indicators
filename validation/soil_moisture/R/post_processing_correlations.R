@@ -563,12 +563,7 @@ for(d in 1:length(monthly_data_snotel)){
   time_scale = c(seq(5,730,5)[index])
   
   for(i in 1:4){
-    if(d == 3){
-      plots[[i]] = plot_monthly_eddi(datasets[[i]], colors[i], depths[i], time_scale[i], index_names[d], summary_list[[i]])
-    }
-    else{
       plots[[i]] = plot_monthly(datasets[[i]], colors[i], depths[i], time_scale[i], index_names[d], summary_list[[i]])
-    }
   }
   
   plot_grid_monthly = cowplot::plot_grid(plots[[1]],plots[[2]],plots[[3]],plots[[4]], nrow = 2)
@@ -755,12 +750,7 @@ for(d in 1:length(monthly_data_snotel)){
   time_scale = c(seq(5,730,5)[index])
   
   for(i in 1:4){
-    if(d == 3){
-      plots[[i]] = plot_monthly_eddi(datasets[[i]], colors[i], depths[i], time_scale[i], index_names[d], summary_list[[i]])
-    }
-    else{
-      plots[[i]] = plot_monthly(datasets[[i]], colors[i], depths[i], time_scale[i], index_names[d], summary_list[[i]])
-    }
+    plots[[i]] = plot_monthly(datasets[[i]], colors[i], depths[i], time_scale[i], index_names[d], summary_list[[i]])
   }
   
   plot_grid_monthly = cowplot::plot_grid(plots[[1]],plots[[2]],plots[[3]],plots[[4]], nrow = 2)
@@ -1116,3 +1106,56 @@ plot_grid_timescales_inset =
 ggsave(paste0("./validation/soil_moisture/plots/summary/timescale_lines.png"),
        plot_grid_timescales_inset, width = 14, height = 10, units = "in", dpi = 300)
 
+
+# observed vs modeled
+
+load('/home/zhoylman/drought_indicators_data/correlation_matrix/observed_modeled_cor.RData')
+
+data = observed_vs_modeled %>%
+  select(sm_gamma)%>%
+  tidyr::drop_na()
+
+data_density = density(data$sm_gamma)
+data_density = data.frame(x = data_density$x, y = data_density$y)
+
+plot = ggplot(data = data_density, aes(x = x, y=y))+
+  geom_line()+
+  ggtitle("Observed ~ Modeled Soil Moisture")+
+  xlab("Correlation (r)")+
+  ylab("Density")+
+  theme_bw(base_size = 14)+
+  theme(legend.background = element_rect(color = 'black', fill = 'white', linetype='solid'),
+        plot.title = element_text(hjust = 0.5))
+
+plot
+
+ggsave(paste0("./validation/soil_moisture/plots/summary/observed_vs_modeled.png"),
+       plot, width = 6, height = 4, units = "in", dpi = 300)
+
+
+master_list_modeled_observed = rbind(station_data, snotel_cropped)
+
+master_list_modeled_observed$r = observed_vs_modeled$sm_gamma 
+
+master_list_modeled_observed = master_list_modeled_observed %>%
+  tidyr::drop_na()
+
+observed_vs_modeled_spatial = ggplot() + 
+  geom_sf(data = states, fill = "transparent")+
+  theme_bw(base_size = 16)+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  geom_point(data = master_list_modeled_observed, aes(x = longitude, y = latitude, fill = r), 
+             color = 'black', shape = 21, alpha = 0.8, size = 2)+
+  xlab("")+
+  ylab("")+
+  scale_fill_gradientn("",colours=rev(rbPal(100)))+
+  ggtitle(paste0("Observed ~ Modeled Soil Moisture Correlation (r)"))+
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.position = c(0.92,0.35))
+  
+
+
+observed_vs_modeled_spatial
+
+ggsave(paste0("./validation/soil_moisture/plots/summary/observed_vs_modeled_spatial.png"),
+       observed_vs_modeled_spatial, width = 10, height = 5, units = "in", dpi = 400)

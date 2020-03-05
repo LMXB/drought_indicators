@@ -59,10 +59,10 @@ soil_moisture_topofire = read.csv("/home/zhoylman/drought_indicators_data/holden
 ############################# Run Validation Analysis #######################################
 ############################# Topofire Soil Moisture  #######################################
 topofire_sm_correlation = list()
-for(site in 200:250){
+for(site in 1:length(soil_moisture_total)){
   drought_index = data.frame(time = soil_moisture_topofire$date, sm = soil_moisture_topofire[,site])
   soil_moisture = soil_moisture_total[[site]]
-  topofire_sm_correlation[[site]] = cor_sm_summer(drought_index, soil_moisture)
+  topofire_sm_correlation[[site]] = cor_sm_summer(drought_index, soil_moisture, plots = F)
 }
 
 pull_var = function(x){
@@ -73,9 +73,9 @@ pull_var = function(x){
 data = lapply(topofire_sm_correlation, pull_var) %>%
   do.call(rbind.data.frame, .)
 
-hist(data$sm_gamma, xlab = "Correlation (r)", 
-     main = "Histogram of Correlation\nBetween Gamma SM (topofire)\nand Gamma Standard Mean Soil Moisture (Observed)")
+observed_vs_modeled = data
 
+save(observed_vs_modeled, file = "/home/zhoylman/drought_indicators_data/correlation_matrix/observed_modeled_cor.RData")
 
 ################################   Drought Metrics  #########################################
 ################################ SNOTEL correlation #########################################
