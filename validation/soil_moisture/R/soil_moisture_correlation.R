@@ -30,7 +30,12 @@ soil_moisture_total = c(mesonet_soil_moisture_list, snotel_soil_moisture)
 
 #import topofire soilmoisture
 soil_moisture_topofire = read.csv("/home/zhoylman/drought_indicators_data/holden_data/topofire_soilmoisture_4km.csv")%>%
-  select(-X) %>%
+  dplyr::select(-X) %>%
+  mutate(date = as.Date(as.character(date), format = "%Y%m%d"))
+
+#import cpc soilmoisture
+soil_moisture_cpc = read.csv("/home/zhoylman/drought_indicators_data/cpc_soil_moisture/cpc_soil_moisture_extraction.csv")%>%
+  dplyr::select(-X) %>%
   mutate(date = as.Date(as.character(date), format = "%Y%m%d"))
 
 #trouble shooting set up for functions
@@ -76,6 +81,23 @@ data = lapply(topofire_sm_correlation, pull_var) %>%
 observed_vs_modeled = data
 
 save(observed_vs_modeled, file = "/home/zhoylman/drought_indicators_data/correlation_matrix/observed_modeled_cor.RData")
+
+###
+
+cpc_sm_correlation = list()
+for(site in 1:length(soil_moisture_total)){
+  drought_index = data.frame(time = soil_moisture_cpc$date, sm = soil_moisture_cpc[,site])
+  soil_moisture = soil_moisture_total[[site]]
+  cpc_sm_correlation[[site]] = cor_sm_summer(drought_index, soil_moisture, plots = F)
+}
+
+data = lapply(cpc_sm_correlation, pull_var) %>%
+  do.call(rbind.data.frame, .)
+
+observed_vs_modeled_cpc = data
+
+save(observed_vs_modeled_cpc, file = "/home/zhoylman/drought_indicators_data/correlation_matrix/observed_modeled_cpc_cor.RData")
+
 
 ################################   Drought Metrics  #########################################
 ################################ SNOTEL correlation #########################################
