@@ -60,12 +60,12 @@ for(i in 1:length(correlation_matrix_spi)){
   tryCatch({
     best_times_list$spi[i,] = find_best(correlation_matrix_spi[[i]])
     best_times_list$spei[i,] = find_best(correlation_matrix_spei[[i]])
-    best_times_list$eddi[i,] = find_best_neg(correlation_matrix_eddi[[i]])
+    best_times_list$eddi[i,] = find_best_neg(correlation_matrix_snotel_eddi[[i]])
     best_times_list$sedi[i,] = find_best_neg(correlation_matrix_snotel_sedi[[i]])
     
     best_cor_list$spi[i,] = find_best_cor(correlation_matrix_spi[[i]])
     best_cor_list$spei[i,] = find_best_cor(correlation_matrix_spei[[i]])
-    best_cor_list$eddi[i,] = find_best_cor_neg(correlation_matrix_eddi[[i]])
+    best_cor_list$eddi[i,] = find_best_cor_neg(correlation_matrix_snotel_eddi[[i]])
     best_cor_list$sedi[i,] = find_best_cor_neg(correlation_matrix_snotel_sedi[[i]])
     
     #repreat for summer
@@ -551,8 +551,7 @@ for(d in 1:length(monthly_data_snotel)){
                                          y = find_summer_stat(summary)+0.1, height = 0.03, x = NULL))+
       annotate(geom = "text", y = find_summer_stat(summary)+0.15, x = as.POSIXct("2018-07-15 00:00",
                                                                                format = "%Y-%m-%d %H:%M"),
-               label = paste0("r = ", round(find_summer_stat(summary),2)))+
-      ylim(-0.3,0.3)
+               label = paste0("r = ", round(find_summer_stat(summary),2)))
     return(plot)
   }
   
@@ -744,8 +743,7 @@ for(d in 1:length(monthly_data_snotel)){
                                          y = find_summer_stat(summary)+0.1, height = 0.03, x = NULL))+
       annotate(geom = "text", y = find_summer_stat(summary)+0.15, x = as.POSIXct("2018-07-15 00:00",
                                                                                  format = "%Y-%m-%d %H:%M"),
-               label = paste0("r = ", round(find_summer_stat(summary),2)))+
-      ylim(-0.35,0.35)
+               label = paste0("r = ", round(find_summer_stat(summary),2)))
     return(plot)
   }
   
@@ -1055,7 +1053,7 @@ plot_monthy = function(d){
       yjust = 0.05
     } 
     if(d == 3){
-      ylim_vals = c(-0.4,0.4)
+      ylim_vals = c(-0.8,0.1)
       yjust = -0.05
     } 
     if(d == 4){

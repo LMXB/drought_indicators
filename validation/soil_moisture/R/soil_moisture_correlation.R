@@ -80,8 +80,8 @@ hist(data$sm_gamma, xlab = "Correlation (r)",
 ################################   Drought Metrics  #########################################
 ################################ SNOTEL correlation #########################################
 
-drought_metrics = c("spi", "spei", "eddi", "sedi")
-#drought_metrics = c("spi")
+#drought_metrics = c("spi", "spei", "eddi", "sedi")
+drought_metrics = c("eddi")
 
 for(i in 1:length(drought_metrics)){
   #define drought metric path

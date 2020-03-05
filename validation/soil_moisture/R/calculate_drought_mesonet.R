@@ -67,7 +67,7 @@ mesonet_spi = out_spi
 
 ################## eddi #################
 
-cl = makeCluster(20)
+cl = makeCluster(30)
 registerDoParallel(cl)
 
 tic()

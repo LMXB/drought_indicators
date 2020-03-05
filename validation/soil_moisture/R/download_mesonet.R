@@ -47,25 +47,33 @@ data = dplyr::tbl(mesonet_db,
   dplyr::mutate(date = as.Date(datetime),
                 hour = DATEPART(sql("hour"), datetime),
                 minute = DATEPART(sql("minute"), datetime)) %>% 
-  dplyr::filter(hour == 7 & minute == 0) %>% #manually convert to mountian (get midnight value)
+  # dplyr::filter(hour == 7 & minute == 0) %>%
+  # dplyr::filter(date > as.Date ('2019-06-01') & date < as.Date ('2019-06-03')) %>%
+  head() %>%
+  dplyr::collect() %>%
+  dplyr::mutate(datetime = lubridate::as_datetime(datetime) %>% lubridate::force_tz("US/Mountain")) %$%
+  {value/hour}
+
+  lubridate::tz(datetime)
+
+
+
+%>% #get midnight value in UTC
   #join by logger name
-  dplyr::left_join(logger_deployment,
-                   by=c("logger_sn")
-  ) %>%
-  dplyr::filter(is.na(date_end) | date < date_end)%>%
+  dplyr::left_join(logger_deployment,by=c("logger_sn")) %>%
+  #filter for date end
+  dplyr::filter(date > date_start & is.na(date_end) | date < date_end)%>%
   #select important collumns to spead up querry and remove date_start and date_end
   # becasue we need it for the next join but for sensors, not loggers
   dplyr::select(logger_sn, datetime, port, measurement, units, value, date, station_key) %>%
   #join by sensor sn and port
-  dplyr::left_join(sensor_deployment,
-                   by=c("logger_sn", "port")
-  ) %>%
-  dplyr::filter(is.na(date_end) | date < date_end)%>%
+  dplyr::left_join(sensor_deployment,by=c("logger_sn", "port")) %>%
+  #filter for date end
+  dplyr::filter(date > date_start & is.na(date_end) | date < date_end)%>%
   # join to get element names
-  dplyr::left_join(elements,
-                   by=c("measurement" = "sensor_measurement", "height_depth")
-  ) %>%
+  dplyr::left_join(elements, by=c("measurement" = "sensor_measurement", "height_depth")) %>%
   dplyr::select(station_key, name, date, value, units) %>%
+  #pull soil variables of interest
   dplyr::filter(name %in% c("soilwc00","soilwc04","soilwc08",
                      "soilwc20","soilwc36",
                      "soilt_00", "soilt_04", "soilt_08",
