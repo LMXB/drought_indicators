@@ -1177,6 +1177,18 @@ null_index_sm = null_index+56
 observed_vs_modeled[null_index_sm,] = c(NA,NA,NA,NA)
 observed_vs_modeled_cpc[null_index_sm,] = c(NA,NA,NA,NA)
 
+quick_compare = ggplot() + 
+  geom_point(data = NULL, aes(x = observed_vs_modeled_cpc$sm_gamma,
+                              y = observed_vs_modeled$sm_gamma))+
+  theme_bw(base_size = 16)+
+  xlab("CPC Correlation")+
+  ylab("Topofire Correlation")+
+  geom_abline(slope=1, intercept= 0)+
+  xlim(0,1)+
+  ylim(0,1)
+
+ggsave(paste0("./validation/soil_moisture/plots/summary/mt/observed_vs_modeled_quick_compare.png"),
+       quick_compare, width = 6, height = 4, units = "in", dpi = 300)
 
 data = observed_vs_modeled %>%
   dplyr::select(sm_gamma)%>%
