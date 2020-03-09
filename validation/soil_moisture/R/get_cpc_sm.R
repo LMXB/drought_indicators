@@ -66,6 +66,8 @@ template = get_cpc(file_location_vec[length(file_location_vec)])
 cl = makeCluster(20)
 registerDoParallel(cl)
 
+cpc_list = list()
+
 cpc_list = foreach(i = 1:length(file_location_vec)) %dopar% {
   library(dplyr)
   temp = get_cpc(file_location_vec[i]) 
@@ -79,10 +81,8 @@ null_index = which(vapply(cpc_list, is.null, TRUE))
 
 cpc_list[c(null_index)] = NULL
 
-brick = brick(cpc_list)
+cpc_soil_moisture = stack(cpc_list)
 
-cpc_soil_moisture = brick
-
-writeRaster(cpc_soil_moisture, "/home/zhoylman/drought_indicators_data/cpc_soil_moisture/cpc_soil_moisture_brick.tif")
+save(cpc_soil_moisture, file = "/home/zhoylman/drought_indicators_data/cpc_soil_moisture/cpc_soil_moisture_brick.RData")
 
 stopCluster(cl)

@@ -145,6 +145,22 @@ best_times_combined_summer = list()
 best_cor_combined_summer = list()
 best_times_combined_wet_dry = list()
 
+# find and crop out montana specific results
+snotel_site_data = read.csv("~/drought_indicators_data/snotel/nrcs_soil_moisture.csv")
+
+`%notin%` = Negate(`%in%`)
+
+null_index = which(snotel_site_data$state %notin% c("MT", "ID", "WY"))
+
+for(i in 1:4){
+  best_times_list[[i]][null_index,] = NA
+  best_cor_list[[i]][null_index,] = NA
+  
+  best_times_list_summer[[i]][null_index,] = NA
+  best_cor_list_summer[[i]][null_index,] = NA
+}
+
+
 for(i in 1:4){
   best_times_combined[[i]] = data.frame(shallow = c(best_times_list[[i]]$`2in`, best_times_list[[i]]$`4in`,
                                                     best_times_mesonet_list[[i]]$`0in`, best_times_mesonet_list[[i]]$`4in`),
@@ -163,36 +179,36 @@ for(i in 1:4){
   # repeat for summer 
   
   best_times_combined_summer[[i]] = data.frame(shallow = c(best_times_list_summer[[i]]$`2in`, best_times_list_summer[[i]]$`4in`,
-                                                    best_times_mesonet_list_summer[[i]]$`0in`, best_times_mesonet_list_summer[[i]]$`4in`),
-                                        middle = c(best_times_list_summer[[i]]$`8in`, best_times_list_summer[[i]]$`20in`,
-                                                   best_times_mesonet_list_summer[[i]]$`8in`, best_times_mesonet_list_summer[[i]]$`20in`),
-                                        deep = c(best_times_list_summer[[i]]$`40in`, best_times_mesonet_list_summer[[i]]$`36in`),
-                                        mean = c(best_times_list_summer[[i]]$mean, best_times_mesonet_list_summer[[i]]$mean))
+                                                           best_times_mesonet_list_summer[[i]]$`0in`, best_times_mesonet_list_summer[[i]]$`4in`),
+                                               middle = c(best_times_list_summer[[i]]$`8in`, best_times_list_summer[[i]]$`20in`,
+                                                          best_times_mesonet_list_summer[[i]]$`8in`, best_times_mesonet_list_summer[[i]]$`20in`),
+                                               deep = c(best_times_list_summer[[i]]$`40in`, best_times_mesonet_list_summer[[i]]$`36in`),
+                                               mean = c(best_times_list_summer[[i]]$mean, best_times_mesonet_list_summer[[i]]$mean))
   
   best_cor_combined_summer[[i]] = data.frame(shallow = c(best_cor_list_summer[[i]]$`2in`, best_cor_list_summer[[i]]$`4in`,
-                                                  best_cor_mesonet_list_summer[[i]]$`0in`, best_cor_mesonet_list_summer[[i]]$`4in`),
-                                      middle = c(best_cor_list_summer[[i]]$`8in`, best_cor_list_summer[[i]]$`20in`,
-                                                 best_cor_mesonet_list_summer[[i]]$`8in`, best_cor_mesonet_list_summer[[i]]$`20in`),
-                                      deep = c(best_cor_list_summer[[i]]$`40in`, best_cor_mesonet_list_summer[[i]]$`36in`),
-                                      mean = c(best_cor_list_summer[[i]]$mean, best_cor_mesonet_list_summer[[i]]$mean))
+                                                         best_cor_mesonet_list_summer[[i]]$`0in`, best_cor_mesonet_list_summer[[i]]$`4in`),
+                                             middle = c(best_cor_list_summer[[i]]$`8in`, best_cor_list_summer[[i]]$`20in`,
+                                                        best_cor_mesonet_list_summer[[i]]$`8in`, best_cor_mesonet_list_summer[[i]]$`20in`),
+                                             deep = c(best_cor_list_summer[[i]]$`40in`, best_cor_mesonet_list_summer[[i]]$`36in`),
+                                             mean = c(best_cor_list_summer[[i]]$mean, best_cor_mesonet_list_summer[[i]]$mean))
 }
 
 for(i in 5:8){
   best_times_combined_wet_dry[[i]] = data.frame(
-                                        #wet
-                                        shallow_wet = c(best_times_list[[i]]$`wet_2in`, best_times_list[[i]]$`wet_4in`,
-                                                    best_times_mesonet_list[[i]]$`wet_0in`, best_times_mesonet_list[[i]]$`wet_4in`),
-                                        middle_wet = c(best_times_list[[i]]$`wet_8in`, best_times_list[[i]]$`wet_20in`,
-                                                   best_times_mesonet_list[[i]]$`wet_8in`, best_times_mesonet_list[[i]]$`wet_20in`),
-                                        deep_wet = c(best_times_list[[i]]$`wet_40in`, best_times_mesonet_list[[i]]$`wet_36in`),
-                                        mean_wet = c(best_times_list[[i]]$wet_mean, best_times_mesonet_list[[i]]$wet_mean),
-                                        #dry
-                                        shallow_dry = c(best_times_list[[i]]$`dry_2in`, best_times_list[[i]]$`dry_4in`,
-                                                        best_times_mesonet_list[[i]]$`dry_0in`, best_times_mesonet_list[[i]]$`dry_4in`),
-                                        middle_dry = c(best_times_list[[i]]$`dry_8in`, best_times_list[[i]]$`dry_20in`,
-                                                       best_times_mesonet_list[[i]]$`dry_8in`, best_times_mesonet_list[[i]]$`dry_20in`),
-                                        deep_dry = c(best_times_list[[i]]$`dry_40in`, best_times_mesonet_list[[i]]$`dry_36in`),
-                                        mean_dry = c(best_times_list[[i]]$dry_mean, best_times_mesonet_list[[i]]$dry_mean))
+    #wet
+    shallow_wet = c(best_times_list[[i]]$`wet_2in`, best_times_list[[i]]$`wet_4in`,
+                    best_times_mesonet_list[[i]]$`wet_0in`, best_times_mesonet_list[[i]]$`wet_4in`),
+    middle_wet = c(best_times_list[[i]]$`wet_8in`, best_times_list[[i]]$`wet_20in`,
+                   best_times_mesonet_list[[i]]$`wet_8in`, best_times_mesonet_list[[i]]$`wet_20in`),
+    deep_wet = c(best_times_list[[i]]$`wet_40in`, best_times_mesonet_list[[i]]$`wet_36in`),
+    mean_wet = c(best_times_list[[i]]$wet_mean, best_times_mesonet_list[[i]]$wet_mean),
+    #dry
+    shallow_dry = c(best_times_list[[i]]$`dry_2in`, best_times_list[[i]]$`dry_4in`,
+                    best_times_mesonet_list[[i]]$`dry_0in`, best_times_mesonet_list[[i]]$`dry_4in`),
+    middle_dry = c(best_times_list[[i]]$`dry_8in`, best_times_list[[i]]$`dry_20in`,
+                   best_times_mesonet_list[[i]]$`dry_8in`, best_times_mesonet_list[[i]]$`dry_20in`),
+    deep_dry = c(best_times_list[[i]]$`dry_40in`, best_times_mesonet_list[[i]]$`dry_36in`),
+    mean_dry = c(best_times_list[[i]]$dry_mean, best_times_mesonet_list[[i]]$dry_mean))
 }
 
 for(i in c(1,1,1,1)){
@@ -248,7 +264,7 @@ for(i in 1:4){
                        name = "Drought Metric")
 }
 plot_grid = cowplot::plot_grid(plot[[4]],plot[[1]],plot[[2]],plot[[3]], nrow = 2)
-ggsave("./validation/soil_moisture/plots/summary/correlation_density_unfrozen.png",
+ggsave("./validation/soil_moisture/plots/summary/mt/correlation_density_unfrozen.png",
        plot_grid, width = 10, height = 9, units = "in", dpi = 400)
 
 
@@ -296,7 +312,7 @@ for(i in 1:length(names_short)){
 }
 
 plot_grid_depth = cowplot::plot_grid(depth_plot[[1]],depth_plot[[2]],depth_plot[[3]],depth_plot[[4]], nrow = 2)
-ggsave("./validation/soil_moisture/plots/summary/depth_density_unfrozen.png",
+ggsave("./validation/soil_moisture/plots/summary/mt/depth_density_unfrozen.png",
        plot_grid_depth, width = 10, height = 9, units = "in", dpi = 400)
 
 
@@ -346,7 +362,7 @@ for(i in 1:length(names_short)){
 }
 
 plot_grid_depth = cowplot::plot_grid(depth_plot_summer[[1]],depth_plot_summer[[2]],depth_plot_summer[[3]],depth_plot_summer[[4]], nrow = 2)
-ggsave("./validation/soil_moisture/plots/summary/depth_density_summer_unfrozen.png",
+ggsave("./validation/soil_moisture/plots/summary/mt/depth_density_summer_unfrozen.png",
        plot_grid_depth, width = 10, height = 9, units = "in", dpi = 400)
 
 
@@ -398,7 +414,7 @@ for(i in 1:length(names_short)){
 }
 
 plot_grid_wet_dry = cowplot::plot_grid(wet_dry_plot[[1]],wet_dry_plot[[2]],wet_dry_plot[[3]],wet_dry_plot[[4]], nrow = 2)
-ggsave("./validation/soil_moisture/plots/summary/wet_dry_depth_plot.png",
+ggsave("./validation/soil_moisture/plots/summary/mt/wet_dry_depth_plot.png",
        plot_grid_wet_dry, width = 10, height = 9, units = "in", dpi = 400)
 
 ################# Monthly Post Processing and plots ########################
@@ -410,11 +426,24 @@ index_names = c("SPI","SPEI","EDDI","SEDI")
 monthly_data_snotel = list(monthly_correlation_matrix_snotel_spi, monthly_correlation_matrix_snotel_spei,
                            monthly_correlation_matrix_snotel_eddi, monthly_correlation_matrix_snotel_sedi)
 
+na_table = monthly_data_snotel[[1]][[1]][[1]]
+na_table[,2:7] = rep(NA, 12)
+
+
+for(i in 1:4){
+  # i = drought metrics
+  # null matrix = outside of MT
+  for(j in null_index){
+    for(t in 1:146){
+      monthly_data_snotel[[i]][[j]][[t]] = na_table
+    }
+  }
+}
 monthly_data_mesonet = list(monthly_correlation_matrix_mesonet_spi, monthly_correlation_matrix_mesonet_spei,
                             monthly_correlation_matrix_mesonet_eddi, monthly_correlation_matrix_mesonet_sedi)
 
 for(d in 1:length(monthly_data_snotel)){
-#for(d in 1){
+  #for(d in 1){
   data = rbind(extract_density(best_times_combined[[d]]$mean, "Mean"),
                extract_density(best_times_combined[[d]]$shallow, "Shallow"),
                extract_density(best_times_combined[[d]]$middle, "Middle"),
@@ -528,7 +557,7 @@ for(d in 1:length(monthly_data_snotel)){
       theme(axis.title.x=element_blank(),
             plot.title = element_text(size = 10, face = "bold")) +
       geom_errorbarh(data = summary, aes(xmin = time[5], xmax = time[10],
-                                     y = find_summer_stat(summary)*.7, height = 0.05, x = NULL))+
+                                         y = find_summer_stat(summary)*.7, height = 0.05, x = NULL))+
       annotate(geom = "text", y = find_summer_stat(summary)*.5, x = as.POSIXct("2018-07-15 00:00",
                                                                                format = "%Y-%m-%d %H:%M"),
                label = paste0("r = ", round(find_summer_stat(summary),2)))
@@ -550,7 +579,7 @@ for(d in 1:length(monthly_data_snotel)){
       geom_errorbarh(data = summary, aes(xmin = time[5], xmax = time[10],
                                          y = find_summer_stat(summary)+0.1, height = 0.03, x = NULL))+
       annotate(geom = "text", y = find_summer_stat(summary)+0.15, x = as.POSIXct("2018-07-15 00:00",
-                                                                               format = "%Y-%m-%d %H:%M"),
+                                                                                 format = "%Y-%m-%d %H:%M"),
                label = paste0("r = ", round(find_summer_stat(summary),2)))
     return(plot)
   }
@@ -563,14 +592,14 @@ for(d in 1:length(monthly_data_snotel)){
   time_scale = c(seq(5,730,5)[index])
   
   for(i in 1:4){
-      plots[[i]] = plot_monthly(datasets[[i]], colors[i], depths[i], time_scale[i], index_names[d], summary_list[[i]])
+    plots[[i]] = plot_monthly(datasets[[i]], colors[i], depths[i], time_scale[i], index_names[d], summary_list[[i]])
   }
   
   plot_grid_monthly = cowplot::plot_grid(plots[[1]],plots[[2]],plots[[3]],plots[[4]], nrow = 2)
   
   plot_final = cowplot::plot_grid(depth_plot[[d]], plot_grid_monthly , nrow = 1)
   
-  ggsave(paste0("./validation/soil_moisture/plots/summary/plot_grid_monthly_",index_names[d],".png"),
+  ggsave(paste0("./validation/soil_moisture/plots/summary/mt/plot_grid_monthly_",index_names[d],".png"),
          plot_final, width = 12, height = 5, units = "in", dpi = 400)
 }
 
@@ -585,6 +614,20 @@ index_names = c("SPI","SPEI","EDDI","SEDI")
 
 monthly_data_snotel = list(monthly_correlation_matrix_snotel_spi, monthly_correlation_matrix_snotel_spei,
                            monthly_correlation_matrix_snotel_eddi, monthly_correlation_matrix_snotel_sedi)
+
+na_table = monthly_data_snotel[[1]][[1]][[1]]
+na_table[,2:7] = rep(NA, 12)
+
+
+for(i in 1:4){
+  # i = drought metrics
+  # null matrix = outside of MT
+  for(j in null_index){
+    for(t in 1:146){
+      monthly_data_snotel[[i]][[j]][[t]] = na_table
+    }
+  }
+}
 
 monthly_data_mesonet = list(monthly_correlation_matrix_mesonet_spi, monthly_correlation_matrix_mesonet_spei,
                             monthly_correlation_matrix_mesonet_eddi, monthly_correlation_matrix_mesonet_sedi)
@@ -616,7 +659,7 @@ for(d in 1:length(monthly_data_snotel)){
     mean_temp = monthly_data_snotel[[d]][[i]][[index[1]]]$mean_soil_moisture
     
     shallow_temp = tryCatch({rowMedians(as.matrix(data.frame(in_2 = monthly_data_snotel[[d]][[i]][[index[2]]]$Soil.Moisture.Percent..2in..pct..Start.of.Day.Values,
-                                       in_4 = monthly_data_snotel[[d]][[i]][[index[2]]]$Soil.Moisture.Percent..4in..pct..Start.of.Day.Values)), na.rm = TRUE)
+                                                             in_4 = monthly_data_snotel[[d]][[i]][[index[2]]]$Soil.Moisture.Percent..4in..pct..Start.of.Day.Values)), na.rm = TRUE)
     }, error=function(e) {
       return(rep(NA, 12))
     }) 
@@ -650,14 +693,14 @@ for(d in 1:length(monthly_data_snotel)){
     mean_full = cbind(mean_full, mean_temp)
     #shallow
     shallow_temp = tryCatch({rowMedians(as.matrix(data.frame(in_0 = monthly_data_mesonet[[d]][[i]][[index[2]]]$soilwc00,
-                                       in_4 = monthly_data_mesonet[[d]][[i]][[index[2]]]$soilwc04)),na.rm = TRUE)
+                                                             in_4 = monthly_data_mesonet[[d]][[i]][[index[2]]]$soilwc04)),na.rm = TRUE)
     }, error=function(e) {
       return(rep(NA, 12))
     }) 
     shallow_full = cbind(shallow_full, shallow_temp)
     #middle
     middle_temp = tryCatch({rowMedians(as.matrix(data.frame(in_8 = monthly_data_mesonet[[d]][[i]][[index[3]]]$soilwc08,
-                                      in_20 = monthly_data_mesonet[[d]][[i]][[index[3]]]$soilwc20)),na.rm = TRUE)
+                                                            in_20 = monthly_data_mesonet[[d]][[i]][[index[3]]]$soilwc20)),na.rm = TRUE)
     }, error=function(e) {
       return(rep(NA, 12))
     }) 
@@ -757,7 +800,7 @@ for(d in 1:length(monthly_data_snotel)){
   
   plot_final = cowplot::plot_grid(depth_plot_summer[[d]], plot_grid_monthly , nrow = 1)
   
-  ggsave(paste0("./validation/soil_moisture/plots/summary/plot_grid_monthly_summer_",index_names[d],".png"),
+  ggsave(paste0("./validation/soil_moisture/plots/summary/mt/plot_grid_monthly_summer_",index_names[d],".png"),
          plot_final, width = 12, height = 5, units = "in", dpi = 400)
 }
 
@@ -788,14 +831,14 @@ master_times = cbind(master_list,
                      mean_cor_sedi = c(best_cor_list$sedi$mean, best_cor_mesonet_list$sedi$mean))
 
 master_times_summer = cbind(master_list, 
-                     mean_time_spi = c(best_times_list_summer$spi$mean, best_times_mesonet_list_summer$spi$mean),
-                     mean_time_spei = c(best_times_list_summer$spei$mean, best_times_mesonet_list_summer$spei$mean),
-                     mean_time_eddi = c(best_times_list_summer$eddi$mean, best_times_mesonet_list_summer$eddi$mean),
-                     mean_time_sedi = c(best_times_list_summer$sedi$mean, best_times_mesonet_list_summer$sedi$mean),
-                     mean_cor_spi = c(best_cor_list_summer$spi$mean, best_cor_mesonet_list_summer$spi$mean),
-                     mean_cor_spei = c(best_cor_list_summer$spei$mean, best_cor_mesonet_list_summer$spei$mean),
-                     mean_cor_eddi = c(best_cor_list_summer$eddi$mean, best_cor_mesonet_list_summer$eddi$mean),
-                     mean_cor_sedi = c(best_cor_list_summer$sedi$mean, best_cor_mesonet_list_summer$sedi$mean))
+                            mean_time_spi = c(best_times_list_summer$spi$mean, best_times_mesonet_list_summer$spi$mean),
+                            mean_time_spei = c(best_times_list_summer$spei$mean, best_times_mesonet_list_summer$spei$mean),
+                            mean_time_eddi = c(best_times_list_summer$eddi$mean, best_times_mesonet_list_summer$eddi$mean),
+                            mean_time_sedi = c(best_times_list_summer$sedi$mean, best_times_mesonet_list_summer$sedi$mean),
+                            mean_cor_spi = c(best_cor_list_summer$spi$mean, best_cor_mesonet_list_summer$spi$mean),
+                            mean_cor_spei = c(best_cor_list_summer$spei$mean, best_cor_mesonet_list_summer$spei$mean),
+                            mean_cor_eddi = c(best_cor_list_summer$eddi$mean, best_cor_mesonet_list_summer$eddi$mean),
+                            mean_cor_sedi = c(best_cor_list_summer$sedi$mean, best_cor_mesonet_list_summer$sedi$mean))
 
 #write.csv(master_times, "./validation/soil_moisture/summary_data/geospatial_with_best.csv")
 
@@ -804,7 +847,7 @@ states = sf::st_read("/home/zhoylman/drought_indicators/shp_kml/states.shp") %>%
 
 states_union = sf::st_read("/home/zhoylman/drought_indicators/shp_kml/states.shp") %>%
   dplyr::filter(STATE_NAME != "Alaska" & STATE_NAME != "Hawaii") %>%
-  st_union()
+  sf::st_union()
 
 static_map = ggplot() + 
   geom_sf(data = states, fill = "transparent")+
@@ -817,13 +860,13 @@ static_map = ggplot() +
 
 static_map
 
-ggsave(paste0("./validation/soil_moisture/plots/summary/site_map.png"),
+ggsave(paste0("./validation/soil_moisture/plots/summary/mt/site_map.png"),
        static_map, width = 10, height = 5, units = "in", dpi = 400)
 
 
 ## example spei map 
 spei_map = raster::raster("/home/zhoylman/drought_indicators_data/spei_20190901_60_day.tif") %>%
-  rasterToPoints()%>%
+  raster::rasterToPoints()%>%
   as.data.frame() %>%
   rename(spei = 3)
 
@@ -843,7 +886,7 @@ static_spei_map = ggplot() +
 
 static_spei_map
 
-ggsave(paste0("./validation/soil_moisture/plots/summary/spei_map.png"),
+ggsave(paste0("./validation/soil_moisture/plots/summary/mt/spei_map.png"),
        static_spei_map, width = 10, height = 5, units = "in", dpi = 420)
 
 
@@ -856,6 +899,9 @@ library(cowplot)
 
 #best times saptial
 
+states = sf::st_read("/home/zhoylman/drought_indicators/shp_kml/states.shp") %>%
+  dplyr::filter(STATE_ABBR %in% c("MT", "ID", "WY"))
+
 for(i in 1:4){
   data_select = master_times %>%
     dplyr::select(longitude, latitude, paste0("mean_time_",index_names_lower[i]))%>%
@@ -867,7 +913,7 @@ for(i in 1:4){
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
           plot.title = element_text(hjust = 0.5))+
     geom_point(data = data_select , aes(x = longitude, y = latitude,
-                                                       fill = get(paste0("mean_time_",index_names_lower[i]))), 
+                                        fill = get(paste0("mean_time_",index_names_lower[i]))), 
                color = "black", shape = 21, alpha = 1, size = 2)+
     xlab("")+
     ylab("")+
@@ -896,7 +942,7 @@ for(i in 1:4){
     draw_plot(legend, x = .8, y = .2, width = .35, height = .35)
   
   
-  ggsave(paste0("./validation/soil_moisture/plots/summary/spatial_",index_names_lower[i],"_map.png"),
+  ggsave(paste0("./validation/soil_moisture/plots/summary/mt/spatial_",index_names_lower[i],"_map.png"),
          static_map_metric_inset, width = 10, height = 5, units = "in", dpi = 400)  
 }
 
@@ -914,7 +960,7 @@ for(i in 1:4){
           plot.title = element_text(hjust = 0.5))+
     geom_point(data = data_select , aes(x = longitude, y = latitude,
                                         fill = get(paste0("mean_time_",index_names_lower[i]))), 
-               color = "black", shape = 21, alpha = 1, size = 2)+
+               color = "black", shape = 21, alpha = 1, size = 3)+
     xlab("")+
     ylab("")+
     ggtitle(paste0("May - October Optimal Timescale (", index_names[i], ")"))+
@@ -942,7 +988,7 @@ for(i in 1:4){
     draw_plot(legend, x = .8, y = .2, width = .35, height = .35)
   
   
-  ggsave(paste0("./validation/soil_moisture/plots/summary/spatial_",index_names_lower[i],"_map_summer.png"),
+  ggsave(paste0("./validation/soil_moisture/plots/summary/mt/spatial_",index_names_lower[i],"_map_summer.png"),
          static_map_metric_inset, width = 10, height = 5, units = "in", dpi = 400)  
 }
 
@@ -965,6 +1011,20 @@ index_names = c("SPI","SPEI","EDDI","SEDI")
 monthly_data_snotel = list(monthly_correlation_matrix_snotel_spi, monthly_correlation_matrix_snotel_spei,
                            monthly_correlation_matrix_snotel_eddi, monthly_correlation_matrix_snotel_sedi)
 
+na_table = monthly_data_snotel[[1]][[1]][[1]]
+na_table[,2:7] = rep(NA, 12)
+
+
+for(i in 1:4){
+  # i = drought metrics
+  # null matrix = outside of MT
+  for(j in null_index){
+    for(t in 1:146){
+      monthly_data_snotel[[i]][[j]][[t]] = na_table
+    }
+  }
+}
+
 monthly_data_mesonet = list(monthly_correlation_matrix_mesonet_spi, monthly_correlation_matrix_mesonet_spei,
                             monthly_correlation_matrix_mesonet_eddi, monthly_correlation_matrix_mesonet_sedi)
 
@@ -974,104 +1034,104 @@ monthly_data_mesonet = list(monthly_correlation_matrix_mesonet_spi, monthly_corr
 
 plot_monthy = function(d){
   timescale_line_plot = list()
-    monthly_ls = list()
-    # i for sites
-    for(t in 1:146){
-      for(i in 1:length(monthly_data_snotel[[d]])){
-        # t for timescales
-        mean_temp = monthly_data_snotel[[d]][[i]][[t]]$mean_soil_moisture
-        if(i == 1){
-          mean_full = data.frame(mean_temp)
-        }
-        else{
-          mean_full = cbind(mean_full, mean_temp)
-        }
+  monthly_ls = list()
+  # i for sites
+  for(t in 1:146){
+    for(i in 1:length(monthly_data_snotel[[d]])){
+      # t for timescales
+      mean_temp = monthly_data_snotel[[d]][[i]][[t]]$mean_soil_moisture
+      if(i == 1){
+        mean_full = data.frame(mean_temp)
       }
-      for(i in 1:length(monthly_data_mesonet[[d]])){
-        # t for timescales
-        mean_temp_mesonet = monthly_data_mesonet[[d]][[i]][[t]]$mean_soil_moisture
-        if(i == 1){
-          mean_full_mesonet = data.frame(mean_temp_mesonet)
-        }
-        else{
-          mean_full_mesonet = cbind(mean_full_mesonet, mean_temp)
-        }
+      else{
+        mean_full = cbind(mean_full, mean_temp)
       }
-      full = cbind(mean_full, mean_full_mesonet)
-      summary = data.frame(rowMedians(as.matrix(full), na.rm = T))
-      colnames(summary) = "median"
-      monthly_ls[[t]] = summary
     }
-    
-    monthly_df = as.data.frame(lapply(monthly_ls, cbind))
-    best_monthly_time = function(x, direction){
-      if(direction == "max"){
-        return(c(
+    for(i in 1:length(monthly_data_mesonet[[d]])){
+      # t for timescales
+      mean_temp_mesonet = monthly_data_mesonet[[d]][[i]][[t]]$mean_soil_moisture
+      if(i == 1){
+        mean_full_mesonet = data.frame(mean_temp_mesonet)
+      }
+      else{
+        mean_full_mesonet = cbind(mean_full_mesonet, mean_temp)
+      }
+    }
+    full = cbind(mean_full, mean_full_mesonet)
+    summary = data.frame(rowMedians(as.matrix(full), na.rm = T))
+    colnames(summary) = "median"
+    monthly_ls[[t]] = summary
+  }
+  
+  monthly_df = as.data.frame(lapply(monthly_ls, cbind))
+  best_monthly_time = function(x, direction){
+    if(direction == "max"){
+      return(c(
         seq(5,730,5)[which(monthly_df[x,] == max(monthly_df[x,]))],
         max(monthly_df[x,])
-        ))
-      }
-      if(direction == "min"){
-        return(c(
-          seq(5,730,5)[which(monthly_df[x,] == min(monthly_df[x,]))],
-          min(monthly_df[x,])
-        ))
-      }
+      ))
     }
-    
-    best_times = data.frame()
-    if(d < 3){
-      for(i in 1:12){best_times[i,1:2] = best_monthly_time(i, "max")}
+    if(direction == "min"){
+      return(c(
+        seq(5,730,5)[which(monthly_df[x,] == min(monthly_df[x,]))],
+        min(monthly_df[x,])
+      ))
     }
-    if(d >= 3){
-      for(i in 1:12){best_times[i,1:2] = best_monthly_time(i, "min")}
-    }
-    
-    best_times$time = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
-                                 format = "%Y-%m-%d %H:%M")
-    
-    #plot results
-    colfunc <- colorRampPalette(c("darkblue", "blue", "lightblue", "yellow", "orange", "red", "darkred"))
-    cols = colfunc(146)
-    #y lim definitions
-    if(d == 1){
-      ylim_vals = c(-0.1,0.8)
-      yjust = 0.05
-    } 
-    if(d == 2){
-      ylim_vals = c(-0.1,0.8)
-      yjust = 0.05
-    } 
-    if(d == 3){
-      ylim_vals = c(-0.8,0.1)
-      yjust = -0.05
-    } 
-    if(d == 4){
-      ylim_vals = c(-0.8,0.1)
-      yjust = -0.05
-    } 
-    
-    timescale_line_plot = ggplot()+
-      geom_line(data = NULL, aes(x = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
-                                                format = "%Y-%m-%d %H:%M"), y = monthly_df[,1]), color = cols[1]) +
-      theme_bw(base_size = 20) + 
-      ylab("Correlation (r)")+
-      xlab("Month")+
-      ggtitle(index_names[d])+
-      scale_x_datetime(labels = date_format("%b"),
-                       date_breaks = "2 month")+
-      ylim(ylim_vals)+
-      theme(plot.title = element_text(hjust = 0.5))+
-      geom_text(data = best_times, aes(x = time, y = V2+yjust, label = V1))
-    
-    for(g in 2:length(monthly_ls)){
-      temp_data = data.frame(x = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
-                                            format = "%Y-%m-%d %H:%M"),
-                             y = monthly_df[,g])
-      timescale_line_plot = timescale_line_plot +
-        geom_line(data = temp_data, aes(x = x, y = y), color = cols[g])
-    }
-    return(timescale_line_plot)
+  }
+  
+  best_times = data.frame()
+  if(d < 3){
+    for(i in 1:12){best_times[i,1:2] = best_monthly_time(i, "max")}
+  }
+  if(d >= 3){
+    for(i in 1:12){best_times[i,1:2] = best_monthly_time(i, "min")}
+  }
+  
+  best_times$time = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
+                               format = "%Y-%m-%d %H:%M")
+  
+  #plot results
+  colfunc <- colorRampPalette(c("darkblue", "blue", "lightblue", "yellow", "orange", "red", "darkred"))
+  cols = colfunc(146)
+  #y lim definitions
+  if(d == 1){
+    ylim_vals = c(-0.1,0.8)
+    yjust = 0.05
+  } 
+  if(d == 2){
+    ylim_vals = c(-0.1,0.8)
+    yjust = 0.05
+  } 
+  if(d == 3){
+    ylim_vals = c(-0.8,0.5)
+    yjust = -0.05
+  } 
+  if(d == 4){
+    ylim_vals = c(-0.8,0.1)
+    yjust = -0.05
+  } 
+  
+  timescale_line_plot = ggplot()+
+    geom_line(data = NULL, aes(x = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
+                                              format = "%Y-%m-%d %H:%M"), y = monthly_df[,1]), color = cols[1]) +
+    theme_bw(base_size = 20) + 
+    ylab("Correlation (r)")+
+    xlab("Month")+
+    ggtitle(index_names[d])+
+    scale_x_datetime(labels = date_format("%b"),
+                     date_breaks = "2 month")+
+    ylim(ylim_vals)+
+    theme(plot.title = element_text(hjust = 0.5))+
+    geom_text(data = best_times, aes(x = time, y = V2+yjust, label = V1))
+  
+  for(g in 2:length(monthly_ls)){
+    temp_data = data.frame(x = as.POSIXct(paste0(as.Date(paste0(1:12,"-01-2018"), format("%m-%d-%Y"))," 00:00"),
+                                          format = "%Y-%m-%d %H:%M"),
+                           y = monthly_df[,g])
+    timescale_line_plot = timescale_line_plot +
+      geom_line(data = temp_data, aes(x = x, y = y), color = cols[g])
+  }
+  return(timescale_line_plot)
 }
 
 colfunc <- colorRampPalette(c("darkblue", "blue", "lightblue", "yellow", "orange", "red", "darkred"))
@@ -1103,7 +1163,7 @@ plot_grid_timescales_inset =
   draw_plot(plot_grid_timescales) +
   draw_plot(legend, x = .95, y = -0.05, width = .4, height = .4)
 
-ggsave(paste0("./validation/soil_moisture/plots/summary/timescale_lines.png"),
+ggsave(paste0("./validation/soil_moisture/plots/summary/mt/timescale_lines.png"),
        plot_grid_timescales_inset, width = 14, height = 10, units = "in", dpi = 300)
 
 
@@ -1111,6 +1171,12 @@ ggsave(paste0("./validation/soil_moisture/plots/summary/timescale_lines.png"),
 
 load('/home/zhoylman/drought_indicators_data/correlation_matrix/observed_modeled_cor.RData')
 load("/home/zhoylman/drought_indicators_data/correlation_matrix/observed_modeled_cpc_cor.RData")
+
+null_index_sm = null_index+56
+
+observed_vs_modeled[null_index_sm,] = c(NA,NA,NA,NA)
+observed_vs_modeled_cpc[null_index_sm,] = c(NA,NA,NA,NA)
+
 
 data = observed_vs_modeled %>%
   dplyr::select(sm_gamma)%>%
@@ -1142,11 +1208,11 @@ plot = ggplot(data = density_data, aes(x = x, y=y, color = name))+
   xlim(-.2, 1)+
   theme(legend.position = c(0.12,0.85))+
   scale_color_manual(values=c("#E69F00", "black"), name = NULL)
-  
+
 
 plot
 
-ggsave(paste0("./validation/soil_moisture/plots/summary/observed_vs_modeled.png"),
+ggsave(paste0("./validation/soil_moisture/plots/summary/mt/observed_vs_modeled.png"),
        plot, width = 6, height = 4, units = "in", dpi = 300)
 
 
@@ -1166,13 +1232,43 @@ observed_vs_modeled_spatial = ggplot() +
   xlab("")+
   ylab("")+
   scale_fill_gradientn("",colours=rev(rbPal(100)))+
-  ggtitle(paste0("Observed ~ Modeled Soil Moisture Correlation (r)"))+
-  theme(plot.title = element_text(hjust = 0.5),
-        legend.position = c(0.92,0.35))
-  
+  ggtitle(paste0("Observed ~ Topofire Modeled \nSoil Moisture Correlation (r)"))+
+  theme(plot.title = element_text(hjust = 0.5))
+
 
 
 observed_vs_modeled_spatial
 
-ggsave(paste0("./validation/soil_moisture/plots/summary/observed_vs_modeled_spatial.png"),
+ggsave(paste0("./validation/soil_moisture/plots/summary/mt/observed_vs_modeled_spatial_topofire.png"),
+       observed_vs_modeled_spatial, width = 10, height = 5, units = "in", dpi = 400)
+
+
+
+#####################################
+
+
+master_list_modeled_observed_CPC = rbind(station_data, snotel_cropped)
+
+master_list_modeled_observed_CPC$r = observed_vs_modeled_cpc$sm_gamma 
+
+master_list_modeled_observed_CPC = master_list_modeled_observed_CPC %>%
+  tidyr::drop_na()
+
+observed_vs_modeled_spatial = ggplot() + 
+  geom_sf(data = states, fill = "transparent")+
+  theme_bw(base_size = 16)+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  geom_point(data = master_list_modeled_observed_CPC, aes(x = longitude, y = latitude, fill = r), 
+             color = 'black', shape = 21, alpha = 0.8, size = 2)+
+  xlab("")+
+  ylab("")+
+  scale_fill_gradientn("",colours=rev(rbPal(100)))+
+  ggtitle(paste0("Observed ~ CPC Modeled \nSoil Moisture Correlation (r)"))+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+
+observed_vs_modeled_spatial
+
+ggsave(paste0("./validation/soil_moisture/plots/summary/mt/observed_vs_modeled_spatial_cpc.png"),
        observed_vs_modeled_spatial, width = 10, height = 5, units = "in", dpi = 400)

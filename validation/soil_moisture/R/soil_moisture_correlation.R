@@ -36,7 +36,7 @@ soil_moisture_topofire = read.csv("/home/zhoylman/drought_indicators_data/holden
 #import cpc soilmoisture
 soil_moisture_cpc = read.csv("/home/zhoylman/drought_indicators_data/cpc_soil_moisture/cpc_soil_moisture_extraction.csv")%>%
   dplyr::select(-X) %>%
-  mutate(date = as.Date(as.character(date), format = "%Y%m%d"))
+  mutate(date = as.Date(as.character(date), format = "%Y-%m-%d"))
 
 #trouble shooting set up for functions
 # site = 1
@@ -88,7 +88,7 @@ cpc_sm_correlation = list()
 for(site in 1:length(soil_moisture_total)){
   drought_index = data.frame(time = soil_moisture_cpc$date, sm = soil_moisture_cpc[,site])
   soil_moisture = soil_moisture_total[[site]]
-  cpc_sm_correlation[[site]] = cor_sm_summer(drought_index, soil_moisture, plots = F)
+  cpc_sm_correlation[[site]] = cor_sm_summer(drought_index, soil_moisture, plots = T)
 }
 
 data = lapply(cpc_sm_correlation, pull_var) %>%
