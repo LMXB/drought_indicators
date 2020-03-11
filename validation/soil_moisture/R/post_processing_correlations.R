@@ -1120,34 +1120,49 @@ data2 = observed_vs_modeled_cpc %>%
   dplyr::select(sm_gamma)%>%
   tidyr::drop_na()
 
+
+
 data_density = density(data$sm_gamma)
 data_density$name = "Topofire"
 data_density_2 = density(data2$sm_gamma)
 data_density_2$name = "CPC"
 
+master_times_summer_no_na = master_times_summer %>%
+  tidyr::drop_na()
+
+density_list = list()
+drought_names = c("SPI", "SPEI", 'EDDI', "SEDI")
+for(i in 1:4){
+  density_list[[i]] = density(master_times_summer_no_na[,i+8])
+  density_list[[i]]$name = drought_names[i]
+}
 
 
-density_data = data.frame(x = c(data_density$x, data_density_2$x), 
-                          y = c(data_density$y, data_density_2$y),
-                          name = c(rep("Topofire", 512), rep("CPC", 512)))
+
+density_data = data.frame(x = c(data_density$x, data_density_2$x, density_list[[1]]$x,
+                                density_list[[2]]$x, density_list[[3]]$x, density_list[[4]]$x),
+                          y = c(data_density$y, data_density_2$y, density_list[[1]]$y,
+                                density_list[[2]]$y, density_list[[3]]$y, density_list[[4]]$y),
+                          name = c(rep("Topofire", 512), rep("CPC", 512), rep(density_list[[1]]$name, 512),
+                                   rep(density_list[[2]]$name, 512), rep(density_list[[3]]$name, 512), rep(density_list[[4]]$name, 512)))
 
 plot = ggplot(data = density_data, aes(x = x, y=y, color = name))+
   geom_line()+
-  ggtitle("Observed ~ Modeled Soil Moisture")+
+  ggtitle("Soil Moisture Correlations")+
   xlab("Correlation (r)")+
   ylab("Density")+
-  theme_bw(base_size = 14)+
+  theme_bw(base_size = 12)+
   theme(legend.background = element_rect(color = 'black', fill = 'white', linetype='solid'),
         plot.title = element_text(hjust = 0.5))+
-  xlim(-.2, 1)+
-  theme(legend.position = c(0.12,0.85))+
-  scale_color_manual(values=c("#E69F00", "black"), name = NULL)
+  xlim(-1, 1)+
+  scale_color_manual(values=c("red", "purple", "green", "blue", "#E69F00", "black"), 
+                     limits = c(drought_names, "CPC", "Topofire"), name = "Predictor")
   
 
 plot
 
-ggsave(paste0("./validation/soil_moisture/plots/summary/observed_vs_modeled.png"),
-       plot, width = 6, height = 4, units = "in", dpi = 300)
+ggsave(paste0("./validation/soil_moisture/plots/summary/correlation_distrobution_all.png"),
+       plot, width = 8, height = 5, units = "in", dpi = 300)
 
 
 master_list_modeled_observed = rbind(station_data, snotel_cropped)
