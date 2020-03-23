@@ -41,6 +41,7 @@ counties_shp = st_read("../shp_kml/larger_extent/county_umrb.shp")
 
 #load custom functions
 source("../mapping_functions/base_map.R")
+source('/home/zhoylman/drought_indicators/tribal/R/aggregate_tribal.R') #!!!
 
 
 url = "ftp://ftp.cpc.ncep.noaa.gov/GIS/USDM_Products/soil/percentile/daily/"

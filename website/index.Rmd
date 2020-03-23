@@ -178,6 +178,10 @@ Row {.tabset .tabset-fade data-height=750}
 
 <iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
+### **Tribal Lands**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_tribal_percentile.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
 Row {.tabset .tabset-fade}
 -------------------------------------
 
@@ -238,6 +242,10 @@ Row {.tabset .tabset-fade data-height=750}
 ### **Watersheds**
 
 <iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_anomaly.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
+### **Tribal Lands**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_tribal_anomaly.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
@@ -324,6 +332,10 @@ Row {.tabset .tabset-fade data-height=750}
 
 <iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_spi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
+### **Tribal Lands**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_tribal_spi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
 Row {.tabset .tabset-fade}
 -------------------------------------
 
@@ -408,6 +420,10 @@ Row {.tabset .tabset-fade data-height=750}
 
 <iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_spei.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
 
+### **Tribal Lands**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_tribal_spei.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
 Row {.tabset .tabset-fade}
 -------------------------------------
 ### **Derivation:**
@@ -477,6 +493,11 @@ Row {.tabset .tabset-fade data-height=750}
 ### **Watersheds**
 
 <iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_eddi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
+### **Tribal Lands**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_tribal_eddi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
 Row {.tabset .tabset-fade}
 -------------------------------------
 ### **Derivation:**
@@ -542,6 +563,12 @@ Row {.tabset .tabset-fade data-height=750}
 ### **Watersheds**
 
 <iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_sedi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+Row {.tabset .tabset-fade}
+
+### **Tribal Lands**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_tribal_sedi.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
 Row {.tabset .tabset-fade}
 -------------------------------------
 ### **Derivation:**
