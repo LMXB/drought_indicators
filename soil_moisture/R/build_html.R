@@ -32,6 +32,8 @@ library(parallel)
 library(foreach)
 library(doParallel)
 library(htmlwidgets)
+library(magrittr)
+library(stringr)
 
 setwd('/home/zhoylman/drought_indicators/soil_moisture')
 
@@ -40,7 +42,16 @@ counties_shp = st_read("../shp_kml/larger_extent/county_umrb.shp")
 #load custom functions
 source("../mapping_functions/base_map.R")
 
-download.file("https://www.cpc.ncep.noaa.gov//products/Drought/Figures/index/SM_perc.ens.web.tif", 
+
+url = "ftp://ftp.cpc.ncep.noaa.gov/GIS/USDM_Products/soil/percentile/daily/"
+
+files = read.table(url) %>%
+  dplyr::select(V9) %$%
+  V9
+
+file_of_interest = files[length(files)]
+
+download.file(paste0(url,file_of_interest), 
               destfile = "/home/zhoylman/drought_indicators/soil_moisture/maps/current.tif")
 
 soil_moisture = raster("/home/zhoylman/drought_indicators/soil_moisture/maps/current.tif")%>%
@@ -57,12 +68,12 @@ m_raster = base_map() %>%
 m_raster = m_raster %>%
   addPolygons(data = counties_shp, group = "Counties", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
   addLayersControl(position = "topleft",
-                   baseGroups = timescale_names,
+                   baseGroups = 'Soil Moisture (CPC)',
                    overlayGroups = c("USDM", "States", "Weather", "Streets", "Counties"),
                    options = layersControlOptions(collapsed = FALSE)) %>%
   leaflet::hideGroup(c("Counties", "Streets"))%>%
   addLegend(pal = pal, values = seq(0,101,10),
-            title = paste0("Soil Moisture<br>Percentile<br>", as.Date(Sys.time())), 
+            title = paste0("Soil Moisture<br>Percentile<br>", file_of_interest %>% str_extract(., "(\\d)+") %>% as.Date(., format = "%Y%m%d")), 
             position = "bottomleft")
 
 saveWidget(m_raster, "/home/zhoylman/drought_indicators/widgets/m_raster_soil_moisture.html", 

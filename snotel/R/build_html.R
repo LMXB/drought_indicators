@@ -64,18 +64,19 @@ pal_rev <- colorNumeric(rev(c("red", "yellow", "green", "blue", "purple")), doma
 css_fix <- "div.info.legend.leaflet-control br {clear: both;}"
 
 swe_map = base_map() %>%
+leaflet::addMapPane("SNOTEL (SWE)", zIndex = 420) %>%
 addCircleMarkers(snotel$lon, snotel$lat, snotel$simple_id, 
                  popup = paste0("<img src='https://shiny.cfc.umt.edu/drought_indicators/plots/snotel_plot_",
                                 snotel$simple_id,".png' height='350' width='600'/>"),
                  radius = 10, stroke = TRUE, fillOpacity = 0.9,
-                 color = "black", fillColor = pal(daily_lookup$percent_swe)
+                 color = "black", fillColor = pal(daily_lookup$percent_swe), group = "SNOTEL (SWE)",
 )%>%
   addRasterImage(current_1, colors = pal_r, opacity = 0.8, group = "24hr Change", project = TRUE)%>%
   addRasterImage(current_3, colors = pal_r, opacity = 0.8, group = "72hr Change", project = TRUE)%>%
   addRasterImage(current_7, colors = pal_r, opacity = 0.8, group = "7 Day Change", project = TRUE)%>%
   leaflet::addLayersControl(position = "topleft",
                             baseGroups = c("24hr Change","72hr Change", "7 Day Change"),
-                            overlayGroups = c("SNOTEL (SWE)", "States",  "Weather"),
+                            overlayGroups = c("SNOTEL (SWE)", "States",  "Weather", "USDM"),
                             options = leaflet::layersControlOptions(collapsed = FALSE)) %>%
   addLegend("bottomleft", pal = pal_rev, values = daily_lookup$percent_swe,
             title = "% Average<br>SWE (Daily)",

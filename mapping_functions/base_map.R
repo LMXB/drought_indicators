@@ -30,7 +30,7 @@ base_map = function(x){
   leaflet::leaflet(options = leaflet::tileOptions(minZoom = 4)) %>%
     leaflet::addMapPane("USDM", zIndex = 410) %>%
     leaflet::addProviderTiles("Stamen.Toner") %>%
-    leaflet::addTiles("https://maps.tilehosting.com/data/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
+    leaflet::addTiles("https://api.maptiler.com/tiles/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
     leaflet::addProviderTiles("Stamen.TonerLines") %>%
     leaflet::addProviderTiles("Stamen.TonerLabels") %>%
     addProviderTiles("OpenStreetMap.BlackAndWhite", group = "Streets") %>%

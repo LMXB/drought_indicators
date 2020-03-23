@@ -6,7 +6,7 @@ states = st_read("../shp_kml/states.shp")
 base_map_mobile = function(x){
   #prefer canvas works best for lots of points on mobile
   leaflet::leaflet(options = leafletOptions(preferCanvas = TRUE)) %>%
-    leaflet::addTiles("https://maps.tilehosting.com/data/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
+    leaflet::addTiles("https://api.maptiler.com/tiles/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
     leaflet::addProviderTiles("Stamen.TonerLines") %>%
     leaflet::addProviderTiles("Stamen.TonerLabels") %>%
     leaflet::setView(lng = -108, lat = 45.5, zoom = 6) %>%
