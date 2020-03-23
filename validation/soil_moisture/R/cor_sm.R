@@ -1,4 +1,4 @@
-cor_sm = function(drought_index,soil_moisture){ 
+cor_sm = function(drought_index,soil_moisture, plots){ 
   tryCatch({
     index_timescale_select = drought_index
     
@@ -95,6 +95,14 @@ cor_sm = function(drought_index,soil_moisture){
         }
       }
     }
+    
+    if(plots == T){
+      print(plot(x_select$sm_gamma, x_select$standardized, xlab = "Predicted Gamma Standard",
+                 ylab = "Observed VWC", 
+                 main = paste0('r = ', round(correlation_matrix$sm_gamma[nrow(correlation_matrix)],3), "\n n = ", nrow(x_select))))
+      
+    }
+    
     return(correlation_matrix)
   }, error = function(e){
     return(NA)
@@ -103,7 +111,7 @@ cor_sm = function(drought_index,soil_moisture){
 
 
 
-cor_sm_summer = function(drought_index,soil_moisture){ 
+cor_sm_summer = function(drought_index,soil_moisture, plots){ 
   tryCatch({
       index_timescale_select = drought_index
       
@@ -201,10 +209,13 @@ cor_sm_summer = function(drought_index,soil_moisture){
           }
         }
       }
-    
+      
+    if(plots == T){
       print(plot(x_select$sm_gamma, x_select$standardized, xlab = "Predicted Gamma Standard",
                  ylab = "Observed VWC", 
                  main = paste0('r = ', round(correlation_matrix$sm_gamma[nrow(correlation_matrix)],3), "\n n = ", nrow(x_select))))
+      
+    }
 
     return(correlation_matrix)
   }, error = function(e){

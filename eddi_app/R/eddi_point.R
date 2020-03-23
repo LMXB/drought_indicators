@@ -2,7 +2,7 @@ library(ncdf4)
 library(dplyr)
 library(lmomco)
 library(lubridate)
-source("/home/zhoylman/drought_indicators/eddi_app/R/eddi_fun.R")
+source("/home/zhoylman/drought_indicators/eddi_app/R/eddi_fun_return_all.R")
 
 eddi_point = function(lat_in, lon_in, time_scale){
   lat_of_interest = lat_in
@@ -91,11 +91,11 @@ eddi_point = function(lat_in, lon_in, time_scale){
       #equaprobaility transformation for cdf quantiles
       if(i == length(pet_data$time)){
         output.df = data.frame(time = date_time,
-                               eddi = eddi_fun(data_time_filter$sum))
+                               eddi = eddi_fun_return_all(data_time_filter$sum))
       }
       else{
         output.df = rbind(output.df, data.frame(time = date_time, 
-                                                eddi = eddi_fun(data_time_filter$sum)))
+                                                eddi = eddi_fun_return_all(data_time_filter$sum)))
       }
       
     }

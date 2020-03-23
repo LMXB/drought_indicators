@@ -19,7 +19,7 @@ time = list()
 site = list()
 time_export = list()
 
-cl = makeCluster(detectCores()-1)
+cl = makeCluster(30)
 registerDoParallel(cl)
 
 out = list()
