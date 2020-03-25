@@ -29,83 +29,282 @@ library(doParallel)
 library(htmlwidgets)
 
 source("/home/zhoylman/drought_indicators/mapping_functions/base_map.R")
+source('/home/zhoylman/drought_indicators/tribal/R/aggregate_tribal.R') #!!!
 
-setwd('/home/zhoylman/drought_indicators/precipitation')
+setwd('/home/zhoylman/drought_indicators/temperature')
 
-#precipitation data
-current_anomaly_15 = raster::raster("../precipitation/maps/current_anomaly_15.tif")
-current_anomaly_30 = raster::raster("../precipitation/maps/current_anomaly_30.tif")
-current_anomaly_60 = raster::raster("../precipitation/maps/current_anomaly_60.tif")
-current_anomaly_90 = raster::raster("../precipitation/maps/current_anomaly_90.tif")
-current_anomaly_180 = raster::raster("../precipitation/maps/current_anomaly_180.tif")
-current_anomaly_365 = raster::raster("../precipitation/maps/current_anomaly_365.tif")
-current_anomaly_water_year = raster::raster("../precipitation/maps/current_anomaly_water_year.tif")
-current_anomaly_year_to_date = raster::raster("../precipitation/maps/current_anomaly_year_to_date.tif")
-watersheds_15 = st_read("../precipitation/shp/current_anomaly_watershed_15.shp")
-watersheds_30 = st_read("../precipitation/shp/current_anomaly_watershed_30.shp")
-watersheds_60 = st_read("../precipitation/shp/current_anomaly_watershed_60.shp")
-watersheds_90 = st_read("../precipitation/shp/current_anomaly_watershed_90.shp")
-watersheds_180 = st_read("../precipitation/shp/current_anomaly_watershed_180.shp")
-watersheds_365 = st_read("../precipitation/shp/current_anomaly_watershed_365.shp")
-watersheds_water_year = st_read("../precipitation/shp/current_anomaly_watershed_water_year.shp")
-watersheds_year_to_date = st_read("../precipitation/shp/current_anomaly_watershed_year_to_date.shp")
-county_15 = st_read("../precipitation/shp/current_anomaly_county_15.shp")
-county_30 = st_read("../precipitation/shp/current_anomaly_county_30.shp")
-county_60 = st_read("../precipitation/shp/current_anomaly_county_60.shp")
-county_90 = st_read("../precipitation/shp/current_anomaly_county_90.shp")
-county_180 = st_read("../precipitation/shp/current_anomaly_county_180.shp")
-county_365 = st_read("../precipitation/shp/current_anomaly_county_365.shp")
-county_water_year = st_read("../precipitation/shp/current_anomaly_county_water_year.shp")
-county_year_to_date = st_read("../precipitation/shp/current_anomaly_county_year_to_date.shp")
-
-lseq = function(from, to, length.out){
-  exp(seq(log(from), log(to), length.out = length.out))
-}
-
-#define color pallets
-pal_bins <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffffff","#ffffff", "#add8e6", "#0000ff", "#000d66","#000d66","#000d66","#000d66","#000d66","#000d66"), interpolate = "spline"), 
-                     domain = 0:400, bins = seq(0,400))
+counties_shp = st_read("../shp_kml/larger_extent/county_umrb.shp")
 
 
-pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffffff","#ffffff", "#add8e6", "#0000ff", "#000d66","#000d66","#000d66","#000d66","#000d66","#000d66"), seq(0,400), na.color = "transparent")
+#temperature data (anomaly)
+current_anomaly_15 = raster::raster("../temperature/maps/current_anomaly_15.tif")
+current_anomaly_30 = raster::raster("../temperature/maps/current_anomaly_30.tif")
+current_anomaly_60 = raster::raster("../temperature/maps/current_anomaly_60.tif")
+current_anomaly_90 = raster::raster("../temperature/maps/current_anomaly_90.tif")
+current_anomaly_180 = raster::raster("../temperature/maps/current_anomaly_180.tif")
+current_anomaly_365 = raster::raster("../temperature/maps/current_anomaly_365.tif")
+current_anomaly_water_year = raster::raster("../temperature/maps/current_anomaly_water_year.tif")
+current_anomaly_year_to_date = raster::raster("../temperature/maps/current_anomaly_year_to_date.tif")
+
+# Percentiles
+current_percentile_15 = raster::raster("../temperature/maps/current_percentile_15.tif")
+current_percentile_30 = raster::raster("../temperature/maps/current_percentile_30.tif")
+current_percentile_60 = raster::raster("../temperature/maps/current_percentile_60.tif")
+current_percentile_90 = raster::raster("../temperature/maps/current_percentile_90.tif")
+current_percentile_180 = raster::raster("../temperature/maps/current_percentile_180.tif")
+current_percentile_365 = raster::raster("../temperature/maps/current_percentile_365.tif")
+current_percentile_water_year = raster::raster("../temperature/maps/current_percentile_water_year.tif")
+current_percentile_year_to_date = raster::raster("../temperature/maps/current_percentile_year_to_date.tif")
+
+#shp
+watersheds_15 = st_read("../temperature/shp/current_anomaly_watershed_15.shp")
+watersheds_30 = st_read("../temperature/shp/current_anomaly_watershed_30.shp")
+watersheds_60 = st_read("../temperature/shp/current_anomaly_watershed_60.shp")
+watersheds_90 = st_read("../temperature/shp/current_anomaly_watershed_90.shp")
+watersheds_180 = st_read("../temperature/shp/current_anomaly_watershed_180.shp")
+watersheds_365 = st_read("../temperature/shp/current_anomaly_watershed_365.shp")
+watersheds_water_year = st_read("../temperature/shp/current_anomaly_watershed_water_year.shp")
+watersheds_year_to_date = st_read("../temperature/shp/current_anomaly_watershed_year_to_date.shp")
+county_15 = st_read("../temperature/shp/current_anomaly_county_15.shp")
+county_30 = st_read("../temperature/shp/current_anomaly_county_30.shp")
+county_60 = st_read("../temperature/shp/current_anomaly_county_60.shp")
+county_90 = st_read("../temperature/shp/current_anomaly_county_90.shp")
+county_180 = st_read("../temperature/shp/current_anomaly_county_180.shp")
+county_365 = st_read("../temperature/shp/current_anomaly_county_365.shp")
+county_water_year = st_read("../temperature/shp/current_anomaly_county_water_year.shp")
+county_year_to_date = st_read("../temperature/shp/current_anomaly_county_year_to_date.shp")
+
+#process tribal  !!
+tribal_15 = aggregate_tribal_precip(current_anomaly_15, current_percentile_15)
+tribal_30 = aggregate_tribal_precip(current_anomaly_30, current_percentile_30)
+tribal_60 = aggregate_tribal_precip(current_anomaly_60, current_percentile_60)
+tribal_90 = aggregate_tribal_precip(current_anomaly_90, current_percentile_90)
+tribal_180 = aggregate_tribal_precip(current_anomaly_180, current_percentile_180)
+tribal_365 = aggregate_tribal_precip(current_anomaly_365, current_percentile_365)
+tribal_water_year = aggregate_tribal_precip(current_anomaly_water_year, current_percentile_water_year)
+tribal_year_to_date = aggregate_tribal_precip(current_anomaly_year_to_date, current_percentile_year_to_date)
+
+tribal_list = list(tribal_15, tribal_30, tribal_60, tribal_90,
+                   tribal_180, tribal_365, tribal_water_year, tribal_year_to_date)
 
 
 #lists of layers for loop leaflet map generation
 watershed_list = list(watersheds_15,watersheds_30, watersheds_60, watersheds_90, watersheds_180, watersheds_365, watersheds_water_year, watersheds_year_to_date)
 county_list = list(county_15,county_30, county_60, county_90, county_180, county_365, county_water_year, county_year_to_date)
 raster_list = list(current_anomaly_15, current_anomaly_30, current_anomaly_60,current_anomaly_90, current_anomaly_180, current_anomaly_365, current_anomaly_water_year, current_anomaly_year_to_date)
+raster_list_percentiles = list(current_percentile_15, current_percentile_30, current_percentile_60,current_percentile_90, current_percentile_180, current_percentile_365, current_percentile_water_year, current_percentile_year_to_date)
+#raster_list_raw = list(current_raw_15, current_raw_30, current_raw_60,current_raw_90, current_raw_180, current_raw_365, current_raw_water_year, current_raw_year_to_date)
+
+watershed_list_names = c("15 Day HUC8","30 Day HUC8", "60 Day HUC8", "90 Day HUC8", "180 Day HUC8", "365 Day HUC8", "Water Year", "Year to Date")
+timescale_names = c("15 Day","30 Day", "60 Day", "90 Day", "180 Day", "365 Day", "Water Year", "Year to Date")
+
+
+###########
+# Anomaly #
+###########
+# 
+# #define color pallets
+# pal_bins <- colorBin(colorRamp(rev(c("#8b0000", "#ff0000", "#ffffff","#ffffff", "#add8e6", "#0000ff", "#000d66","#000d66","#000d66","#000d66","#000d66","#000d66")), interpolate = "spline"), 
+#                      domain = 0:400, bins = seq(0,400))
+# 
+# 
+# pal <- colorNumeric(rev(c("#8b0000", "#ff0000", "#ffffff","#ffffff", "#add8e6", "#0000ff", "#000d66","#000d66","#000d66","#000d66","#000d66","#000d66")), seq(0,400), na.color = "transparent")
+# 
+# #define color pallets
+# pal <- colorBin(colorRamp(rev(c("#8b0000", "#ff0000", "#ffff00", "#ffffff", "#00ffff", "#0000ff", "#000d66"), interpolate = "spline")), 
+#                 domain = 0:800, bins = c(0,10,30,50,70,90,110,150,200,300,500,800), na.color = "transparent")
+# 
+# #labels for aggregated data
+# labels = list()
+# for(i in 1:length(watershed_list_names)){
+#   labels[[i]] <- sprintf(
+#     "<strong>%s</strong><br/>Anomaly = %g&percnt;<sup></sup>",
+#     watershed_list[[i]]$NAME, watershed_list[[i]]$anomaly
+#   ) %>% lapply(htmltools::HTML)
+# }
+# 
+# labels_county = list()
+# for(i in 1:length(watershed_list_names)){
+#   labels_county[[i]] <- sprintf(
+#     "<strong>%s</strong><br/>Anomaly = %g&percnt;<sup></sup>",
+#     county_list[[i]]$NAME, county_list[[i]]$anomaly
+#   ) %>% lapply(htmltools::HTML)
+# }
+# 
+# labels_tribal = list()
+# for(i in 1:length(tribal_list)){
+#   labels_tribal[[i]] <- sprintf(
+#     "<strong>%s</strong><br/>Anomaly = %g&percnt;<sup></sup>",
+#     tribal_list[[i]]$GNIS_Name1, tribal_list[[i]]$anomaly
+#   ) %>% lapply(htmltools::HTML)
+# }
+# 
+# for(i in 1:length(watershed_list)){
+#   #set upper bound for color ramp
+#   values(raster_list[[i]])[values(raster_list[[i]]) > 800] = 800
+#   
+#   county_list[[i]]$anomaly[county_list[[i]]$anomaly > 800] = 800
+#   
+#   watershed_list[[i]]$anomaly[watershed_list[[i]]$anomaly > 800] = 800
+#   
+#   tribal_list[[i]]$average[tribal_list[[i]]$anomaly > 800] = 800 #!!
+# }
+# 
+# 
+# ################################################################################
+# ############################### BUILD RASTER MAP ###############################
+# ################################################################################
+# # Add multiple layers with a loop ----------------------------------------------
+# m_raster = base_map()
+# for(i in 1:length(watershed_list_names)){
+#   m_raster = m_raster %>%
+#     addRasterImage(raster_list[[i]], colors = pal, opacity = 0.8, group = timescale_names[i], project = TRUE)
+# }
+# 
+# # Add some layer controls
+# m_raster = m_raster %>%
+#   addPolygons(data = counties_shp, group = "Counties", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
+#   addPolygons(data = tribal, group = "Tribal Lands", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
+#   addLayersControl(position = "topleft",
+#                    baseGroups = timescale_names,
+#                    overlayGroups = c("USDM", "States", "Weather", "Streets", "Counties", 'Tribal Lands'),
+#                    options = layersControlOptions(collapsed = FALSE)) %>%
+#   leaflet::hideGroup(c("Counties", "Streets", 'Tribal Lands'))%>%
+#   addLegend(pal = pal, values = 0:800,
+#             title = paste0("% Average<br>Max Temperature<br>", as.character(watersheds_30$crrnt_t[1])),
+#             position = "bottomleft")
+# 
+# 
+# saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/temperature/widgets/m_raster_temp.html", selfcontained = T)
+# 
+# saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/widgets/m_raster_anomaly_temp.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
+# 
+# 
+# ################################################################################
+# ############################### BUILD HUC MAP ##################################
+# ################################################################################
+# 
+# m_huc = base_map()
+# 
+# # Add multiple layers with a loop ----------------------------------------------
+# for(i in 1:length(watershed_list_names)){
+#   m_huc = m_huc %>% addPolygons(data = watershed_list[[i]], group = timescale_names[i], fillColor = ~pal(anomaly), weight = 2, opacity = 1, color = "black", 
+#                                 dashArray = "3", fillOpacity = 0.7, highlight = 
+#                                   highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels[[i]], 
+#                                 labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))
+# }
+# 
+# # Add Layer Controls  ----------------------------------------------    
+# m_huc = m_huc %>%
+#   addLayersControl(position = "topleft",
+#                    baseGroups = timescale_names,
+#                    overlayGroups = c("USDM", "States", "Weather"),
+#                    options = layersControlOptions(collapsed = FALSE)) %>%
+#   addLegend(pal = pal, values = 0:800,
+#             title = paste0("% Average<br>Max Temperature<br>", as.character(watersheds_30$crrnt_t[1])),
+#             position = "bottomleft")
+# 
+# saveWidget(m_huc, "/home/zhoylman/drought_indicators/temperature/widgets/m_huc_temp.html", selfcontained = T)
+# 
+# saveWidget(m_huc, "/home/zhoylman/drought_indicators/widgets/m_huc_anomaly_temp.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
+# 
+# 
+# ################################################################################
+# ############################### BUILD COUNTY MAP ###############################
+# ################################################################################
+# 
+# m_county = base_map()
+# 
+# # Add multiple layers with a loop ----------------------------------------------
+# for(i in 1:length(watershed_list_names)){
+#   m_county = m_county %>% addPolygons(data = county_list[[i]], group = timescale_names[i], fillColor = ~pal(anomaly), weight = 2, opacity = 1, color = "black", 
+#                                       dashArray = "3", fillOpacity = 0.7, highlight = 
+#                                         highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels_county[[i]], 
+#                                       labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))
+# }
+# 
+# # Add Layer Controls  ----------------------------------------------    
+# m_county = m_county %>%
+#   addLayersControl(position = "topleft",
+#                    baseGroups = timescale_names,
+#                    overlayGroups = c("USDM", "States", "Weather"),
+#                    options = layersControlOptions(collapsed = FALSE)) %>%
+#   addLegend(pal = pal, values = 0:800,
+#             title = paste0("% Average<br>temperature<br>", as.character(watersheds_30$crrnt_t[1])),
+#             position = "bottomleft")
+# 
+# saveWidget(as_widget(m_county), "/home/zhoylman/drought_indicators/temperature/widgets/m_county_temp.html", selfcontained = T)
+# 
+# saveWidget(m_county, "/home/zhoylman/drought_indicators/widgets/m_county_anomaly_temp.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
+# 
+# ######################################################################################################################
+# 
+# ################################################################################
+# ############################### BUILD TRIBAL MAP ###############################
+# ################################################################################
+# 
+# m_tribal = base_map()
+# 
+# # Add multiple layers with a loop ----------------------------------------------
+# for(i in 1:length(watershed_list_names)){
+#   m_tribal = m_tribal %>% addPolygons(data = tribal_list[[i]], group = timescale_names[i], fillColor = ~pal(average), weight = 2, opacity = 1, color = "black", 
+#                                       dashArray = "3", fillOpacity = 0.7, highlight = 
+#                                         highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels_tribal[[i]], 
+#                                       labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))
+# }
+# 
+# # Add Layer Controls  ----------------------------------------------    
+# m_tribal = m_tribal %>%
+#   addLayersControl(position = "topleft",
+#                    baseGroups = timescale_names,
+#                    overlayGroups = c("USDM", "States", "Weather"),
+#                    options = layersControlOptions(collapsed = FALSE)) %>%
+#   addLegend(pal = pal, values = 0:800,
+#             title = paste0("% Average<br>temperature<br>", as.character(watersheds_30$crrnt_t[1])),
+#             position = "bottomleft")
+# 
+# saveWidget(m_tribal, "/home/zhoylman/drought_indicators/widgets/m_tribal_anomaly_temp.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
+# 
+
+
+###############
+# Percentiles #
+###############
+
+#define color pallets
+pal_bins <- colorBin(colorRamp(rev(c("#8b0000", "#ff0000", "#ffff00", "#ffffff", "#00ffff", "#0000ff", "#000d66"))), 
+                     domain = 0:100, bins = seq(0,100,10), na.color = "transparent")
+
 
 #labels for aggregated data
 labels = list()
 for(i in 1:length(watershed_list_names)){
   labels[[i]] <- sprintf(
-    "<strong>%s</strong><br/>Anomaly = %g&percnt;<sup></sup>",
-    watershed_list[[i]]$NAME, watershed_list[[i]]$average
+    "<strong>%s</strong><br/>Percentile = %g<sup></sup>",
+    watershed_list[[i]]$NAME, watershed_list[[i]]$percntl
   ) %>% lapply(htmltools::HTML)
 }
 
 labels_county = list()
 for(i in 1:length(watershed_list_names)){
   labels_county[[i]] <- sprintf(
-    "<strong>%s</strong><br/>Anomaly = %g&percnt;<sup></sup>",
-    county_list[[i]]$NAME, county_list[[i]]$average
+    "<strong>%s</strong><br/>Percentile = %g<sup></sup>",
+    county_list[[i]]$NAME, county_list[[i]]$percentile
   ) %>% lapply(htmltools::HTML)
 }
 
+labels_tribal = list()
+for(i in 1:length(tribal_list)){
+  labels_tribal[[i]] <- sprintf(
+    "<strong>%s</strong><br/>Percentile = %g<sup></sup>",
+    tribal_list[[i]]$GNIS_Name1, tribal_list[[i]]$percentile
+  ) %>% lapply(htmltools::HTML)
+}
 
 for(i in 1:length(watershed_list)){
   #set upper bound for color ramp
-  values(raster_list[[i]])[values(raster_list[[i]]) > 400] = 400
-
-  county_list[[i]]$average[county_list[[i]]$average > 400] = 400
-
-  watershed_list[[i]]$average[watershed_list[[i]]$average > 400] = 400
+  values(raster_list_percentiles[[i]])[values(raster_list_percentiles[[i]]) >= 100] = 99
 }
-
-
-watershed_list_names = c("15 Day HUC8","30 Day HUC8", "60 Day HUC8", "90 Day HUC8", "180 Day HUC8", "365 Day HUC8", "Water Year", "Year to Date")
-timescale_names = c("15 Day","30 Day", "60 Day", "90 Day", "180 Day", "365 Day", "Water Year", "Year to Date")
-
 
 ################################################################################
 ############################### BUILD RASTER MAP ###############################
@@ -114,21 +313,26 @@ timescale_names = c("15 Day","30 Day", "60 Day", "90 Day", "180 Day", "365 Day",
 m_raster = base_map()
 for(i in 1:length(watershed_list_names)){
   m_raster = m_raster %>%
-    addRasterImage(raster_list[[i]], colors = pal, opacity = 0.8, group = timescale_names[i], project = TRUE)
+    addRasterImage(raster_list_percentiles[[i]], colors = pal_bins, opacity = 0.8, group = timescale_names[i], project = TRUE)
 }
 
 # Add some layer controls
 m_raster = m_raster %>%
+  addPolygons(data = counties_shp, group = "Counties", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
+  addPolygons(data = tribal, group = "Tribal Lands", fillColor = "transparent", weight = 2, color = "black", opacity = 1)%>%
   addLayersControl(position = "topleft",
                    baseGroups = timescale_names,
-                   overlayGroups = c("USDM", "States", "Weather"),
+                   overlayGroups = c("USDM", "States", "Weather", "Streets", "Counties", 'Tribal Lands'),
                    options = layersControlOptions(collapsed = FALSE)) %>%
-  addLegend(pal = pal, values = 0:400,
-            title = paste0("% Average<br>Precipitation<br>", as.character(watersheds_30$crrnt_t[1])),
+  leaflet::hideGroup(c("Counties", "Streets", 'Tribal Lands'))%>%
+  addLegend(pal = pal_bins, values = seq(0,100,10),
+            title = paste0("Temperature<br>Percentile<br>", as.character(watersheds_30$crrnt_t[1])),
             position = "bottomleft")
 
+saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/temperature/widgets/m_raster_percentile_temp.html", selfcontained = T)
 
-saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/precipitation/widgets/m_raster.html", selfcontained = T)
+saveWidget(as_widget(m_raster), "/home/zhoylman/drought_indicators/widgets/m_raster_percentile_temp.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
+
 
 ################################################################################
 ############################### BUILD HUC MAP ##################################
@@ -138,7 +342,7 @@ m_huc = base_map()
 
 # Add multiple layers with a loop ----------------------------------------------
 for(i in 1:length(watershed_list_names)){
-  m_huc = m_huc %>% addPolygons(data = watershed_list[[i]], group = timescale_names[i], fillColor = ~pal_bins(average), weight = 2, opacity = 1, color = "black", 
+  m_huc = m_huc %>% addPolygons(data = watershed_list[[i]], group = timescale_names[i], fillColor = ~pal_bins(percntl), weight = 2, opacity = 1, color = "black", 
                                 dashArray = "3", fillOpacity = 0.7, highlight = 
                                   highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels[[i]], 
                                 labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))
@@ -150,11 +354,13 @@ m_huc = m_huc %>%
                    baseGroups = timescale_names,
                    overlayGroups = c("USDM", "States", "Weather"),
                    options = layersControlOptions(collapsed = FALSE)) %>%
-  addLegend(pal = pal, values = 0:400,
-            title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
+  addLegend(pal = pal_bins, values = seq(0,100,10),
+            title = paste0("Temperature<br>Percentile<br>", as.character(watersheds_30$crrnt_t[1])),
             position = "bottomleft")
 
-saveWidget(m_huc, "/home/zhoylman/drought_indicators/precipitation/widgets/m_huc.html", selfcontained = T)
+saveWidget(m_huc, "/home/zhoylman/drought_indicators/temperature/widgets/m_huc_percentile_temp.html", selfcontained = T)
+
+saveWidget(m_huc, "/home/zhoylman/drought_indicators/widgets/m_huc_percentile_temp.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
 
 
 ################################################################################
@@ -165,7 +371,7 @@ m_county = base_map()
 
 # Add multiple layers with a loop ----------------------------------------------
 for(i in 1:length(watershed_list_names)){
-  m_county = m_county %>% addPolygons(data = county_list[[i]], group = timescale_names[i], fillColor = ~pal_bins(average), weight = 2, opacity = 1, color = "black", 
+  m_county = m_county %>% addPolygons(data = county_list[[i]], group = timescale_names[i], fillColor = ~pal_bins(percentile), weight = 2, opacity = 1, color = "black", 
                                       dashArray = "3", fillOpacity = 0.7, highlight = 
                                         highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels_county[[i]], 
                                       labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))
@@ -177,8 +383,37 @@ m_county = m_county %>%
                    baseGroups = timescale_names,
                    overlayGroups = c("USDM", "States", "Weather"),
                    options = layersControlOptions(collapsed = FALSE)) %>%
-  addLegend(pal = pal, values = 0:400,
-            title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
+  addLegend(pal = pal_bins, values = seq(0,100,10),
+            title = paste0("Temperature<br>Percentile<br>", as.character(watersheds_30$crrnt_t[1])),
             position = "bottomleft")
 
-saveWidget(as_widget(m_county), "/home/zhoylman/drought_indicators/precipitation/widgets/m_county.html", selfcontained = T)
+saveWidget(as_widget(m_county), "/home/zhoylman/drought_indicators/temperature/widgets/m_county_percentile_temp.html", selfcontained = T)
+
+saveWidget(m_county, "/home/zhoylman/drought_indicators/widgets/m_county_percentile_temp.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
+
+######################################################################################################################
+################################################################################
+############################### BUILD TRIBAL MAP ###############################
+################################################################################
+
+m_tribal = base_map()
+
+# Add multiple layers with a loop ----------------------------------------------
+for(i in 1:length(watershed_list_names)){
+  m_tribal = m_tribal %>% addPolygons(data = tribal_list[[i]], group = timescale_names[i], fillColor = ~pal_bins(percentile), weight = 2, opacity = 1, color = "black", 
+                                      dashArray = "3", fillOpacity = 0.7, highlight = 
+                                        highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels_tribal[[i]], 
+                                      labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))
+}
+
+# Add Layer Controls  ----------------------------------------------    
+m_tribal = m_tribal %>%
+  addLayersControl(position = "topleft",
+                   baseGroups = timescale_names,
+                   overlayGroups = c("USDM", "States", "Weather"),
+                   options = layersControlOptions(collapsed = FALSE)) %>%
+  addLegend(pal = pal_bins, values = seq(0,100,10),
+            title = paste0("Temperature<br>Percentile<br>", as.character(watersheds_30$crrnt_t[1])),
+            position = "bottomleft")
+
+saveWidget(m_tribal, "/home/zhoylman/drought_indicators/widgets/m_tribal_percentile_temp.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")

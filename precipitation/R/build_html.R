@@ -103,7 +103,7 @@ watershed_list = list(watersheds_15,watersheds_30, watersheds_60, watersheds_90,
 county_list = list(county_15,county_30, county_60, county_90, county_180, county_365, county_water_year, county_year_to_date)
 raster_list = list(current_anomaly_15, current_anomaly_30, current_anomaly_60,current_anomaly_90, current_anomaly_180, current_anomaly_365, current_anomaly_water_year, current_anomaly_year_to_date)
 raster_list_percentiles = list(current_percentile_15, current_percentile_30, current_percentile_60,current_percentile_90, current_percentile_180, current_percentile_365, current_percentile_water_year, current_percentile_year_to_date)
-raster_list_raw = list(current_raw_15, current_raw_30, current_raw_60,current_raw_90, current_raw_180, current_raw_365, current_raw_water_year, current_raw_year_to_date)
+#raster_list_raw = list(current_raw_15, current_raw_30, current_raw_60,current_raw_90, current_raw_180, current_raw_365, current_raw_water_year, current_raw_year_to_date)
 
 watershed_list_names = c("15 Day HUC8","30 Day HUC8", "60 Day HUC8", "90 Day HUC8", "180 Day HUC8", "365 Day HUC8", "Water Year", "Year to Date")
 timescale_names = c("15 Day","30 Day", "60 Day", "90 Day", "180 Day", "365 Day", "Water Year", "Year to Date")
@@ -257,7 +257,7 @@ m_tribal = base_map()
 
 # Add multiple layers with a loop ----------------------------------------------
 for(i in 1:length(watershed_list_names)){
-  m_tribal = m_tribal %>% addPolygons(data = tribal_list[[i]], group = timescale_names[i], fillColor = ~pal(average), weight = 2, opacity = 1, color = "black", 
+  m_tribal = m_tribal %>% addPolygons(data = tribal_list[[i]], group = timescale_names[i], fillColor = ~pal(anomaly), weight = 2, opacity = 1, color = "black", 
                                       dashArray = "3", fillOpacity = 0.7, highlight = 
                                         highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels_tribal[[i]], 
                                       labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))
@@ -269,8 +269,8 @@ m_tribal = m_tribal %>%
                    baseGroups = timescale_names,
                    overlayGroups = c("USDM", "States", "Weather"),
                    options = layersControlOptions(collapsed = FALSE)) %>%
-  addLegend(pal = pal, values = -2.5:2.5,
-            title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
+  addLegend(pal = pal, values = 0:800,
+            title = paste0("% Average<br>Precipitation<br>", as.character(watersheds_30$crrnt_t[1])),
             position = "bottomleft")
 
 saveWidget(m_tribal, "/home/zhoylman/drought_indicators/widgets/m_tribal_anomaly.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
@@ -410,7 +410,7 @@ m_tribal = base_map()
 
 # Add multiple layers with a loop ----------------------------------------------
 for(i in 1:length(watershed_list_names)){
-  m_tribal = m_tribal %>% addPolygons(data = tribal_list[[i]], group = timescale_names[i], fillColor = ~pal(average), weight = 2, opacity = 1, color = "black", 
+  m_tribal = m_tribal %>% addPolygons(data = tribal_list[[i]], group = timescale_names[i], fillColor = ~pal_bins(percentile), weight = 2, opacity = 1, color = "black", 
                                       dashArray = "3", fillOpacity = 0.7, highlight = 
                                         highlightOptions(weight = 5,color = "#666",dashArray = "",fillOpacity = 0.7, bringToFront = TRUE),label = labels_tribal[[i]], 
                                       labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),textsize = "15px",direction = "auto"))
@@ -422,8 +422,8 @@ m_tribal = m_tribal %>%
                    baseGroups = timescale_names,
                    overlayGroups = c("USDM", "States", "Weather"),
                    options = layersControlOptions(collapsed = FALSE)) %>%
-  addLegend(pal = pal, values = -2.5:2.5,
-            title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
+  addLegend(pal = pal_bins, values = seq(0,100,10),
+            title = paste0("Precipitation<br>Percentile<br>", as.character(watersheds_30$crrnt_t[1])),
             position = "bottomleft")
 
 saveWidget(m_tribal, "/home/zhoylman/drought_indicators/widgets/m_tribal_percentile.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")

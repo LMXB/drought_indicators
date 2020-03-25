@@ -265,7 +265,70 @@ For each timescale we calculate the average accumulated precipitation across the
   + Does not account for the capacity of the landscape to store or release water (e.g. soil moisture, groundwater and streamflow)
   <br>
   
+Temperature Percentiles {data-navmenu="Temperature" data-icon="fa-list" data-orientation=rows}
+========================================================
+### **Temperature Percentiles**
 
+<br>
+
+#### **Overview:**
+
+Temperature is a strong mediator of drought. In most cases, precipitation deficits are exacerbated by atmospheric dryness, which is strongly linked to temperature. In this module we present temperature percentiles calculated over timescales ranging from 15 to 365 days. As an example of how to interpret each map, 50 represents the normal (median; white shading) temperature over a given time period, 100 would be the warmest period on record (dark red) and 0 would represent the coldest conditions observed (dark blue). The analysis is conducted over a period from 1979 to present.
+
+<br>
+
+#### **Data Requirements:**
+
+  + Temperature 
+
+<br>  
+
+
+##### Select a timescale from the left panel on the map. You can also toggle overlays, such as the current US Drought Monitor (USDM) drought designations, weather (from the National Weather Service) and state boundaries.
+
+<br>
+
+##### Tabs above the map allow you to aggregate the data by political or hydrologic boundaries.
+
+###
+
+Row {.tabset .tabset-fade data-height=750}
+-------------------------------------
+
+### **Gridded Data**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_raster_percentile_temp.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
+### **Counties**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_county_percentile_temp.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
+### **Watersheds**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_huc_percentile_temp.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
+### **Tribal Lands**
+
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://shiny.cfc.umt.edu/drought_indicators/widgets/m_tribal_percentile_temp.html" webkitallowfullscreen="webkitallowfullscreen"></iframe>
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+
+### **Derivation:**
+For each timescale we calculate the mean maximum temperature for each year across the period of record (1979 - present) and compute the current percentile value. 
+
+**Key Strengths:**
+
+  + Easy to calculate; uses only temperature data. 
+  + Easy to interpret
+  
+**Key Weaknesses:** 
+
+  + Sensitive to biases in temperature records over time
+  + Doesn't account for precipitaion deficits (the primary driver of drought)
+  + Does not account for the capacity of the landscape to store or release moisture (e.g. soil moisture, groundwater and streamflow)
+  <br>
+  
 
 Soil Moisture Percentiles (Modeled) {data-navmenu="Soil Moisture" data-icon="fa-list" data-orientation=rows}
 ========================================================

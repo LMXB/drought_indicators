@@ -86,7 +86,7 @@ pal_bins <- colorBin(colorRamp(c("#8b0000", "#ff0000", "#ffff00", "#ffffff", "#0
                      domain = -2.5:2.5, bins = seq(-2.5,2.5,0.5))
 
 
-pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffff00", "#ffffff", "#00ffff", "#0000ff", "#000d66"), -2.51:2.51, na.color = "transparent")
+pal <- colorNumeric(c("#8b0000", "#ff0000", "#ffff00", "#ffffff", "#00ffff", "#0000ff", "#000d66"), -2.5:2.5, na.color = "transparent")
 
 
 #lists of layers for loop leaflet map generation
@@ -116,17 +116,17 @@ for(i in 1:length(watershed_list_names)){
 
 for(i in 1:length(watershed_list)){
   #set upper bound for color ramp
-  values(raster_list[[i]])[values(raster_list[[i]]) > 2.5] = 2.5
-  values(raster_list[[i]])[values(raster_list[[i]]) < -2.5] = -2.5
+  values(raster_list[[i]])[values(raster_list[[i]]) > 2.5] = 2.49
+  values(raster_list[[i]])[values(raster_list[[i]]) < -2.5] = -2.49
   
-  county_list[[i]]$average[county_list[[i]]$average > 2.5] = 2.5
-  county_list[[i]]$average[county_list[[i]]$average < -2.5] = -2.5
+  county_list[[i]]$average[county_list[[i]]$average > 2.5] = 2.49
+  county_list[[i]]$average[county_list[[i]]$average < -2.5] = -2.49
   
-  watershed_list[[i]]$average[watershed_list[[i]]$average > 2.5] = 2.5
-  watershed_list[[i]]$average[watershed_list[[i]]$average < -2.5] = -2.5
+  watershed_list[[i]]$average[watershed_list[[i]]$average > 2.5] = 2.49
+  watershed_list[[i]]$average[watershed_list[[i]]$average < -2.5] = -2.49
   
-  tribal_list[[i]]$average[tribal_list[[i]]$average > 2.5] = 2.5 #!!
-  tribal_list[[i]]$average[tribal_list[[i]]$average < -2.5] = -2.5 #!!
+  tribal_list[[i]]$average[tribal_list[[i]]$average > 2.5] = 2.49 #!!
+  tribal_list[[i]]$average[tribal_list[[i]]$average < -2.5] = -2.49 #!!
 }
 
 
