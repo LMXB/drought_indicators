@@ -1,3 +1,9 @@
+library(lealfet)
+library(leaflet.extras)
+library(sf)
+library(htmltools)
+library(htmlwidgets)
+
 #define base map information as a function used for all leaflet maps
 #load base map dependent data
 setwd("/home/zhoylman/drought_indicators/mapping_functions/")
@@ -8,6 +14,13 @@ current_usdm_date = as.Date(as.character(current_usdm_date$x), format = "%Y%m%d"
 usdm_description = c("(Abnormally Dry)", "(Moderate Drought)",
                      "(Severe Drought)", "(Extreme Drought)",
                      "(Exceptional Drought)")
+
+#google esk gesture control plugin
+gesturePlugin = htmlDependency("Leaflet.GestureHandling", "1.1.8",
+                               src = c(file = "/home/zhoylman/drought_indicators/mannual_dependencies/Leaflet.GestureHandling-master/dist/"),
+                               stylesheet = "leaflet-gesture-handling.min.css",
+                               script = "leaflet-gesture-handling.min.js"
+)
 
 for(i in 1:length(current_usdm$DM)){
   current_usdm$DM1[i] = paste(current_usdm$DM[i], 
@@ -25,9 +38,18 @@ pal_usdm <- colorBin(colorRamp(c("#ffff00", "#918151", "#ffa500", "#ff0000", "#8
 pal_usdm_legend <- colorFactor(c("#ffff00", "#918151", "#ffa500", "#ff0000", "#811616"), domain = c("D0 (Abnormally Dry)", "D1 (Moderate Drought)",
                                                                                                     "D2 (Severe Drought)", "D3 (Extreme Drought)",
                                                                                                     "D4 (Exceptional Drought)"))
+# A function that takes a plugin htmlDependency object and adds
+# it to the map. This ensures that however or whenever the map
+# gets rendered, the plugin will be loaded into the browser.
+registerPlugin <- function(map, plugin) {
+  map$dependencies <- c(map$dependencies, list(plugin))
+  map
+}
+
 #define basemap function
 base_map = function(x){
   leaflet::leaflet(options = leaflet::tileOptions(minZoom = 4)) %>%
+    registerPlugin(gesturePlugin) %>%
     leaflet::addMapPane("USDM", zIndex = 410) %>%
     leaflet::addProviderTiles("Stamen.Toner") %>%
     leaflet::addTiles("https://api.maptiler.com/tiles/hillshades/{z}/{x}/{y}.png?key=KZO7rAv96Alr8UVUrd4a") %>%
@@ -66,5 +88,7 @@ base_map = function(x){
                                                                "D4 (Exceptional Drought)"),title = "USDM") %>%
     onRender("function(el, x) {
       this.removeControl(this.zoomControl);
-    }")
+      this.gestureHandling.enable();
+      this.dragging.enable();
+    }") 
 }
