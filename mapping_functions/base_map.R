@@ -1,4 +1,4 @@
-library(lealfet)
+library(leaflet)
 library(leaflet.extras)
 library(sf)
 library(htmltools)
@@ -48,7 +48,7 @@ registerPlugin <- function(map, plugin) {
 
 #define basemap function
 base_map = function(x){
-  leaflet::leaflet(options = leaflet::tileOptions(minZoom = 4)) %>%
+  leaflet::leaflet(options = leaflet::tileOptions(minZoom = 4, preferCanvas = T)) %>%
     registerPlugin(gesturePlugin) %>%
     leaflet::addMapPane("USDM", zIndex = 410) %>%
     leaflet::addProviderTiles("Stamen.Toner") %>%
