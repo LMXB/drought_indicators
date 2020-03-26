@@ -5,6 +5,7 @@ Rscript /home/zhoylman/drought_indicators/spei_app/R/build_html.R
 Rscript /home/zhoylman/drought_indicators/eddi_app/R/build_html.R
 Rscript /home/zhoylman/drought_indicators/snotel/R/build_html.R
 Rscript /home/zhoylman/drought_indicators/precipitation/R/build_html.R
+Rscript /home/zhoylman/drought_indicators/temperature/R/build_html.R
 Rscript /home/zhoylman/drought_indicators/sedi_app/R/build_html.R
 
 # Copy widget files to nginx folder

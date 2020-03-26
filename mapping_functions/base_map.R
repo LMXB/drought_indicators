@@ -1,4 +1,4 @@
-library(lealfet)
+library(leaflet)
 library(leaflet.extras)
 library(sf)
 library(htmltools)
