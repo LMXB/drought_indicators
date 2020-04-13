@@ -32,7 +32,7 @@ Reading layer `current_usdm' from data source `/home/zhoylman/drought_indicators
 Simple feature collection with 3 features and 5 fields
 geometry type:  MULTIPOLYGON
 dimension:      XY
-bbox:           xmin: -117.243 ymin: 40.99929 xmax: -107.9825 ymax: 48.80678
+bbox:           xmin: -117.243 ymin: 42.38785 xmax: -102.6736 ymax: 48.99971
 epsg (SRID):    4326
 proj4string:    +proj=longlat +datum=WGS84 +no_defs
 Reading layer `Snotel_Sites' from data source `/home/zhoylman/drought_indicators/snotel/shp/Snotel_Sites.shp' using driver `ESRI Shapefile'
