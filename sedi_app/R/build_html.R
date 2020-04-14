@@ -235,7 +235,7 @@ m_tribal = m_tribal %>%
                    overlayGroups = c("USDM", "States", "Weather"),
                    options = layersControlOptions(collapsed = FALSE)) %>%
   addLegend(pal = pal, values = -2.5:2.5,
-            title = paste0("Current SPI<br>", as.character(watersheds_30$crrnt_t[1])),
+            title = paste0("Current SEDI<br>", as.character(watersheds_30$crrnt_t[1])),
             position = "bottomleft")
 
 saveWidget(m_tribal, "/home/zhoylman/drought_indicators/widgets/m_tribal_sedi.html", selfcontained = F, libdir = "/home/zhoylman/drought_indicators/widgets/libs/")
