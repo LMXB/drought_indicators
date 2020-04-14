@@ -11,10 +11,10 @@ if [ "$(whoami)" != "root" ]; then
     exit 1;
 else
     # Make sure we are in the right directory
-    cd ~/drought_indicators;
+    cd /home/zhoylman/drought_indicators;
     # Now add any changes
     git add .;
     # Now commit
-    git commit -m "$DAY Daily test";
+    git commit -m "$DAY Daily su push test";
     git push;
 fi;
