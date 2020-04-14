@@ -2,6 +2,8 @@
 
 # Nightly push to Bitbucket
 
+HOME=/home/zhoylman/drought_indicators ssh -vT git@github.com
+
 # Set some variables
 DAY=$(date +%F);
 
@@ -16,5 +18,5 @@ else
     git add .;
     # Now commit
     git commit -m "$DAY Daily su push test";
-    git push;
+    git push origin master;
 fi;
