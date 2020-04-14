@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Nightly push to Bitbucket
-
 # Set some variables
 DAY=$(date +%F);
 
@@ -15,6 +13,6 @@ else
     # Now add any changes
     git add .;
     # Now commit
-    git commit -m "$DAY Daily su push test";
+    git commit -m "$DAY Daily test within bash";
     git push origin master;
 fi;
