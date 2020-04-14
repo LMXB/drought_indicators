@@ -3,6 +3,7 @@
 # Nightly push to Bitbucket
 
 HOME=/home/zhoylman/drought_indicators ssh -vT git@github.com
+USERNAME='zhoylman'
 
 # Set some variables
 DAY=$(date +%F);
