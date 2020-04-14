@@ -16,5 +16,5 @@ else
     git add .;
     # Now commit
     git commit -m "$DAY Daily";
-    git push all;
+    git push;
 fi;
