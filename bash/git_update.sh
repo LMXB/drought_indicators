@@ -13,6 +13,6 @@ else
     # Now add any changes
     git add .;
     # Now commit
-    git commit -m "$DAY Daily test within bash";
+    git commit -m "$DAY Daily";
     git push origin master;
 fi;

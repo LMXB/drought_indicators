@@ -10,3 +10,5 @@ cp -r /home/zhoylman/drought_indicators/snotel/plots /var/www/shiny.cfc.umt.edu/
 
 cp -r /home/zhoylman/drought_indicators/widgets /home/zhoylman/drought_indicators/docs/ >/home/zhoylman/bash/log 2>&1
 cp -r /home/zhoylman/drought_indicators/snotel/plots /home/zhoylman/drought_indicators/docs/ 
+
+/home/zhoylman/drought_indicators/bash/git_update.sh
