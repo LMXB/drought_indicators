@@ -30,7 +30,7 @@ knitr::opts_chunk$set(echo = TRUE)
 </script>
 </head> 
 
-<script src="lazysizes.min.js" async=""></script>
+<script src="./libs/lazysizes-gh-pages/lazysizes.min.js" async=""></script>
 
 <style type="text/css">
 
