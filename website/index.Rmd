@@ -44,8 +44,6 @@ knitr::opts_chunk$set(echo = TRUE)
 Introduction
 ========================================================
 
-<script src="libs/lazysizes-gh-pages/lazysizes.min.js" async=""></script>
-
 <br>
 
 #### **Welcome to the Upper Missouri River Basin (UMRB) drought indicators dashboard.**
@@ -73,7 +71,7 @@ This work is supported by a National Oceanic and Atmospheric Administration’s 
 
 <center>
 
-<img width="60%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" scrolling="no" src="./misc_content/logos.png" class="lazyload"></img>
+<img width="60%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" scrolling="no" src="./misc_content/logos.png" loading="lazy"></img>
 
 <center>
 
@@ -95,7 +93,7 @@ The Montana Climate Office (MCO) is leading the development of a cooperative sta
 Row {.tabset .tabset-fade data-height=800}
 -------------------------------------
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://cfcmesonet.cfc.umt.edu/map" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="https://cfcmesonet.cfc.umt.edu/map" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ####
 
@@ -117,7 +115,7 @@ Row {.tabset .tabset-fade data-height=800}
 
 ### **Snow Water Equivalent**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/swe_snotel.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/swe_snotel.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 Accumulated Precipitation {data-navmenu="SNOTEL" data-icon="fa-list" data-orientation=rows}
 ========================================================
@@ -136,7 +134,7 @@ Row {.tabset .tabset-fade data-height=800}
 
 ### **Accumulated Precipitation**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/precip_snotel.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/precip_snotel.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 Precipitation Percentiles {data-navmenu="Precipitation" data-icon="fa-list" data-orientation=rows}
 ========================================================
@@ -170,19 +168,19 @@ Row {.tabset .tabset-fade data-height=750}
 
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_raster_percentile.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_raster_percentile.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_county_percentile.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_county_percentile.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_huc_percentile.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_huc_percentile.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Tribal Lands**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_tribal_percentile.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_tribal_percentile.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
@@ -235,19 +233,19 @@ Row {.tabset .tabset-fade data-height=750}
 
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_raster_anomaly.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_raster_anomaly.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_county_anomaly.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_county_anomaly.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_huc_anomaly.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_huc_anomaly.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Tribal Lands**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_tribal_anomaly.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_tribal_anomaly.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
@@ -299,19 +297,19 @@ Row {.tabset .tabset-fade data-height=750}
 
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_raster_percentile_temp.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_raster_percentile_temp.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_county_percentile_temp.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_county_percentile_temp.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_huc_percentile_temp.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_huc_percentile_temp.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Tribal Lands**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_tribal_percentile_temp.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_tribal_percentile_temp.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
@@ -352,7 +350,7 @@ Row {.tabset .tabset-fade data-height=750}
 
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_raster_soil_moisture.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_raster_soil_moisture.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
  
 Standardized Precipitation Index (SPI) {data-navmenu="Drought Metrics" data-icon="fa-list" data-orientation=rows}
@@ -387,19 +385,19 @@ Row {.tabset .tabset-fade data-height=750}
 
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_raster_spi.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_raster_spi.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_county_spi.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_county_spi.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_huc_spi.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_huc_spi.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Tribal Lands**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_tribal_spi.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_tribal_spi.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
@@ -475,19 +473,19 @@ Row {.tabset .tabset-fade data-height=750}
 -------------------------------------
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_raster_spei.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_raster_spei.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_county_spei.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_county_spei.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_huc_spei.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_huc_spei.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Tribal Lands**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_tribal_spei.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_tribal_spei.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
@@ -553,15 +551,15 @@ Row {.tabset .tabset-fade data-height=750}
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_county_eddi.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_county_eddi.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_huc_eddi.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_huc_eddi.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Tribal Lands**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_tribal_eddi.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_tribal_eddi.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
@@ -619,20 +617,20 @@ Row {.tabset .tabset-fade data-height=750}
 -------------------------------------
 ### **Gridded Data**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_raster_sedi.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_raster_sedi.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Counties**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_county_sedi.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_county_sedi.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 ### **Watersheds**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_huc_sedi.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_huc_sedi.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 Row {.tabset .tabset-fade}
 
 ### **Tribal Lands**
 
-<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_tribal_sedi.html" webkitallowfullscreen="webkitallowfullscreen" class="lazyload"></iframe>
+<iframe width="100%" height="100%" allowfullscreen="allowfullscreen" allowvr="yes" frameborder="0" mozallowfullscreen="mozallowfullscreen" scrolling="no" src="./widgets/m_tribal_sedi.html" webkitallowfullscreen="webkitallowfullscreen" loading="lazy"></iframe>
 
 Row {.tabset .tabset-fade}
 -------------------------------------
