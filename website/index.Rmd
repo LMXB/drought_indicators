@@ -30,8 +30,6 @@ knitr::opts_chunk$set(echo = TRUE)
 </script>
 </head> 
 
-<script src="./libs/lazysizes-gh-pages/lazysizes.min.js" async=""></script>
-
 <style type="text/css">
 
 .chart-title {  /* chart_title  */
@@ -45,6 +43,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Introduction
 ========================================================
+
+<script src="libs/lazysizes-gh-pages/lazysizes.min.js" async=""></script>
 
 <br>
 
