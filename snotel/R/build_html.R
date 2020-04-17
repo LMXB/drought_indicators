@@ -67,7 +67,7 @@ swe_map = base_map() %>%
 leaflet::addMapPane("SNOTEL (SWE)", zIndex = 420) %>%
 addCircleMarkers(snotel$lon, snotel$lat, snotel$simple_id, 
                  popup = paste0("<img src='../plots/snotel_plot_",
-                                snotel$simple_id,".png' height='350' width='600'/>"),
+                                snotel$simple_id,".png' height='350' width='600' loading='lazy'/>"),
                  radius = 10, stroke = TRUE, fillOpacity = 0.9,
                  color = "black", fillColor = pal(daily_lookup$percent_swe), group = "SNOTEL (SWE)",
 )%>%
@@ -104,7 +104,7 @@ pal <- colorNumeric(c("red", "yellow", "green", "blue", "purple"), domain = c(mi
 precip_map = base_map() %>%
   addCircleMarkers(snotel$lon, snotel$lat, snotel$simple_id, 
                    popup = paste0("<img src='../plots/precip_snotel_plot_",
-                                  snotel$simple_id,".png' height='350' width='600'/>"),
+                                  snotel$simple_id,".png' height='350' width='600' loading='lazy'/>"),
                    radius = 10, stroke = TRUE, fillOpacity = 0.9,
                    color = "black", fillColor = pal(daily_lookup$percent_precip)
   )%>%
@@ -133,7 +133,7 @@ source("/home/zhoylman/drought_indicators/mapping_functions/base_map_mobile.R")
 swe_map_mobile = base_map_mobile() %>%
   addCircleMarkers(snotel$lon, snotel$lat, snotel$simple_id, group = "SNOTEL (SWE)",
                    popup = paste0("<img src='../plots/snotel_plot_mobile_",
-                                  snotel$simple_id,".png' height='200' width='270'/>"),
+                                  snotel$simple_id,".png' height='200' width='270' loading='lazy'/>"),
                    radius = 12, stroke = TRUE, fillOpacity = 0.9,
                    color = "black", fillColor = pal(daily_lookup$percent_swe)
   )%>%
