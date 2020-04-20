@@ -1,4 +1,4 @@
-total 6148872
+total 6173768
 -rw-rw-r-- 1 zhoylman zhoylman 5064059 Jun 25  2019 sedi_20190623_180_day.tif
 -rw-rw-r-- 1 zhoylman zhoylman 5070424 Jun 25  2019 sedi_20190623_30_day.tif
 -rw-rw-r-- 1 zhoylman zhoylman 5145278 Jun 25  2019 sedi_20190623_360_day.tif
@@ -1226,3 +1226,8 @@ total 6148872
 -rw-rw-r-- 1 zhoylman zhoylman 5096474 Apr 19 00:20 sedi_20200417_360_day.tif
 -rw-rw-r-- 1 zhoylman zhoylman 5108871 Apr 19 00:03 sedi_20200417_60_day.tif
 -rw-rw-r-- 1 zhoylman zhoylman 5101553 Apr 19 00:08 sedi_20200417_90_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5069930 Apr 20 00:11 sedi_20200418_180_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5113470 Apr 19 23:57 sedi_20200418_30_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5097267 Apr 20 00:19 sedi_20200418_360_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5106576 Apr 20 00:01 sedi_20200418_60_day.tif
+-rw-rw-r-- 1 zhoylman zhoylman 5099322 Apr 20 00:06 sedi_20200418_90_day.tif
