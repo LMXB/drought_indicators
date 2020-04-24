@@ -38,7 +38,52 @@ Source: "/home/zhoylman/drought_indicators/shp_kml/larger_extent/outline_umrb.sh
 with 1 features
 It has 1 fields
 Integer64 fields read as strings:  FID 
-Error in curl::curl_fetch_disk(url, x$path, handle = handle) : 
-  Given file does not exist
-Calls: get_snowdas ... request_fetch -> request_fetch.write_disk -> <Anonymous>
+Registered S3 method overwritten by 'R.oo':
+  method        from       
+  throw.default R.methodsS3
+Input file size is 6935, 3351
+0...10...20...30...40...50...60...70...80...90...100 - done.
+Input file size is 6935, 3351
+0...10...20...30...40...50...60...70...80...90...100 - done.
+Input file size is 6935, 3351
+0...10...20...30...40...50...60...70...80...90...100 - done.
+Input file size is 6935, 3351
+0...10...20...30...40...50...60...70...80...90...100 - done.
+Input file size is 6935, 3351
+0...10...20...30...40...50...60...70...80...90...100 - done.
+Input file size is 6935, 3351
+0...10...20...30...40...50...60...70...80...90...100 - done.
+Input file size is 6935, 3351
+0...10...20...30...40...50...60...70...80...90...100 - done.
+Input file size is 6935, 3351
+0...10...20...30...40...50...60...70...80...90...100 - done.
+Input file size is 6935, 3351
+0...10...20...30...40...50...60...70...80...90...100 - done.
+Input file size is 6935, 3351
+0...10...20...30...40...50...60...70...80...90...100 - done.
+Input file size is 6935, 3351
+0...10...20...30...40...50...60...70...80...90...100 - done.
+Input file size is 6935, 3351
+0...10...20...30...40...50...60...70...80...90...100 - done.
+Input file size is 6935, 3351
+0...10...20...30...40...50...60...70...80...90...100 - done.
+Input file size is 6935, 3351
+0...10...20...30...40...50...60...70...80...90...100 - done.
+Warning messages:
+1: In system(paste0("gdal_translate -of GTiff -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr  -124.73333333 52.87500000 -66.94166667 24.95000000 ",  :
+  system call failed: Cannot allocate memory
+2: In system(paste0("gdal_translate -of GTiff -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr  -124.73333333 52.87500000 -66.94166667 24.95000000 ",  :
+  error in running command
+3: In system(paste0("gdal_translate -of GTiff -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr  -124.73333333 52.87500000 -66.94166667 24.95000000 ",  :
+  system call failed: Cannot allocate memory
+4: In system(paste0("gdal_translate -of GTiff -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr  -124.73333333 52.87500000 -66.94166667 24.95000000 ",  :
+  error in running command
+5: In system(paste0("rm -r ", tar.dir)) :
+  system call failed: Cannot allocate memory
+6: In system(paste0("rm -r ", tar.dir)) : error in running command
+7: In system(paste0("rm -r ", unzip.dir)) :
+  system call failed: Cannot allocate memory
+8: In system(paste0("rm -r ", unzip.dir)) : error in running command
+Error in if (x == "" | x == ".") { : argument is of length zero
+Calls: process_raster ... raster -> raster -> .local -> .rasterObjectFromFile
 Execution halted
